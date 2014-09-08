@@ -6,8 +6,7 @@ use yii\helpers\Html;
 ?>
 
 <style>
-.cdays:before
-{
+.days:before{
     content: "";
     background-position: 0 0px;
     background: url("<?=Yii::getAlias('@web')?>/images/flair.png") no-repeat scroll 0px 0px transparent;
@@ -17,43 +16,29 @@ use yii\helpers\Html;
     vertical-align: middle;
     width: 20px;
 }
+
+.button{
+border-radius: .1875em;
+padding:4px;
+margin:0px 4px;
+box-shadow: inset 0 2px 2px #fff,0 0 0 1px #bbb,0 1px 1px #aaa;
+}
 </style>
 
+<table class="table"><tr><th></th><th>Count</th><th>Since</th><th></th></tr>
 <?php 
 foreach($counters as $counter): 
     $interval = $counter->getDateInterval();
 ?>
-    <div class="count" style="
-        float:left; width:100%;
-        padding:20px 1px;
-        border-bottom:1px dashed gray;
-        ">
-        
-        <div class="chead" style="
-            width:30%;
-            float:left;
-            overflow: hidden;
-            border:0px solid blue">
-            <div class="clabel" style="/*font-size:18px*/"><?php echo Html::encode($counter->label)?></div>
-            <div class="cdays" style="/*font-size:16px*/"><?= getCountStr($interval)?></div>
-        </div>
-        
-        <div class="csince" style="
-            width:30%;
-            margin:0 auto;
-            float:left;
-            text-align:center;
-            border:0px solid blue">
-            <div>Since</div>
-            <div class="" style=""><?= $counter->startDate?></div>
-        </div>
 
-        <div style="float:right;border:0px solid blue;top:50%">
-            <div class="" style="line-height:40px"><?= $counter->startDate?></div>
-        </div>
-    </div>
+    <tr>
+        <th><?php echo Html::encode($counter->label)?></th>
+        <td><span class="days"><?= getCountStr($interval)?></span></td>
+        <td><?= $counter->startDate?></td>
+        <td align="right"><img src="<?=Yii::getAlias('@web')?>/images/reset.png" class="button"/> <img src="<?=Yii::getAlias('@web')?>/images/x.png" class="button"/></td>
+    </tr>
 <?php endforeach;?>
-</div>
+</table>
 
 <?php
 
