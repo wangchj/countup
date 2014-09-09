@@ -52,7 +52,7 @@ function getCountStr($interval)
     if($interval->y > 0)
         $result = $result . ' (' . $interval->y . ' year' . ($interval->y > 1 ? 's' : '') . ')';
     else if($interval->m > 0)
-        $result = $result . ' (' . $interval->m . ' year' . ($interval->m > 1 ? 's' : '') . ')';
+        $result = $result . ' (' . $interval->m . ' month' . ($interval->m > 1 ? 's' : '') . ')';
     return $result;
 }
 
