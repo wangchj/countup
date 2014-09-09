@@ -6,17 +6,6 @@ use yii\helpers\Html;
 ?>
 
 <style>
-.days:before{
-    content: "";
-    background-position: 0 0px;
-    background: url("<?=Yii::getAlias('@web')?>/images/flair.png") no-repeat scroll 0px 0px transparent;
-    display: inline-block;
-    height: 20px;
-    margin-right: 4px;
-    vertical-align: middle;
-    width: 20px;
-}
-
 .button{
 border-radius: .1875em;
 padding:4px;
@@ -33,7 +22,17 @@ foreach($counters as $counter):
 
     <tr>
         <th><?php echo Html::encode($counter->label)?></th>
-        <td><span class="days"><?= getCountStr($interval)?></span></td>
+        <td><span style="
+            background-image:url('<?=Yii::getAlias('@web')?>/images/flair.png');
+            background-repeat:no-repeat;
+            background-position:<?=getImageCoord($interval)?>;
+            display:inline-block;
+            height: 20px;
+            width: 20px;
+            margin-right: 4px;
+            vertical-align: middle;"></span>
+            <span><?= getCountStr($interval)?></span>
+        </td>
         <td><?= $counter->startDate?></td>
         <td align="right"><img src="<?=Yii::getAlias('@web')?>/images/reset.png" class="button"/> <img src="<?=Yii::getAlias('@web')?>/images/x.png" class="button"/></td>
     </tr>
@@ -55,5 +54,30 @@ function getCountStr($interval)
     else if($interval->m > 0)
         $result = $result . ' (' . $interval->m . ' year' . ($interval->m > 1 ? 's' : '') . ')';
     return $result;
+}
+
+/**
+ * Badge image coordinates.
+ * @param $interval DateInterval object.
+ * @return a string with the format Xpx Ypx, where X and Y are coordinates.
+ */
+function getImageCoord($interval)
+{
+    if($interval->days < 7) return '0px 0px';
+
+    //Weeks
+    if($interval->days < 30)
+    {
+        $weeks = (int)($interval->days / 7);
+        return '0px ' . (-20 * $weeks) . 'px';
+    }
+
+    //Months
+    if($interval->y < 1)
+    {
+        return '0px ' . (-101 - ($interval->m - 1) * 20) . 'px';
+    }
+
+    return '0px -318px';
 }
 ?>
