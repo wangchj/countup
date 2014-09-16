@@ -14,7 +14,12 @@ box-shadow: inset 0 2px 2px #fff,0 0 0 1px #bbb,0 1px 1px #aaa;
 }
 </style>
 
-<table class="table"><tr><th></th><th>Count</th><th>Since</th><th></th></tr>
+<table class="table table-hover">
+    <tr style="border-style:none">
+        <th style="border-style:none"></th>
+        <th style="border-style:none">Count</th>
+        <th style="border-style:none">Since</th>
+    </tr>
 <?php 
 foreach($counters as $counter): 
     $interval = $counter->getDateInterval();
@@ -34,7 +39,6 @@ foreach($counters as $counter):
             <span><?= getCountStr($interval)?></span>
         </td>
         <td><?= $counter->startDate?></td>
-        <td align="right"><img src="<?=Yii::getAlias('@web')?>/images/reset.png" class="button"/> <img src="<?=Yii::getAlias('@web')?>/images/x.png" class="button"/></td>
     </tr>
 <?php endforeach;?>
 </table>
