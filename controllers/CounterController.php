@@ -35,7 +35,11 @@ class CounterController extends \yii\web\Controller
         $user = User::findOne(['userName'=>$username]);
         if($user == null) throw new HttpException(400,'User does not exist');
 
-        $counters = Counter::find()->where(['userId'=>$user->id, 'active'=>true])->all();
+        if(Yii::$app->user->id === $user->id)
+            $counters = Counter::find()->where(['userId'=>$user->id, 'active'=>true])->all();
+        else
+            $counters = Counter::find()->where(['userId'=>$user->id, 'active'=>true, 'public'=>true])->all();
+        
         return $this->render('index', ['counters'=>$counters]);
     }
 
