@@ -11,9 +11,12 @@ use Yii;
  * @property integer $userId
  * @property string $label
  * @property string $startDate
- * @property integer $shown
+ * @property string $summary
+ * @property boolean $public
+ * @property boolean $active
  *
  * @property Users $user
+ * @property History[] $histories
  */
 class Counter extends \yii\db\ActiveRecord
 {
@@ -32,8 +35,9 @@ class Counter extends \yii\db\ActiveRecord
     {
         return [
             [['userId', 'label', 'startDate'], 'required'],
-            [['userId', 'shown'], 'integer'],
-            [['startDate'], 'string'],
+            [['userId'], 'integer'],
+            [['public', 'active'], 'boolean'],
+            [['startDate','summary'], 'string'],
             [['label'], 'string', 'max' => 30]
         ];
     }
@@ -48,7 +52,9 @@ class Counter extends \yii\db\ActiveRecord
             'userId' => 'User ID',
             'label' => 'Label',
             'startDate' => 'Start Date',
-            'shown' => 'Shown',
+            'summary' => 'Summary',
+            'public' => 'Public',
+            'active' => 'Active',
         ];
     }
 
@@ -58,6 +64,14 @@ class Counter extends \yii\db\ActiveRecord
     public function getUser()
     {
         return $this->hasOne(User::className(), ['userId' => 'userId']);
+    }
+
+    /**
+    * @return \yii\db\ActiveQuery
+    */
+    public function getHistory()
+    {
+       return $this->hasMany(History::className(), ['counterId' => 'counterId']);
     }
 
     /**

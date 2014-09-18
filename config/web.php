@@ -39,7 +39,14 @@ $config = [
         ],
         'db' => require(__DIR__ . '/db.php'),
         'urlManager' => [
-            'enablePrettyUrl' => true
+            'enablePrettyUrl' => true,
+            'showScriptName' => false,
+            'rules' =>
+            [
+                'logout' => 'site/logout',
+                'login' => 'site/login',
+                '<username>' => 'counter/index'
+            ],
         ]
     ],
     'params' => $params,

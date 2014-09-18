@@ -4,6 +4,7 @@ use yii\bootstrap\Nav;
 use yii\bootstrap\NavBar;
 use yii\widgets\Breadcrumbs;
 use app\assets\AppAsset;
+use yii\helpers\Url;
 
 /* @var $this \yii\web\View */
 /* @var $content string */
@@ -24,7 +25,33 @@ AppAsset::register($this);
 
 <?php $this->beginBody() ?>
     <div class="wrap">
-        <?php
+        <nav id="w0" class="navbar-inverse navbar-fixed-top navbar" role="navigation">
+            <div class="container">
+                <div class="navbar-header">
+                    <button class="navbar-toggle" data-toggle="collapse" data-target="#w0-collapse">
+                        <span class="sr-only">Toggle navigation</span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                    </button>
+                    <a class="navbar-brand" href="/countup/index.php">Countup</a>
+                </div>
+                <div id="w0-collapse" class="collapse navbar-collapse">
+                    <ul id="w1" class="navbar-nav navbar-right nav">
+                    <?php if(!Yii::$app->user->isGuest): ?>
+                        <li><a href="/countup/index.php/site/contact">Settings</a></li>
+                    <?php endif;?>
+                    <?php if(Yii::$app->user->isGuest): ?>
+                        <li><a href="<?= Url::to(['site/login'])?>" data-method="post">Login</a></li>
+                    <?php else: ?>
+                        <li><a href="<?= Url::to(['site/logout'])?>" data-method="post">Logout (<?= Yii::$app->user->identity->userName ?>)</a></li>
+                    <?php endif;?>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+
+        <?php /*
             NavBar::begin([
                 'brandLabel' => 'Countup',
                 'brandUrl' => Yii::$app->homeUrl,
@@ -42,10 +69,11 @@ AppAsset::register($this);
                         ['label' => 'Login', 'url' => ['/site/login']] :
                         ['label' => 'Logout (' . Yii::$app->user->identity->userName . ')',
                             'url' => ['/site/logout'],
-                            'linkOptions' => ['data-method' => 'post']],
+                            'linkOptions' => ['data-method' => 'post']
+                        ],
                 ],
             ]);
-            NavBar::end();
+            NavBar::end(); */
         ?>
 
         <div class="container">

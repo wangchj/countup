@@ -27,7 +27,9 @@ create table Counters (
     userId    integer not null,
     label     varchar(30) not null,
     startDate text not null,
-    shown     integer not null default 1,
+    summary   text null,
+    public    integer not null default 1,
+    active    integer not null default 1,
     foreign key(userId) references Users(userId)
 );
 
@@ -35,5 +37,6 @@ create table History (
     startDate text not null,
     endDate   text not null,
     counterId integer not null,
-    primary key (startDate, endDate)
+    primary key (startDate, endDate),
+    foreign key(counterId) references Counters(counterId)
 );

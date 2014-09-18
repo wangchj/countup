@@ -3,8 +3,13 @@
 namespace app\controllers;
 
 use Yii;
+use yii\web\HttpException;
+use yii\web\ForbiddenHttpException;
 use yii\filters\AccessControl;
+
+//Models
 use app\models\Counter;
+use app\models\User;
 
 class CounterController extends \yii\web\Controller
 {
@@ -14,7 +19,8 @@ class CounterController extends \yii\web\Controller
 			'access'=>[
 				'class'=>AccessControl::className(),
 				'rules'=>[
-					['allow'=>true, 'actions'=>['index','add'],'roles'=>['@']]
+                    ['allow'=>true, 'actions'=>['index','view'], 'roles'=>['?','@']],
+					['allow'=>true, 'actions'=>['add','update','reset','deactivate'], 'roles'=>['@']],
 				]
 			]
 		];
@@ -23,9 +29,13 @@ class CounterController extends \yii\web\Controller
     /**
      * Show user's counters
      */
-    public function actionIndex()
+    public function actionIndex($username)
     {
-        $counters = Counter::find()->where(['userId'=>Yii::$app->user->id, 'shown'=>true])->all();
+        //Check if user exists
+        $user = User::findOne(['userName'=>$username]);
+        if($user == null) throw new HttpException(400,'User does not exist');
+
+        $counters = Counter::find()->where(['userId'=>$user->id, 'active'=>true])->all();
         return $this->render('index', ['counters'=>$counters]);
     }
 
@@ -48,7 +58,7 @@ class CounterController extends \yii\web\Controller
             else $counter.addError('startDate', 'In correct date format.');
 
             $counter->userId = Yii::$app->user->id;
-            $counter->shown = true;
+            $counter->active = true;
 
             //If no error, save counter
             if($counter->validate() && !$counter->hasErrors())
@@ -61,6 +71,93 @@ class CounterController extends \yii\web\Controller
    		return $this->render('add', ['model'=>$counter]);
     }
 
+    /**
+     * Updates a counter.
+     * @param $id counter id.
+     * @throws NotFoundHttpException if the model cannot be found
+     */
+    public function actionUpdate($id)
+    {
+        $model = $this->findModel($id);
+
+        if ($model->load(Yii::$app->request->post()) && $model->save()) {
+            return $this->redirect(['view', 'id' => $model->userId]);
+        }
+        else {
+            return $this->render('update', [
+                'model' => $model,
+            ]);
+        }
+    }
+
+    /**
+     * Sets start date of the count to today's date.
+     * @param $id counter id.
+     * @throws ForbiddenHttpException current user is not the owner of the counter.
+     */
+    public function actionReset($id)
+    {
+        $model = $this->findModel($id);
+        $user = User::findOne(Yii::$app->user->id);
+        //Make sure the current user is owners
+        if(Yii::$app->user->id === $model->userId)
+        {
+            $date = new \DateTime();
+            $model->startDate = $date->format('Y-m-d');
+            $model->save();
+            return $this->redirect(['index', 'username'=>$user->userName]);
+        }
+
+        throw new ForbiddenHttpException();
+    }
+
+    /**
+     * Sets active field of the count to false.
+     * @param $id counter id.
+     * @throws ForbiddenHttpException current user is not the owner of the counter.
+     */
+    public function actionDeactivate($id)
+    {
+        $model = $this->findModel($id);
+        $user = User::findOne(Yii::$app->user->id);
+        //Make sure the current user is owners
+        if(Yii::$app->user->id === $model->userId)
+        {
+            $model->active = false;
+            $model->save();
+            return $this->redirect(['index', 'username'=>$user->userName]);
+        }
+
+        throw new ForbiddenHttpException();
+    }
+    /**
+     * Shows details of a counter.
+     * TODO: test when model is not found.
+     * @param $id counter id.
+     * @throws NotFoundHttpException if the model cannot be found
+     */
+    public function actionView($id)
+    {
+        return $this->render('view', [
+            'model' => $this->findModel($id),
+        ]);
+    }
+
+    /**
+     * Finds the Counter model based on its primary key value.
+     * If the model is not found, a 404 HTTP exception will be thrown.
+     * @param integer $id
+     * @return Counter the loaded model
+     * @throws NotFoundHttpException if the model cannot be found
+     */
+    protected function findModel($id)
+    {
+        if (($model = COunter::findOne($id)) !== null) {
+            return $model;
+        } else {
+            throw new NotFoundHttpException('The requested page does not exist.');
+        }
+    }
 }
 
 /*

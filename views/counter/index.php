@@ -2,7 +2,7 @@
 /* @var $this yii\web\View */
 
 use yii\helpers\Html;
-
+use yii\helpers\Url;
 ?>
 
 <style>
@@ -14,11 +14,19 @@ box-shadow: inset 0 2px 2px #fff,0 0 0 1px #bbb,0 1px 1px #aaa;
 }
 </style>
 
-<table class="table table-hover">
+<div class="row" style="margin-top:20px"><div class="col-xs-3">
+    <ul class="list-group">
+        <a href="#" class="list-group-item">History</a>
+        <a href="#" class="list-group-item">New Counter</a>
+    </ul>
+</div>
+
+<div class="col-xs-9">
+<table class="table table-striped">
     <tr style="border-style:none">
-        <th style="border-style:none"></th>
-        <th style="border-style:none">Count</th>
-        <th style="border-style:none">Since</th>
+        <td style="border-style:none"></td>
+        <td style="border-style:none">Count</td>
+        <td style="border-style:none">Since</td>
     </tr>
 <?php 
 foreach($counters as $counter): 
@@ -26,7 +34,9 @@ foreach($counters as $counter):
 ?>
 
     <tr>
-        <th><?php echo Html::encode($counter->label)?></th>
+        <th>
+            <a href="<?=Url::to(['counter/view', 'id'=>$counter->counterId])?>"><?php echo Html::encode($counter->label)?></a>
+        </th>
         <td><span style="
             background-image:url('<?=Yii::getAlias('@web')?>/images/flair.png');
             background-repeat:no-repeat;
@@ -41,7 +51,8 @@ foreach($counters as $counter):
         <td><?= $counter->startDate?></td>
     </tr>
 <?php endforeach;?>
-</table>
+</table></div>
+</div><!-- end div row -->
 
 <?php
 
