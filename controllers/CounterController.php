@@ -72,6 +72,7 @@ class CounterController extends \yii\web\Controller
             }
         }
 
+        $counter->public = true;
    		return $this->render('add', ['model'=>$counter]);
     }
 
