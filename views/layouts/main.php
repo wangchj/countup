@@ -16,7 +16,7 @@ AppAsset::register($this);
 <html lang="<?= Yii::$app->language ?>">
 <head>
     <meta charset="<?= Yii::$app->charset ?>"/>
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- meta name="viewport" content="width=device-width, initial-scale=1" -->
     <?= Html::csrfMetaTags() ?>
     <title><?= Html::encode($this->title) ?></title>
     <?php $this->head() ?>
@@ -26,7 +26,7 @@ AppAsset::register($this);
 <?php $this->beginBody() ?>
     <div class="wrap">
         <nav id="w0" class="navbar-inverse navbar-fixed-top navbar" role="navigation">
-            <div class="container">
+            <div class="container" style="width:970px !important">
                 <div class="navbar-header">
                     <button class="navbar-toggle" data-toggle="collapse" data-target="#w0-collapse">
                         <span class="sr-only">Toggle navigation</span>
@@ -76,7 +76,7 @@ AppAsset::register($this);
             NavBar::end(); */
         ?>
 
-        <div class="container">
+        <div class="container" style="width:970px !important">
             <?= Breadcrumbs::widget([
                 'links' => isset($this->params['breadcrumbs']) ? $this->params['breadcrumbs'] : [],
             ]) ?>
