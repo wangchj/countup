@@ -40,7 +40,7 @@ class CounterController extends \yii\web\Controller
         else
             $counters = Counter::find()->where(['userId'=>$user->id, 'active'=>true, 'public'=>true])->all();
         
-        return $this->render('index', ['counters'=>$counters]);
+        return $this->render('index', ['counters'=>$counters, 'user'=>$user]);
     }
 
     /**

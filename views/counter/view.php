@@ -13,7 +13,7 @@ $this->title = $model->label;
 
 <div class="counter-view">
     <div class="row">
-        <div class="col-xs-2" style="margin-top:69px">
+        <div class="col-xs-3" style="margin-top:69px">
             <ul class="list-group">
                 <a href="<?=Url::to(['counter/view','id'=>$model->counterId])?>" class="list-group-item active">Summary</a>
                 <a href="#" class="list-group-item">History</a>
@@ -25,7 +25,7 @@ $this->title = $model->label;
                 <a href="<?=Url::to(['counter/deactivate','id'=>$model->counterId])?>" class="list-group-item">Deactivate</a>
             </ul>
         </div>    
-        <div class="col-xs-10">
+        <div class="col-xs-9">
             <h1><?= Html::encode($this->title) ?></h1>
             <?= DetailView::widget([
                 'model' => $model,
