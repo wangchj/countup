@@ -2,7 +2,6 @@
 
 use yii\helpers\Html;
 use yii\helpers\Url;
-require_once(__DIR__ . '/../com/view_util.php');
 
 /* @var $this yii\web\View */
 /* @var $model app\models\Counter */

@@ -7,9 +7,11 @@ use Yii;
 /**
  * This is the model class for table "History".
  *
+ * @property integer $counterId
  * @property string $startDate
  * @property string $endDate
- * @property integer $counterId
+ *
+ * @property Counters $counter
  */
 class History extends \yii\db\ActiveRecord
 {
@@ -27,10 +29,10 @@ class History extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['startDate', 'endDate', 'counterId'], 'required'],
+            [['counterId', 'startDate', 'endDate'], 'required'],
             [['startDate', 'endDate'], 'string'],
             [['counterId'], 'integer'],
-            [['startDate', 'endDate'], 'unique', 'targetAttribute' => ['startDate', 'endDate'], 'message' => 'The combination of Start Date and End Date has already been taken.']
+            [['counterId', 'startDate', 'endDate'], 'unique', 'targetAttribute' => ['counterId', 'startDate', 'endDate'], 'message' => 'The combination of Counter ID, Start Date and End Date has already been taken.']
         ];
     }
 
@@ -40,9 +42,17 @@ class History extends \yii\db\ActiveRecord
     public function attributeLabels()
     {
         return [
+            'counterId' => 'Counter ID',
             'startDate' => 'Start Date',
             'endDate' => 'End Date',
-            'counterId' => 'Counter ID',
         ];
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getCounter()
+    {
+        return $this->hasOne(Counter::className(), ['counterId' => 'counterId']);
     }
 }

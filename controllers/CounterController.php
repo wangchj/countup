@@ -10,6 +10,9 @@ use yii\filters\AccessControl;
 //Models
 use app\models\Counter;
 use app\models\User;
+use app\models\History;
+
+use app\controllers\HistoryController;
 
 class CounterController extends \yii\web\Controller
 {
@@ -55,11 +58,14 @@ class CounterController extends \yii\web\Controller
         {
             //Process label
             $counter->label = trim($counter->label);
-            if($counter->label === '') $counter.addError('label', 'Label cannot be blank.');
+            if($counter->label === '')
+                $counter.addError('label', 'Label cannot be blank.');
 
             //Process date
-            if($date = new \DateTime($counter->startDate)) $counter->startDate = $date->format('Y-m-d');
-            else $counter.addError('startDate', 'In correct date format.');
+            if($date = new \DateTime($counter->startDate, new \DateTimeZone($counter->getUser()->timeZone)))
+                $counter->startDate = $date->format('Y-m-d');
+            else
+                $counter.addError('startDate', 'In correct date format.');
 
             $counter->userId = Yii::$app->user->id;
             $counter->active = true;
@@ -107,8 +113,13 @@ class CounterController extends \yii\web\Controller
         //Make sure the current user is owners
         if(Yii::$app->user->id === $model->userId)
         {
-            $date = new \DateTime();
-            $model->startDate = $date->format('Y-m-d');
+            $now = new \DateTime('now', new \DateTimeZone($user->timeZone));
+
+            //Record history
+            HistoryController::insertHistory($model, $now);
+
+            //Update start date
+            $model->startDate = $now->format('Y-m-d');
             $model->save();
             return $this->redirect(['index', 'username'=>$user->userName]);
         }
@@ -128,6 +139,10 @@ class CounterController extends \yii\web\Controller
         //Make sure the current user is owners
         if(Yii::$app->user->id === $model->userId)
         {
+            //Record history
+            $now = new \DateTime('now', new \DateTimeZone($user->timeZone));
+            HistoryController::insertHistory($model, $now);
+
             $model->active = false;
             $model->save();
             return $this->redirect(['index', 'username'=>$user->userName]);
@@ -135,6 +150,7 @@ class CounterController extends \yii\web\Controller
 
         throw new ForbiddenHttpException();
     }
+
     /**
      * Shows details of a counter.
      * TODO: test when model is not found.

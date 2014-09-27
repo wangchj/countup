@@ -3,6 +3,8 @@
 
 use yii\helpers\Html;
 use yii\helpers\Url;
+use app\models\Counter;
+use app\views\components\ViewUtil;
 ?>
 
 <style>
@@ -24,8 +26,8 @@ box-shadow: inset 0 2px 2px #fff,0 0 0 1px #bbb,0 1px 1px #aaa;
 <div class="row" style="margin-top:20px">
     <div class="col-xs-3">
         <ul class="list-group">
-            <a href="#" class="list-group-item">History</a>
-            <a href="#" class="list-group-item">New Counter</a>
+            <a href="<?=Url::to(['history/index', 'username'=>$user->userName])?>" class="list-group-item">History</a>
+            <a href="<?=Url::to(['counter/add'])?>" class="list-group-item">New Counter</a>
         </ul>
     </div>
 
@@ -38,7 +40,7 @@ box-shadow: inset 0 2px 2px #fff,0 0 0 1px #bbb,0 1px 1px #aaa;
             </tr>
 <?php 
 foreach($counters as $counter): 
-    $interval = $counter->getDateInterval();
+    $interval = Counter::computeDateInterval($counter);
 ?>
 
             <tr>
@@ -54,7 +56,7 @@ foreach($counters as $counter):
                     width: 20px;
                     margin-right: 4px;
                     vertical-align: middle;"></span>
-                    <span><?= getCountStr($interval)?></span>
+                    <span><?= ViewUtil::getCountStr($interval)?></span>
                 </td>
                 <td><?= $counter->startDate?></td>
             </tr>
@@ -64,21 +66,6 @@ foreach($counters as $counter):
 </div><!-- end div row -->
 
 <?php
-
-/**
- * Get formatted string of day count.
- * @param $interval DateInterval object
- * @return a string.
- */
-function getCountStr($interval)
-{
-    $result = $interval->days . ' days';
-    if($interval->y > 0)
-        $result = $result . ' (' . $interval->y . ' year' . ($interval->y > 1 ? 's' : '') . ')';
-    else if($interval->m > 0)
-        $result = $result . ' (' . $interval->m . ' month' . ($interval->m > 1 ? 's' : '') . ')';
-    return $result;
-}
 
 /**
  * Badge image coordinates.

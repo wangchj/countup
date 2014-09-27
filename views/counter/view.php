@@ -3,7 +3,6 @@
 use yii\helpers\Html;
 use yii\helpers\Url;
 use yii\widgets\DetailView;
-require_once(__DIR__ . '/../com/view_util.php');
 
 /* @var $this yii\web\View */
 /* @var $model app\models\Counter */
@@ -16,7 +15,7 @@ $this->title = $model->label;
         <div class="col-xs-3" style="margin-top:69px">
             <ul class="list-group">
                 <a href="<?=Url::to(['counter/view','id'=>$model->counterId])?>" class="list-group-item active">Summary</a>
-                <a href="#" class="list-group-item">History</a>
+                <a href="<?=Url::to(['history/index','username'=>$model->user->userName, 'counterId'=>$model->counterId])?>" class="list-group-item">History</a>
                 <a href="<?=Url::to(['counter/update','id'=>$model->counterId])?>" class="list-group-item">Update</a>
             </ul>
 

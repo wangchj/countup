@@ -34,9 +34,9 @@ create table Counters (
 );
 
 create table History (
+    counterId integer not null,
     startDate text not null,
     endDate   text not null,
-    counterId integer not null,
-    primary key (startDate, endDate),
+    primary key (counterId, startDate, endDate),
     foreign key(counterId) references Counters(counterId)
 );

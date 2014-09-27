@@ -5,7 +5,7 @@ use yii\widgets\ActiveForm;
 use app\assets\TimezonePickerAsset;
 use app\assets\SignupAsset;
 
-require_once(__DIR__ . '/../com/path.php');
+require_once(__DIR__ . '/../components/path.php');
 
 TimezonePickerAsset::register($this);
 SignupAsset::register($this);

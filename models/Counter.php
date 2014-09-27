@@ -86,4 +86,39 @@ class Counter extends \yii\db\ActiveRecord
         $end   = new \DateTime('now', $timeZone);
         return $end->diff($start);
     }
+
+    /**
+     * Compute the DateInterval object between start and end date. 
+     * The date interval always starts with 1 day not 0; e.g. start date = end date -> 1 day.
+     * @param $startDate start date string.
+     * @param $endDate   end date string.
+     * @return DateInterval object that contains days, months, and years.
+     */
+    public static function computeDateIntervalBase($start, $end)
+    {
+        if(is_string($start))
+            $start = new \DateTime($start);
+        if(is_string($end))
+            $end = new \DateTime($end);
+
+        //Add 1 day so result interval start with 1 not 0 day.
+        $end->add(new \DateInterval('P1D'));
+
+        $res = $end->diff($start);
+
+        return $res;
+    }
+
+    /**
+     * Compute the DateInterval object between start and end date. 
+     * The date interval always starts with 1 day not 0; e.g. start date = end date -> 1 day.
+     * @param $counter a Counter model object.
+     * @return DateInterval object that contains days, months, and years.
+     */
+    public static function computeDateInterval($counter)
+    {
+        $user = $counter->user;
+        $timeZone = new \DateTimeZone($user->timeZone);
+        return self::computeDateIntervalBase(new \DateTime($counter->startDate, $timeZone), new \DateTime('now', $timeZone));
+    }
 }

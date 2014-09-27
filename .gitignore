@@ -27,6 +27,7 @@ phpunit.phar
 /phpunit.xml
 
 .fuse_*
+*~
 
 runtime
 web/assets
