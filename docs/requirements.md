@@ -1,0 +1,1 @@
+- Counter should start with 1 not 0 day.
