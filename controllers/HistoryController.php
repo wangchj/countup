@@ -37,6 +37,7 @@ class HistoryController extends Controller
         $this->viewAccessCheck($username, $counterId);
 
         $owner = User::findOne(['userName'=>$username]);
+        $counterLabel = null;
         $query = null;
 
         if($counterId == null)
@@ -59,6 +60,8 @@ class HistoryController extends Controller
         }
         else
         {
+            $counterLabel = Counter::findOne($counterId)->label;
+
             if(Yii::$app->user->isGuest || Yii::$app->user->id != $owner->userId)  
                 $query = History::find()
                     ->joinWith('counter')
@@ -80,7 +83,7 @@ class HistoryController extends Controller
         
         $dataProvider = new ActiveDataProvider(['query' => $query, 'sort'=>false]);
 
-        return $this->render('index', ['dataProvider'=>$dataProvider, 'owner'=>$owner]);
+        return $this->render('index', ['dataProvider'=>$dataProvider, 'owner'=>$owner, 'counterLabel'=>$counterLabel]);
     }
 
     /**

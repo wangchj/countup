@@ -45,7 +45,10 @@ $config = [
             [
                 'logout' => 'site/logout',
                 'login' => 'site/login',
-                '<username>' => 'counter/index'
+                '<username>/history/<counterId:\d+>' => 'history/index',
+                '<username>/history' => 'history/index',
+                '<username>/<id:\d+>' => 'counter/view',
+                '<username>' => 'counter/index',
             ],
         ]
     ],
