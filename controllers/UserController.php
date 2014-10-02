@@ -106,6 +106,20 @@ class UserController extends Controller
     }
 
     /**
+     * Updates basic user information.
+     */
+    public function actionUpdate()
+    {
+        $user = $this->findModel(Yii::$app->user->id);
+        if($user->load(Yii::$app->request->post()))
+        {
+
+        }
+
+        return $this->render('update', ['user' => $user]);
+    }
+
+    /**
      * Finds the User model based on its primary key value.
      * If the model is not found, a 404 HTTP exception will be thrown.
      * @param integer $id
