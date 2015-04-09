@@ -8,6 +8,7 @@
 namespace app\assets;
 
 use yii\web\AssetBundle;
+use app\LayoutAsset;
 
 /**
  * @author Qiang Xue <qiang.xue@gmail.com>
@@ -18,11 +19,12 @@ class AppAsset extends AssetBundle
     public $basePath = '@webroot';
     public $baseUrl = '@web';
     public $css = [
-        'css/site.css',
+        //'css/site.css',
     ];
     public $js = [
     ];
     public $depends = [
+        'app\assets\LayoutAsset',
         'yii\web\YiiAsset',
         'yii\bootstrap\BootstrapAsset',
         'yii\bootstrap\BootstrapPluginAsset',

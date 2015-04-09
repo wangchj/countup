@@ -25,8 +25,8 @@ AppAsset::register($this);
 
 <?php $this->beginBody() ?>
     <div class="wrap">
-        <nav id="w0" class="navbar-inverse navbar-fixed-top navbar" role="navigation">
-            <div class="container" style="width:970px !important">
+        <nav id="w0" class="navbar" role="navigation">
+            <div class="container">
                 <div class="navbar-header">
                     <button class="navbar-toggle" data-toggle="collapse" data-target="#w0-collapse">
                         <span class="sr-only">Toggle navigation</span>
@@ -34,10 +34,11 @@ AppAsset::register($this);
                         <span class="icon-bar"></span>
                         <span class="icon-bar"></span>
                     </button>
-                    <a class="navbar-brand" href="/countup/index.php">Countup</a>
+                    <a class="navbar-brand" href="<?=Url::to(['site/index'])?>">Countup</a>
                 </div>
                 <div id="w0-collapse" class="collapse navbar-collapse">
-                    <ul id="w1" class="navbar-nav navbar-right nav">
+                    <ul id="w1" class="navbar-nav navbar-left nav">
+                        <li><a href="<?=Url::to(['user/signup'])?>">Sign Up</a></li>
                     <?php if(!Yii::$app->user->isGuest): ?>
                         <li><a href="/countup/index.php/site/contact">Settings</a></li>
                     <?php endif;?>
@@ -51,43 +52,20 @@ AppAsset::register($this);
             </div>
         </nav>
 
-        <?php /*
-            NavBar::begin([
-                'brandLabel' => 'Countup',
-                'brandUrl' => Yii::$app->homeUrl,
-                'options' => [
-                    'class' => 'navbar-inverse navbar-fixed-top',
-                ],
-            ]);
-            echo Nav::widget([
-                'options' => ['class' => 'navbar-nav navbar-right'],
-                'items' => [
-                    ['label' => 'Home', 'url' => ['/site/index']],
-                    ['label' => 'About', 'url' => ['/site/about']],
-                    ['label' => 'Contact', 'url' => ['/site/contact']],
-                    Yii::$app->user->isGuest ?
-                        ['label' => 'Login', 'url' => ['/site/login']] :
-                        ['label' => 'Logout (' . Yii::$app->user->identity->userName . ')',
-                            'url' => ['/site/logout'],
-                            'linkOptions' => ['data-method' => 'post']
-                        ],
-                ],
-            ]);
-            NavBar::end(); */
-        ?>
-
-        <div class="container" style="width:970px !important">
-            <?= Breadcrumbs::widget([
-                'links' => isset($this->params['breadcrumbs']) ? $this->params['breadcrumbs'] : [],
-            ]) ?>
+        <?php if(Yii::$app->controller->id == 'site' && Yii::$app->controller->action->id == 'index'):?>
             <?= $content ?>
-        </div>
+        <?php else:?>
+            <div class="container">
+                <?= $content ?>
+            </div>
+        <?php endif;?>
+        
     </div>
 
     <footer class="footer">
         <div class="container">
-            <p class="pull-left">&copy; My Company <?= date('Y') ?></p>
-            <p class="pull-right"><?= Yii::powered() ?></p>
+            <!-- p class="pull-left">&copy; Countup <?= date('Y') ?></p -->
+            <!-- p class="pull-right"><?= Yii::powered() ?></p -->
         </div>
     </footer>
 

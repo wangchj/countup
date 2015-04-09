@@ -1,51 +1,53 @@
 <?php
 /* @var $this yii\web\View */
-$this->title = 'My Yii Application';
+$this->title = '';
 ?>
-<div class="site-index">
 
-    <div class="jumbotron">
-        <h1>Congratulations!</h1>
-
-        <p class="lead">You have successfully created your Yii-powered application.</p>
-
-        <p><a class="btn btn-lg btn-success" href="http://www.yiiframework.com">Get started with Yii</a></p>
-    </div>
-
-    <div class="body-content">
-
-        <div class="row">
-            <div class="col-lg-4">
-                <h2>Heading</h2>
-
-                <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et
-                    dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip
-                    ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu
-                    fugiat nulla pariatur.</p>
-
-                <p><a class="btn btn-default" href="http://www.yiiframework.com/doc/">Yii Documentation &raquo;</a></p>
-            </div>
-            <div class="col-lg-4">
-                <h2>Heading</h2>
-
-                <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et
-                    dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip
-                    ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu
-                    fugiat nulla pariatur.</p>
-
-                <p><a class="btn btn-default" href="http://www.yiiframework.com/forum/">Yii Forum &raquo;</a></p>
-            </div>
-            <div class="col-lg-4">
-                <h2>Heading</h2>
-
-                <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et
-                    dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip
-                    ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu
-                    fugiat nulla pariatur.</p>
-
-                <p><a class="btn btn-default" href="http://www.yiiframework.com/extensions/">Yii Extensions &raquo;</a></p>
-            </div>
-        </div>
-
+<div style="width:100%;
+    height:450px;
+    position:fixed;
+    left:0px;
+    top :0px;
+    z-index:-100;
+    background-image:url('/~wangchj/countup/web/images/workout.jpg');
+    background-size:100%;
+    background-size:cover;
+    background-position:center;
+    ">
+    <div style="
+        color:#fff;
+        font-size:60px;
+        font-weight:bold;
+        position: relative;
+        top:120px;
+        padding:100px;
+        text-shadow:0px 0px 10px #996;
+        ">
+    <center>SET A GOAL. TRACK. IMPROVE</center>
     </div>
 </div>
+
+<!-- div class="container-fluid">
+    <div class="row">
+        <div class="col-md-12" style="
+            height:450px;
+            background-image:url('/~wangchj/countup/web/images/workout.jpg');
+            background-size:100% auto;
+            background-repeat:no-repeat;
+            background-position:center;
+        ">
+            <div class="row">
+                <div class="col-sm-8 col-md-8 col-lg-8" style="
+                    color:#fff;
+                    /*border:1px #000 solid;*/
+                    font-size: 60px;
+                    font-weight:bold;
+                    padding:100px;
+                    text-shadow:0px 0px 10px #996;
+                ">
+                    SET A GOAL. TRACK. IMPROVE.
+                </div>
+            </div>
+        </div>
+    </div>
+</div -->

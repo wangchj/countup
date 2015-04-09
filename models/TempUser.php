@@ -7,12 +7,8 @@ use Yii;
 /**
  * This is the model class for table "TempUsers".
  *
- * @property integer $userId
- * @property string $userName
- * @property string $email
- * @property string $phash
- * @property string $joinDate
- * @property string $timeZone
+ * Properties mirrors User model class
+ *
  * @property string $code
  */
 class TempUser extends \yii\db\ActiveRecord
@@ -31,10 +27,12 @@ class TempUser extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['userName', 'email', 'phash', 'joinDate', 'timeZone', 'code'], 'required'],
-            [['email', 'phash', 'joinDate', 'timeZone', 'code'], 'string'],
+            [['forename', 'surname', 'email', 'phash', 'joinDate', 'timeZone', 'code'], 'required'],
+            [['username', 'forename', 'surname', 'email', 'phash', 'joinDate', 'timeZone', 'code'], 'string'],
             [['userName'], 'string', 'max' => 30],
-            [['userName'], 'unique']
+            [['userName'], 'unique'],
+            ['email', 'email'],
+            ['fbId', 'integer']
         ];
     }
 
@@ -46,6 +44,8 @@ class TempUser extends \yii\db\ActiveRecord
         return [
             'userId' => 'User ID',
             'userName' => 'User Name',
+            'forename' => 'First Name',
+            'surname'  => 'Last Name',
             'email' => 'Email',
             'phash' => 'Phash',
             'joinDate' => 'Join Date',

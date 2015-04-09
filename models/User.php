@@ -9,10 +9,14 @@ use Yii;
  *
  * @property integer $userId
  * @property string $userName
+ * @property string $forename
+ * @property string $surname
  * @property string $email
  * @property string $phash
  * @property string $joinDate
+ * @property string $location
  * @property string $timeZone
+ * @property string $authKey
  *
  * @property Counters[] $counters
  */
@@ -32,10 +36,12 @@ class User extends \yii\db\ActiveRecord implements \yii\web\IdentityInterface
     public function rules()
     {
         return [
-            [['userName', 'email', 'phash', 'joinDate', 'timeZone'], 'required'],
-            [['email', 'phash', 'joinDate', 'timeZone'], 'string'],
+            [['forename', 'surname', 'email', 'joinDate', 'timeZone'], 'required'],
+            [['userName', 'forename', 'surname', 'email', 'phash', 'joinDate', 'location', 'timeZone'], 'string'],
             [['userName'], 'string', 'max' => 30],
-            [['userName'], 'unique']
+            [['userName'], 'unique'],
+            ['email', 'email'],
+            ['fbId', 'integer']
         ];
     }
 
@@ -47,6 +53,8 @@ class User extends \yii\db\ActiveRecord implements \yii\web\IdentityInterface
         return [
             'userId' => 'User ID',
             'userName' => 'User Name',
+            'forename' => 'First Name',
+            'surname'  => 'Last Name',
             'email' => 'Email',
             'phash' => 'Password',
             'joinDate' => 'Join Date',

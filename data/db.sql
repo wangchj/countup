@@ -3,23 +3,35 @@
  */
 
 create table Users (
-    userId   integer primary key,          -- auto-increment by default
-    userName varchar(30) not null unique,  -- unique, max_len = 30
-    email    text not null,
-    phash    text not null, --password hash with salt appended
-    joinDate text not null,
-    timeZone text not null,
-    authKey  text not null  --Yii Framework authentication key
+    userId   integer     primary key, -- auto-increment by default
+    userName varchar(30) null unique, -- unique, max_len = 30
+    forename text        not null,
+    surname  text        not null,
+    email    text        not null,
+    fbId     integer     null,
+    phash    text        null,        --password hash with salt appended
+    joinDate text        not null,
+    location text        null,        -- Name of the location, i.e. Auburn, Alabama
+    timeZone text        not null,    -- Name of the timezone, i.e. America/Chicago
+    authKey  text        not null     --Yii Framework authentication key
 );
 
+/**
+ * Mirrors Users table
+ */
 create table TempUsers (
-    userId   integer primary key,
-    userName varchar(30) not null unique,
-    email    text not null,
-    phash    text not null, --password hash with salt appended
-    joinDate text not null,
-    timeZone text not null,
-    code     text not null  -- Verification code
+    userId   integer     primary key,
+    userName varchar(30) null unique,
+    forename text        not null,
+    surname  text        not null,
+    email    text        not null,
+    fbId     integer     null,
+    phash    text        not null,
+    joinDate text        not null,
+    location text        null,
+    timeZone text        not null,
+    offset   integer     null,
+    code     text        not null     -- Verification code
 );
 
 create table Counters (

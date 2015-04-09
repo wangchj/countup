@@ -1,0 +1,21 @@
+.navbar .nav li a {
+    font-family: proxima-nova, proxima-nova, Helvetica, Arial, sans-serif;
+    font-size: 16px;
+    font-weight:bold;
+    color:rgb(0,0,0);
+    opacity:0.5;
+    text-shadow:1px 1px 3px #AA9;
+}
+
+.navbar .nav li a:hover {
+    background-color:transparent;
+}
+
+.navbar a.navbar-brand {
+    font-family: proxima-nova, proxima-nova, Helvetica, Arial, sans-serif;
+    font-size: 16px;
+    font-weight:bold;
+    color:rgb(0,0,0);
+    opacity:0.5;
+    text-shadow:1px 1px 3px #AA9;
+}

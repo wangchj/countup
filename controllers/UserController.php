@@ -45,10 +45,13 @@ class UserController extends Controller
 
     public function actionSignup()
     {
+        $this->layout = '@app/views/layouts/blank';
+
         $model = new User();
         
         if(Yii::$app->request->isPost && $model->load(Yii::$app->request->post()))
         {
+            /*
             //Check email already exist
             if(User::findOne(['email'=>$model->email]) != null || TempUser::findOne(['email'=>$model->email]) != null)
                 $model->addError('email', 'User with given email already exist');
@@ -73,10 +76,40 @@ class UserController extends Controller
                     ->send();
 
                 return $this->render('pre-verify', ['model' => $model]);
-            }
+                
+            }*/
+
+            return $this->processFbSignup($model);
         }
 
-        return $this->render('signup', ['model' => $model]);
+        return $this->render('signup', ['model' => $model, 'error'=>null]);
+    }
+
+    private function processFbSignup($user) {
+        if(!$user->email)
+            return $this->render('signup', ['model' => $user, 'error'=>'Facebook does not have enough information. Please sign up with Email.']);
+
+        if(User::findOne(['email'=>$user->email]) || User::findOne(['fbId'=>$user->fbId]))
+            return $this->redirect(['site/index']);
+
+        if(TempUser::findOne(['email'=>$user->email]))
+            return $this->render('signup', ['model' => $user, 'error'=>'Account already exist.']);
+
+        if(!$user->timeZone)
+            $user->timeZone = 'America/Chicago';
+
+        $user->joinDate = date('Y-m-d H:i:s');
+        $user->authKey = Yii::$app->getSecurity()->generateRandomString();
+
+        if(!$user->validate()) {
+            var_dump($user->errors);
+            return;
+        }
+
+        $user->save();
+
+        Yii::$app->user->login($user);
+        return $this->redirect(['site/index']);
     }
 
     public function actionVerify($email, $code)
