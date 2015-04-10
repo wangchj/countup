@@ -1,4 +1,4 @@
-<?php
+ <?php
 
 use yii\helpers\Html;
 use yii\widgets\ActiveForm;
@@ -14,15 +14,42 @@ SignupAsset::register($this);
 /* @var $model app\models\User */
 /* @var $form yii\widgets\ActiveForm */
 ?>
+<center>
+<div style="
+    /*position:absolute;
+    top:20%;
+    left:30%;
+    text-align:center*/">
+    
+    <div style="margin-bottom:20px;
+        font-family:Helvetica Neue', Helvetica;
+        font-size: 50px;
+        font-weight:bold;
+        color:#444;
+        text-shadow: 1px 1px 3px #888">CountUp</div>
 
-<div class="user-form">
+    <div style="width:700px;
+        padding:20px;
+        padding-bottom:10px;
+        border-bottom-left-radius: 5px;
+        border-bottom-right-radius: 5px;
+        border-top-left-radius: 5px;
+        border-top-right-radius: 5px;
+        box-shadow: rgba(0, 0, 0, 0.298039) 0px 0px 8px 0px;
+        color: rgb(33, 25, 34);
+        display: block;
+        font-family: 'Helvetica Neue', Helvetica, 'ヒラギノ角ゴ Pro W3', 'Hiragino Kaku Gothic Pro', メイリオ, Meiryo, 'ＭＳ Ｐゴシック', arial, sans-serif;
+        font-size: 12px;">
 
-    <?php $form = ActiveForm::begin(); ?>
+        <span style="font-size:16px">Please select your time time zone below.</span>
 
-    <!-- ?= $form->field($model, 'userName')->textInput(['maxlength' => 30]) ? -->
-    <?= $form->field($model, 'email')->textInput() ?>
-    <?= $form->field($model, 'phash')->passwordInput() ?>
-    <?= $form->field($model, 'timeZone')->hiddenInput()?>
+<?php $form = ActiveForm::begin(); ?>
+    <?= $form->field($model, 'forename')->label(false)->hiddenInput() ?>
+    <?= $form->field($model, 'surname')->label(false)->hiddenInput() ?>
+    <?= $form->field($model, 'email')->label(false)->hiddenInput() ?>
+    <?= $form->field($model, 'phash')->label(false)->hiddenInput() ?>
+    <?= $form->field($model, 'timeZone')->label(false)->hiddenInput()?>
+
     <span id="zone-label"><?=$model->timeZone?></span>
 
     <!-- Start copy/paste imagemap code -->
@@ -485,12 +512,12 @@ SignupAsset::register($this);
     </div>
     <!-- End copy/paste imagemap code -->
 
-    <br/>
+    <br /><br />
 
     <div class="form-group">
-        <?= Html::submitButton($model->isNewRecord ? 'Sign Up' : 'Update', ['class' => $model->isNewRecord ? 'btn btn-success' : 'btn btn-primary']) ?>
+        <?= Html::submitButton('Finish', ['class' => 'btn btn-primary']) ?>
     </div>
-
-    <?php ActiveForm::end(); ?>
-
+<?php ActiveForm::end(); ?>
 </div>
+</div>
+</center>

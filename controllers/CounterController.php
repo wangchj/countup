@@ -32,11 +32,14 @@ class CounterController extends \yii\web\Controller
     /**
      * Show user's counters
      */
-    public function actionIndex($username)
+    public function actionIndex($token)
     {
         //Check if user exists
-        $user = User::findOne(['userName'=>$username]);
-        if($user == null) throw new HttpException(400,'User does not exist');
+        $user = User::findOne(['userName'=>$token]);
+        if(!$user)
+            $user = User::findOne(['userId'=>$token]);
+        if(!$user)
+            throw new HttpException(400,'User does not exist');
 
         if(Yii::$app->user->id === $user->id)
             $counters = Counter::find()->where(['userId'=>$user->id, 'active'=>true])->all();

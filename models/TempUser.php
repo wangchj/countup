@@ -28,7 +28,7 @@ class TempUser extends \yii\db\ActiveRecord
     {
         return [
             [['forename', 'surname', 'email', 'phash', 'joinDate', 'timeZone', 'code'], 'required'],
-            [['username', 'forename', 'surname', 'email', 'phash', 'joinDate', 'timeZone', 'code'], 'string'],
+            [['userName', 'forename', 'surname', 'email', 'phash', 'joinDate', 'timeZone', 'code'], 'string'],
             [['userName'], 'string', 'max' => 30],
             [['userName'], 'unique'],
             ['email', 'email'],

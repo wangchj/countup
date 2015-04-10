@@ -15,7 +15,7 @@ class SignupAsset extends AssetBundle
     public $css = [];
     public $js = [
         'signup.js',
-        'https://maps.googleapis.com/maps/api/js?key=[api_key]&libraries=geometry&sensor=false'
+        'https://maps.googleapis.com/maps/api/js?key=AIzaSyCPBfmojGyNxx_egxYm1uNr_Lb7Vu5Yvgs&libraries=geometry&sensor=false'
     ];
     public $depends = ['app\assets\TimezonePickerAsset'];
 }

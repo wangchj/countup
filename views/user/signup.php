@@ -1,6 +1,7 @@
 <?php
 
 use yii\helpers\Html;
+use yii\helpers\Url;
 use yii\widgets\ActiveForm;
 use app\assets\SignupAsset;
 
@@ -199,7 +200,7 @@ function testAPI() {
 
         <br />
 
-        <button class="btn btn-default btn-lg btn-block" type="button" onclick="checkLoginState()">
+        <button class="btn btn-default btn-lg btn-block" type="button" onclick="window.location.href='<?=Url::to(['user/signup-form'])?>'">
             <span class="buttonText">Sign up with Email</span>
         </button>
 

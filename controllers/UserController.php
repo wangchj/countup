@@ -10,7 +10,8 @@ use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
 use yii\web\HttpException;
-
+use yii\helpers\Url;
+use SendGrid;
 /**
  * UserController implements the CRUD actions for User model.
  */
@@ -43,29 +44,84 @@ class UserController extends Controller
         ]);
     }
 
+    public function actionSignupForm() {
+         $this->layout = '@app/views/layouts/blank';
+        
+        if(!Yii::$app->user->isGuest)
+            return $this->goHome();
+
+        $user = new User();
+        
+        if(Yii::$app->request->isPost && $user->load(Yii::$app->request->post()))
+        {
+            //Check email already exist
+            if(User::findOne(['email'=>$user->email]) || TempUser::findOne(['email'=>$user->email])) {
+                $user->addError('email', 'User with given email already exist');
+                return $this->render('signup-form', ['model' => $user]);
+            }
+
+            //if(!$user->validate()) {
+            //    return $this->render('signup-form', ['model' => $user]);   
+            //}
+
+            if(!$user->timeZone) {
+                return $this->render('signup-timezone', ['model' => $user]);   
+            }
+
+            if(!$user->hasErrors()){
+                $tempUser = new TempUser();
+                //$tempUser->userName = $user->userName;
+                $tempUser->email = $user->email;
+                $tempUser->phash = password_hash($user->phash, PASSWORD_BCRYPT);
+                $tempUser->joinDate = date('Y-m-d H:i:s');
+                $tempUser->timeZone = $user->timeZone;
+                $tempUser->code = substr(md5(time()), 0, 10); //Random string of length 10
+                $tempUser->save();
+
+                //Send verification email
+                $link = Url::to(['user/verify', 'email'=>$user->email, 'code'=>$tempUser->code]);
+                $sendgrid = new SendGrid(Yii::$app->params['sendgrid']['username'], Yii::$app->params['sendgrid']['password']);
+                $mail = new SendGrid\Email();
+                $mail->setFrom(Yii::$app->params['mail']['sender']);
+                $mail->addTo($user->email);
+                $mail->setSubject("CountUp Sign-up Verification");
+                $mail->setHtml("Please follow this link to complete the sign-up process.
+                    <a href=\"$link\">Verify</a>");
+                $sendgrid->send($mail);
+
+                return $this->render('pre-verify', ['model' => $user]);   
+            }
+        }
+
+        return $this->render('signup-form', ['model' => $user]);
+    }
+
     public function actionSignup()
     {
         $this->layout = '@app/views/layouts/blank';
-
-        $model = new User();
         
-        if(Yii::$app->request->isPost && $model->load(Yii::$app->request->post()))
+        if(!Yii::$app->user->isGuest)
+            return $this->goHome();
+
+        $user = new User();
+        
+        if(Yii::$app->request->isPost && $user->load(Yii::$app->request->post()))
         {
             /*
             //Check email already exist
-            if(User::findOne(['email'=>$model->email]) != null || TempUser::findOne(['email'=>$model->email]) != null)
-                $model->addError('email', 'User with given email already exist');
+            if(User::findOne(['email'=>$user->email]) != null || TempUser::findOne(['email'=>$user->email]) != null)
+                $user->addError('email', 'User with given email already exist');
             //Check user name already taken
-            if(User::findOne(['userName'=>$model->userName]) != null || TempUser::findOne(['userName'=>$model->userName]) != null)
-                $model->addError('userName', 'User name is taken');
+            if(User::findOne(['userName'=>$user->userName]) != null || TempUser::findOne(['userName'=>$user->userName]) != null)
+                $user->addError('userName', 'User name is taken');
 
-            if(!$model->hasErrors()){
+            if(!$user->hasErrors()){
                 $tempUser = new TempUser();
-                $tempUser->userName = $model->userName;
-                $tempUser->email = $model->email;
-                $tempUser->phash = password_hash($model->phash, PASSWORD_BCRYPT);
+                $tempUser->userName = $user->userName;
+                $tempUser->email = $user->email;
+                $tempUser->phash = password_hash($user->phash, PASSWORD_BCRYPT);
                 $tempUser->joinDate = date('Y-m-d H:i:s');
-                $tempUser->timeZone = $model->timeZone;
+                $tempUser->timeZone = $user->timeZone;
                 $tempUser->code = substr(md5(time()), 0, 10); //Random string of length 10
                 $tempUser->save();
 
@@ -75,24 +131,27 @@ class UserController extends Controller
                     ->setSubject('Please verify email')
                     ->send();
 
-                return $this->render('pre-verify', ['model' => $model]);
+                return $this->render('pre-verify', ['model' => $user]);
                 
             }*/
 
-            return $this->processFbSignup($model);
+            return $this->processFbSignup($user);
         }
 
-        return $this->render('signup', ['model' => $model, 'error'=>null]);
+        return $this->render('signup', ['model' => $user, 'error'=>null]);
     }
 
     private function processFbSignup($user) {
         if(!$user->email)
             return $this->render('signup', ['model' => $user, 'error'=>'Facebook does not have enough information. Please sign up with Email.']);
 
-        if(User::findOne(['email'=>$user->email]) || User::findOne(['fbId'=>$user->fbId]))
-            return $this->redirect(['site/index']);
+        //If the Facebook user is already connected with the app, just login the user.
+        if($u = User::findOne(['fbId'=>$user->fbId])) {
+            Yii::$app->user->login($u);
+            return $this->goHome();
+        }
 
-        if(TempUser::findOne(['email'=>$user->email]))
+        if(User::findOne(['email'=>$user->email]) || TempUser::findOne(['email'=>$user->email]))
             return $this->render('signup', ['model' => $user, 'error'=>'Account already exist.']);
 
         if(!$user->timeZone)
@@ -102,14 +161,13 @@ class UserController extends Controller
         $user->authKey = Yii::$app->getSecurity()->generateRandomString();
 
         if(!$user->validate()) {
-            var_dump($user->errors);
             return;
         }
 
         $user->save();
 
         Yii::$app->user->login($user);
-        return $this->redirect(['site/index']);
+        return $this->goHome();
     }
 
     public function actionVerify($email, $code)
