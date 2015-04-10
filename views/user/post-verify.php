@@ -11,6 +11,8 @@ $this->params['breadcrumbs'][] = ['label' => 'Users', 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 
+<center>
 <h2>Congratulations!</h2>
 
 <p>Your email has been verified! Please log-in!</p>
+</center>
