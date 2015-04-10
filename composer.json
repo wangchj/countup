@@ -16,7 +16,8 @@
         "php": ">=5.4.0",
         "yiisoft/yii2": "*",
         "yiisoft/yii2-bootstrap": "*",
-        "sendgrid/sendgrid": "2.2.1"
+        "sendgrid/sendgrid": "2.2.1",
+        "facebook/php-sdk-v4" : "4.0.*"
     },
     "require-dev": {
         "yiisoft/yii2-codeception": "*",
