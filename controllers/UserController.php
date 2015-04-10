@@ -71,25 +71,27 @@ class UserController extends Controller
             if(!$user->hasErrors()){
                 $tempUser = new TempUser();
                 //$tempUser->userName = $user->userName;
+                $tempUser->forename = $user->forename;
+                $tempUser->surname = $user->surname;
                 $tempUser->email = $user->email;
                 $tempUser->phash = password_hash($user->phash, PASSWORD_BCRYPT);
                 $tempUser->joinDate = date('Y-m-d H:i:s');
                 $tempUser->timeZone = $user->timeZone;
                 $tempUser->code = substr(md5(time()), 0, 10); //Random string of length 10
+                $tempUser->validate();
                 $tempUser->save();
 
                 //Send verification email
-                $link = Url::to(['user/verify', 'email'=>$user->email, 'code'=>$tempUser->code]);
+                $link = Yii::$app->urlManager->createAbsoluteUrl(['user/verify', 'email'=>$user->email, 'code'=>$tempUser->code]);
                 $sendgrid = new SendGrid(Yii::$app->params['sendgrid']['username'], Yii::$app->params['sendgrid']['password']);
                 $mail = new SendGrid\Email();
                 $mail->setFrom(Yii::$app->params['mail']['sender']);
                 $mail->addTo($user->email);
                 $mail->setSubject("CountUp Sign-up Verification");
-                $mail->setHtml("Please follow this link to complete the sign-up process.
-                    <a href=\"$link\">Verify</a>");
+                $mail->setText("Please follow this link to complete the sign-up process. $link");
                 $sendgrid->send($mail);
 
-                return $this->render('pre-verify', ['model' => $user]);   
+                return $this->render('pre-verify', ['model' => $user]);
             }
         }
 
@@ -183,7 +185,8 @@ class UserController extends Controller
         }
 
         $user = new User;
-        $user->userName = $tempUser->userName;
+        $user->forename = $tempUser->forename;
+        $user->surname = $tempUser->surname;
         $user->email = $tempUser->email;
         $user->phash = $tempUser->phash;
         $user->joinDate = $tempUser->joinDate;

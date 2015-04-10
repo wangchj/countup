@@ -30,7 +30,6 @@ create table TempUsers (
     joinDate text        not null,
     location text        null,
     timeZone text        not null,
-    offset   integer     null,
     code     text        not null     -- Verification code
 );
 
