@@ -10,6 +10,14 @@ use app\models\LoginForm;
 use app\models\ContactForm;
 use app\models\User;
 
+use Facebook\FacebookSession;
+use Facebook\FacebookRequest;
+use Facebook\FacebookRequestException;
+use Facebook\GraphObject;
+use Facebook\FacebookRedirectLoginHelper;
+use Facebook\FacebookCanvasLoginHelper;
+use Facebook\FacebookJavaScriptLoginHelper;
+
 class SiteController extends Controller
 {
     public function behaviors()
@@ -50,19 +58,47 @@ class SiteController extends Controller
 
     public function actionIndex()
     {
-        return $this->render('index');
+        if(Yii::$app->user->isGuest)
+            return $this->render('index');
+        else
+            return $this->render('home');
     }
 
     public function actionLogin()
     {
-        if (!\Yii::$app->user->isGuest) {
-            return $this->goHome();
+        $this->layout = '@app/views/layouts/blank';
+
+        if (!Yii::$app->user->isGuest) {
+            return $this->goBack();
         }
 
         $form = new LoginForm();
         $form->load(Yii::$app->request->post());
-        $user = User::findOne(['userName'=>$form->username]);
-        if($user != null && password_verify($form->password, $user->phash))
+
+        //First process Facebook login. If this fails, try email log in.
+        if(isset($_POST['fbId']) && $_POST['fbId']) {
+            FacebookSession::setDefaultApplication(Yii::$app->params['fb']['appId'], Yii::$app->params['fb']['appSecret']);
+            $fb_helper = new FacebookJavaScriptLoginHelper();
+            try {
+                $fb_session = $fb_helper->getSession();
+                if($fb_session) {
+                    Yii::info('fb_session good');
+                    //Get the user object
+                    if($user = User::findOne(['fbId'=>$_POST['fbId']])) {
+                        Yii::info('user good');
+                        Yii::$app->user->login($user, $form->rememberMe ? 3600*24*30 : 0);
+                        return $this->goBack();
+                    }
+                    else {
+                        return $this->render('login', ['model' => $form, 'error'=>'User is not connected with Facebook.']);
+                    }
+                }
+            } catch(\Exception $ex) {Yii::info('ex');}
+        }
+
+        //Facebook login was unsuccessful. Try to login using email
+        $user = User::findOne(['email'=>$form->email]);
+        if($user && password_verify($form->password, $user->phash))
         {
             Yii::$app->user->login($user, $form->rememberMe ? 3600*24*30 : 0);
             return $this->goBack();

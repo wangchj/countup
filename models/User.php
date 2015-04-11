@@ -17,6 +17,7 @@ use Yii;
  * @property string $location
  * @property string $timeZone
  * @property string $authKey
+ * @property string $fbId
  *
  * @property Counters[] $counters
  */
