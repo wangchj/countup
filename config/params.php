@@ -3,10 +3,14 @@
 return [
     'adminEmail' => 'admin@example.com',
     'sendgrid' => [
-        'username' => '',
-        'password' => ''
+        'username' => 'wangchj',
+        'password' => 'p1anargraph'
     ],
     'mail' => [
-        'sender' => ''
+        'sender' => 'cjw39@hotmail.com'
+    ],
+    'fb' => [
+        'appId' => '',
+        'appSecret' => ''
     ]
 ];
