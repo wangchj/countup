@@ -4,7 +4,7 @@
         "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "bde2a342f90fceafb5fccd6c6cadec01",
+    "hash": "fc0b293939efff32dbbf5ba8aa87bd79",
     "packages": [
         {
             "name": "bower-asset/bootstrap",
@@ -368,76 +368,122 @@
             "time": "2015-04-03 20:31:47"
         },
         {
-            "name": "npm-asset/eve",
-            "version": "0.4.2",
+            "name": "npm-asset/cal-heatmap",
+            "version": "3.5.2",
             "dist": {
                 "type": "tar",
-                "url": "http://registry.npmjs.org/eve/-/eve-0.4.2.tgz",
+                "url": "http://registry.npmjs.org/cal-heatmap/-/cal-heatmap-3.5.2.tgz",
                 "reference": null,
-                "shasum": "7eea0afc0e4efb7c9365615315a3576833ead2ae"
+                "shasum": "24270c3db9f2c9b101a695acf12bd9f9c292eb38"
+            },
+            "require": {
+                "npm-asset/d3": ">=3.0.6"
+            },
+            "require-dev": {
+                "npm-asset/grunt": "~0.4.5",
+                "npm-asset/grunt-contrib-concat": "~0.5.0",
+                "npm-asset/grunt-contrib-copy": "~0.7.0",
+                "npm-asset/grunt-contrib-jshint": "~0.11.0",
+                "npm-asset/grunt-contrib-qunit": "~0.5.2",
+                "npm-asset/grunt-contrib-uglify": "~0.7.0",
+                "npm-asset/grunt-contrib-watch": "~0.6.1",
+                "npm-asset/grunt-css": "~0.5.4",
+                "npm-asset/grunt-karma-coveralls": "~2.5.3",
+                "npm-asset/grunt-replace": "~0.8.0",
+                "npm-asset/jquery": "~1.9.1",
+                "npm-asset/karma": "~0.12.31",
+                "npm-asset/karma-coverage": "~0.2.7",
+                "npm-asset/karma-phantomjs-launcher": "~0.1.4",
+                "npm-asset/karma-qunit": "~0.1.4",
+                "npm-asset/phantomjs": "~1.9.15",
+                "npm-asset/qunitjs": "~1.17.0"
             },
             "type": "npm-asset-library",
             "extra": {
                 "npm-asset-bugs": {
-                    "url": "https://github.com/adobe-webplatform/eve/issues"
+                    "url": "https://github.com/kamisama/cal-heatmap/issues"
                 },
-                "npm-asset-main": "./eve.js",
+                "npm-asset-main": "cal-heatmap.min.js",
+                "npm-asset-directories": {
+                    "test": "test"
+                },
+                "npm-asset-repository": {
+                    "type": "git",
+                    "url": "https://github.com/kamisama/cal-heatmap.git"
+                },
+                "npm-asset-scripts": {
+                    "test": "grunt travis --verbose; ./node_modules/karma/bin/karma start --single-run --browsers PhantomJS"
+                }
+            },
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Wan Qi Chen",
+                    "url": "http://www.kamisama.me"
+                }
+            ],
+            "description": "Cal-Heatmap is a javascript module to create calendar heatmap to visualize time series data",
+            "homepage": "https://github.com/kamisama/cal-heatmap",
+            "keywords": [
+                "calendar",
+                "d3js",
+                "graph",
+                "heat map"
+            ]
+        },
+        {
+            "name": "npm-asset/d3",
+            "version": "3.5.5",
+            "dist": {
+                "type": "tar",
+                "url": "http://registry.npmjs.org/d3/-/d3-3.5.5.tgz",
+                "reference": null,
+                "shasum": "be1aba6a84fb6653283b3ebebb7f570e3bda187e"
+            },
+            "require-dev": {
+                "npm-asset/jsdom": "3",
+                "npm-asset/seedrandom": "2",
+                "npm-asset/smash": "0.0",
+                "npm-asset/uglify-js": "2.4.16",
+                "npm-asset/vows": "0.8"
+            },
+            "type": "npm-asset-library",
+            "extra": {
+                "npm-asset-bugs": {
+                    "url": "https://github.com/mbostock/d3/issues"
+                },
+                "npm-asset-main": "index.js",
                 "npm-asset-directories": [],
                 "npm-asset-repository": {
                     "type": "git",
-                    "url": "git@github.com:adobe-webplatform/eve.git"
+                    "url": "https://github.com/mbostock/d3.git"
+                },
+                "npm-asset-scripts": {
+                    "test": "vows; echo"
                 }
             },
             "authors": [
                 {
-                    "name": "Dmitry Baranovskiy",
-                    "email": "dmitry@baranovskiy.com",
-                    "url": "http://dmitry.baranovskiy.com"
+                    "name": "Mike Bostock",
+                    "url": "http://bost.ocks.org/mike"
+                },
+                {
+                    "name": "Jason Davies",
+                    "url": "http://jasondavies.com"
                 }
             ],
-            "description": "Simple custom events"
-        },
-        {
-            "name": "npm-asset/snapsvg",
-            "version": "v0.4.1",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/adobe-webplatform/Snap.svg.git",
-                "reference": "de1f20748bcf81a8bdd213a24f3f5c471ec706ce"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/adobe-webplatform/Snap.svg/zipball/de1f20748bcf81a8bdd213a24f3f5c471ec706ce",
-                "reference": "de1f20748bcf81a8bdd213a24f3f5c471ec706ce",
-                "shasum": ""
-            },
-            "require": {
-                "npm-asset/eve": "~0.4.2"
-            },
-            "require-dev": {
-                "npm-asset/dr.js": "~0.1.0",
-                "npm-asset/expect.js": "*",
-                "npm-asset/grunt": "~0.4.1",
-                "npm-asset/grunt-contrib-concat": "~0.3.0",
-                "npm-asset/grunt-contrib-uglify": "~0.2.0",
-                "npm-asset/grunt-exec": "~0.4.2",
-                "npm-asset/mocha": "*"
-            },
-            "type": "npm-asset-library",
-            "extra": {
-                "npm-asset-main": "./dist/snap.svg.js",
-                "npm-asset-repository": {
-                    "type": "git",
-                    "url": "git@github.com:adobe-webplatform/Snap.svg.git"
-                }
-            },
-            "license": [
-                "Apache License v2"
-            ],
-            "authors": [
-                "Dmitry Baranovskiy"
-            ],
-            "description": "JavaScript Vector Library"
+            "description": "A JavaScript visualization library for HTML and SVG.",
+            "homepage": "http://d3js.org",
+            "keywords": [
+                "animation",
+                "canvas",
+                "dom",
+                "svg",
+                "visualization",
+                "w3c"
+            ]
         },
         {
             "name": "sendgrid/sendgrid",
