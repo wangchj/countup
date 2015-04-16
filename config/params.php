@@ -3,11 +3,11 @@
 return [
     'adminEmail' => 'admin@example.com',
     'sendgrid' => [
-        'username' => 'wangchj',
-        'password' => 'p1anargraph'
+        'username' => '',
+        'password' => ''
     ],
     'mail' => [
-        'sender' => 'cjw39@hotmail.com'
+        'sender' => ''
     ],
     'fb' => [
         'appId' => '',
