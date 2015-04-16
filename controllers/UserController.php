@@ -12,6 +12,7 @@ use yii\filters\VerbFilter;
 use yii\web\HttpException;
 use yii\helpers\Url;
 use SendGrid;
+
 /**
  * UserController implements the CRUD actions for User model.
  */
@@ -144,7 +145,7 @@ class UserController extends Controller
     }
 
     private function processFbSignup($user) {
-        if(!$user->email)
+        if(!$user->forename || !$user->surname || !$user->email)
             return $this->render('signup', ['model' => $user, 'error'=>'Facebook does not have enough information. Please sign up with Email.']);
 
         //If the Facebook user is already connected with the app, just login the user.

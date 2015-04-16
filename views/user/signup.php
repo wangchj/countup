@@ -85,8 +85,13 @@ function fbLogin() {
                     $('#user-location').val(response.location.name);
                     setTimezone(response.location.name);
                 }
-                else
-                    $('#w0').submit();
+                
+                FB.api('/me/picture', {type:'square',width:'200',fields:'url'}, function(photo_res) {
+                    //console.log(photo_res);
+                    $('#user-picture').val(photo_res.data.url);
+                });
+
+                $('#w0').submit();
             });
         }
     }, {scope: 'email,user_location'});
@@ -105,7 +110,7 @@ function setTimezone(cityState) {
                     console.log('Timezone translation success');
                     console.log(data);
                     $('#user-timezone').val(data.timeZoneId);
-                    $('#w0').submit();
+                    //$('#w0').submit();
                 },
                 error: function() {
                     console.log('Timezone translation error');
@@ -229,4 +234,5 @@ button.btn {
     <input type="hidden" id="user-email" name="User[email]">
     <input type="hidden" id="user-location" name="User[location]">
     <input type="hidden" id="user-timezone" name="User[timezone]">
+    <input type="hidden" id="user-picture" name="User[picture]">
 <?php ActiveForm::end(); ?>

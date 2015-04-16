@@ -18,8 +18,9 @@ use Yii;
  * @property string $timeZone
  * @property string $authKey
  * @property string $fbId
+ * @property string $picture
  *
- * @property Counters[] $counters
+ * @property Counter[] $counters
  */
 class User extends \yii\db\ActiveRecord implements \yii\web\IdentityInterface
 {
@@ -38,7 +39,7 @@ class User extends \yii\db\ActiveRecord implements \yii\web\IdentityInterface
     {
         return [
             [['forename', 'surname', 'email', 'joinDate', 'timeZone'], 'required'],
-            [['userName', 'forename', 'surname', 'email', 'phash', 'joinDate', 'location', 'timeZone'], 'string'],
+            [['userName', 'forename', 'surname', 'email', 'phash', 'joinDate', 'location', 'timeZone', 'picture'], 'string'],
             [['userName'], 'string', 'max' => 30],
             [['userName'], 'unique'],
             ['email', 'email'],
@@ -68,7 +69,7 @@ class User extends \yii\db\ActiveRecord implements \yii\web\IdentityInterface
      */
     public function getCounters()
     {
-        return $this->hasMany(Counters::className(), ['userId' => 'userId']);
+        return $this->hasMany(Counter::className(), ['userId' => 'userId']);
     }
 
     /**

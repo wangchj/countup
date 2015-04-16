@@ -9,11 +9,12 @@ create table Users (
     surname  text        not null,
     email    text        not null,
     fbId     integer     null,
-    phash    text        null,        --password hash with salt appended
+    phash    text        null,        -- password hash with salt appended
     joinDate text        not null,
     location text        null,        -- Name of the location, i.e. Auburn, Alabama
     timeZone text        not null,    -- Name of the timezone, i.e. America/Chicago
-    authKey  text        not null     --Yii Framework authentication key
+    picture  text        null,        -- Url of profile picture
+    authKey  text        not null     -- Yii Framework authentication key
 );
 
 /**
