@@ -2,6 +2,9 @@
 
 namespace app\models;
 
+use \DateTime;
+use \DateTimeZone;
+
 use Yii;
 
 /**
@@ -11,6 +14,7 @@ use Yii;
  * @property integer $userId
  * @property string $label
  * @property string $startDate
+ * @property string $timeZone
  * @property string $summary
  * @property boolean $public
  * @property boolean $active
@@ -37,7 +41,7 @@ class Counter extends \yii\db\ActiveRecord
             [['userId', 'label', 'startDate'], 'required'],
             [['userId'], 'integer'],
             [['public', 'active'], 'boolean'],
-            [['startDate','summary'], 'string'],
+            [['startDate','summary', 'timeZone'], 'string'],
             [['label'], 'string', 'max' => 30]
         ];
     }
@@ -81,15 +85,19 @@ class Counter extends \yii\db\ActiveRecord
     public function getDateInterval()
     {
         $user = $this->user;
-        $timeZone = new \DateTimeZone($user->timeZone);
-        $start = new \DateTime($this->startDate, $timeZone);
-        $end   = new \DateTime('now', $timeZone);
+        $timeZone = $this->timeZone ? new DateTimeZone($this->timeZone) : new DateTimeZone($user->timeZone);
+        $start = new DateTime($this->startDate, $timeZone);
+        $end   = new DateTime('now', $timeZone);
         return $end->diff($start);
+    }
+
+    public function getDays() {
+        return $this->getDateInterval()->days;
     }
 
     /**
      * Compute the DateInterval object between start and end date. 
-     * The date interval always starts with 1 day not 0; e.g. start date = end date -> 1 day.
+     * The date interval always starts with 0 day not 1; e.g. start date = end date -> 0 day.
      * @param $startDate start date string.
      * @param $endDate   end date string.
      * @return DateInterval object that contains days, months, and years.
@@ -102,7 +110,7 @@ class Counter extends \yii\db\ActiveRecord
             $end = new \DateTime($end);
 
         //Add 1 day so result interval start with 1 not 0 day.
-        $end->add(new \DateInterval('P1D'));
+        //$end->add(new \DateInterval('P1D'));
 
         $res = $end->diff($start);
 
@@ -111,7 +119,7 @@ class Counter extends \yii\db\ActiveRecord
 
     /**
      * Compute the DateInterval object between start and end date. 
-     * The date interval always starts with 1 day not 0; e.g. start date = end date -> 1 day.
+     * The date interval always starts with 0 day not 1; e.g. start date = end date -> 0 day.
      * @param $counter a Counter model object.
      * @return DateInterval object that contains days, months, and years.
      */

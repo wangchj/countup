@@ -11,11 +11,6 @@ use app\models\ContactForm;
 use app\models\User;
 
 use Facebook\FacebookSession;
-use Facebook\FacebookRequest;
-use Facebook\FacebookRequestException;
-use Facebook\GraphObject;
-use Facebook\FacebookRedirectLoginHelper;
-use Facebook\FacebookCanvasLoginHelper;
 use Facebook\FacebookJavaScriptLoginHelper;
 
 class SiteController extends Controller
@@ -60,8 +55,10 @@ class SiteController extends Controller
     {
         if(Yii::$app->user->isGuest)
             return $this->render('index');
-        else
+        else {
+            $this->layout = '@app/views/layouts/blank';
             return $this->render('home');
+        }
     }
 
     public function actionLogin()
@@ -93,7 +90,7 @@ class SiteController extends Controller
                         return $this->render('login', ['model' => $form, 'error'=>'User is not connected with Facebook.']);
                     }
                 }
-            } catch(\Exception $ex) {Yii::info('ex');}
+            } catch(\Exception $ex) {Yii::error($ex->getMessage());}
         }
 
         //Facebook login was unsuccessful. Try to login using email
