@@ -4,6 +4,7 @@ namespace app\models;
 
 use \DateTime;
 use \DateTimeZone;
+use \Exception;
 
 use Yii;
 
@@ -13,11 +14,9 @@ use Yii;
  * @property integer $counterId
  * @property integer $userId
  * @property string $label
- * @property string $startDate
  * @property string $timeZone
  * @property string $summary
  * @property boolean $public
- * @property boolean $active
  *
  * @property Users $user
  * @property History[] $histories
@@ -86,13 +85,38 @@ class Counter extends \yii\db\ActiveRecord
     {
         $user = $this->user;
         $timeZone = $this->timeZone ? new DateTimeZone($this->timeZone) : new DateTimeZone($user->timeZone);
-        $start = new DateTime($this->startDate, $timeZone);
+        $start = $this->getCurrentStartDate();
         $end   = new DateTime('now', $timeZone);
         return $end->diff($start);
     }
 
+    /**
+     * Get start date of current running count of this counter.
+     * Exception is thrown if this counter does not have a running count (is inactive).
+     */
+    public function getCurrentStartDate() {
+        $timeZone = $this->timeZone ? new DateTimeZone($this->timeZone) : new DateTimeZone($user->timeZone);
+        $running = $this->getHistory()->where(['counterId'=>$this->counterId, 'endDate' => null])->one();
+        if(!$running)
+            throw new Exception('There is no current start date because counter is not active.');
+        return new DateTime($running->startDate, $timeZone);
+    }
+
+    /**
+     * Checks if this counter is active (has a running count).
+     */
+    public function isActive() {
+        $running = $this->getHistory()->where(['counterId'=>$this->counterId, 'endDate' => null])->one();
+        if($running)
+            return true;
+        else
+            return false;
+    }
+
     public function getDays() {
-        return $this->getDateInterval()->days;
+        if($this->isActive())
+            return $this->getDateInterval()->days;
+        return 0;
     }
 
     /**
