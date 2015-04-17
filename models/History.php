@@ -29,7 +29,7 @@ class History extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['counterId', 'startDate', 'endDate'], 'required'],
+            [['counterId', 'startDate'], 'required'],
             [['startDate', 'endDate'], 'string'],
             [['counterId'], 'integer'],
             [['counterId', 'startDate', 'endDate'], 'unique', 'targetAttribute' => ['counterId', 'startDate', 'endDate'], 'message' => 'The combination of Counter ID, Start Date and End Date has already been taken.']
