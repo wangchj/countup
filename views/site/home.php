@@ -130,7 +130,6 @@ nav.navbar {
                     </div>
                     <hr>
                     <div class="row">
-                        <!--div class="col-md-3 col-lg-3"><?=$counter->startDate?></div -->
                         <div class="col-md-6 col-lg-6"><?=$counter->getDays()?> Days</div>
                         <div class="col-md-6 col-lg-6"><?=$counter->longest?> Days</div>
                     </div>
