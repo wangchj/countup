@@ -134,10 +134,10 @@ nav.navbar {
                         <div class="col-md-6 col-lg-6"><?=$counter->longest?> Days</div>
                     </div>
                     <hr>
-                    <div class="row cimg">
-                        <center>
+                    <div class="row">
+                        <div class="col-md-12 cimg">
                             <svg id="cal<?=$counter->counterId?>"></svg>
-                        </center>
+                        </div>
                     </div>
                 </div>
             </div>

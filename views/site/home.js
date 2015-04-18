@@ -1,7 +1,6 @@
 $(function() {
-    //initWindowResizing();
-    //resizeBoxFigure();
     drawFigures();
+    initWindowResizing();
 });
 
 var prevWidth; //Figure container width before resizing
@@ -19,9 +18,17 @@ function initWindowResizing() {
 function windowResized() {
     var w = $('.cimg').width();
     if(w != prevWidth) {
-        resizeBoxFigure();
+        resizeFigures();
         prevWidth = w;
     }    
+}
+
+function resizeFigures() {
+    $('svg').each(function() {
+        Snap(this).clear();
+    });
+
+    drawFigures();
 }
 
 var numcol  = 7; //Number of columns in this calendar
@@ -58,9 +65,12 @@ function drawFigure(svg, year, month) {
     }
 
     var g2 = drawMonthCalendar(snap, 1, width, year, month);
-
-    var tx = (+g1.attr('width')) + gutter;
+    var monthWidth = +g1.attr('width');
+    var monthHeight = +g1.attr('height');
+    var tx = (monthWidth) + gutter;
     g2.transform('t' + tx);
+
+    snap.attr({width: 2 * monthWidth + gutter, height: monthHeight});
 }
 
 /**
@@ -190,34 +200,4 @@ function makeDateStr(year, month, date) {
 function numberOfDays(year, month) {
     var d = new Date(year, month, 0);
     return +d.getDate();
-}
-
-function resizeBoxFigure() {
-    var numcol = 52;                    //Number of columns
-    var numrow = 7;                     //Number of rows
-    var space  = 2;                     //Size of spacing in pixels
-    var width  = Math.min($('.cimg').width() - 50, 900); //Width of figure
-    var wcell  = (width - ((numcol - 1) * space)) / numcol;   //Width of each cell
-    var height = wcell * (numrow) + space * (numrow); //Height of the figure
-    
-    //console.log(width);
-
-    $('svg').each(function() {
-        var s = Snap(this);
-        var r = s.selectAll('rect');
-        //console.log(r);
-
-        s.attr({width:width, height:height});
-
-        for(i = 0; i < r.length; i++) {
-            var col = Math.floor(i / numrow);
-            var row = i % numrow;
-            var x = col * wcell + col * space;
-            var y = row * wcell + row * space;
-            r[i].attr({x:x, y:y, width:wcell, height:wcell}, 2000);
-        }
-
-        //s.attr({width:10});
-    })
-    
 }
