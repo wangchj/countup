@@ -144,3 +144,18 @@ nav.navbar {
         <?php endforeach;?>
 <?php endif;?>
 </div>
+
+<script>
+var data = <?=json_encode($data)?>;
+for(var cal in data) {
+    var hist = data[cal];
+    for(var i = 0; i < hist.length; i++) {
+        hist[i]['start'] = new Date(hist[i]['start']);
+        hist[i]['start'].setDate(hist[i]['start'].getDate() + 1);
+        if(hist[i]['end'] != null) {
+            hist[i]['end'] = new Date(hist[i]['end']);
+            hist[i]['end'].setDate(hist[i]['end'].getDate() + 1);
+        }
+    }
+}
+</script>
