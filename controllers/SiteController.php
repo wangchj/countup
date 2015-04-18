@@ -76,7 +76,7 @@ class SiteController extends Controller
                 $h = [];
 
                 $history = $counter->getHistory()->select(['startDate', 'endDate'])
-                    ->where("endDate >= '$low' or startDate >= '$low'")
+                    ->where("endDate >= '$low' or startDate >= '$low' or endDate is null")
                     //->andWhere('startDate != endDate')
                     ->all();
 
