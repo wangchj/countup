@@ -2,6 +2,8 @@
 
 namespace app\controllers;
 
+use \DateTime;
+use \DateTimeZone;
 use Yii;
 use yii\filters\AccessControl;
 use yii\web\Controller;
@@ -9,6 +11,7 @@ use yii\filters\VerbFilter;
 use app\models\LoginForm;
 use app\models\ContactForm;
 use app\models\User;
+use app\models\History;
 
 use Facebook\FacebookSession;
 use Facebook\FacebookJavaScriptLoginHelper;
@@ -56,8 +59,40 @@ class SiteController extends Controller
         if(Yii::$app->user->isGuest)
             return $this->render('index');
         else {
+            $user = Yii::$app->user->identity;
+
+            $data = [];
+
+            //var_dump(new DateTime(strtotime('first day of last month')));
+
+            //$startDate = new DateTime();
+            //$StartDate->setDate($startDate->)
+            $counters = $user->getCounters()->all();
+            foreach($counters as $counter) {
+                $timezone = new DateTimeZone($counter->timeZone ? $counter->timeZone : $user->timeZone);
+                $now = new DateTime('now', $timezone);
+                $low = (new DateTime())->setTimestamp(strtotime('first day of last month', $now->getTimestamp()))->format('Y-m-d');
+                $hi = (new DateTime())->setTimestamp(strtotime('last day of this month', $now->getTimestamp()))->format('Y-m-d');
+                $h = [];
+
+                $history = $counter->getHistory()->select(['startDate', 'endDate'])
+                    ->where("endDate >= '$low' or startDate >= '$low'")
+                    //->andWhere('startDate != endDate')
+                    ->all();
+
+                //var_dump($history->createCommand()->sql);
+
+                foreach($history as $hist) {
+                    $h[] = ['start'=>$hist->startDate, 'end'=>$hist->endDate];
+                }
+
+                $data["cal{$counter->counterId}"] = $h;
+            }
+
+            //var_dump($data);
+
             $this->layout = '@app/views/layouts/blank';
-            return $this->render('home');
+            return $this->render('home', ['data'=>$data]);
         }
     }
 
