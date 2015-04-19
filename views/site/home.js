@@ -127,7 +127,16 @@ function drawMonthCalendar(snap, i, cwidth, year, month) {
     return group;
 }
 
+var colorYes = '#d6e685';
+var colorNo  = '#e3e3e3';
+var colorStart = '#bee685';
+//var colorEnd = '#e6c785';
+
 function getColor(calId, date) {
+    //If this date is today or in the future, set this cell as no color.
+    if(dateGreaterOrEqual(date, new Date()))
+        return colorNo;
+
     var hist = data[calId]; //History data for this counter
 
     for(var h = 0; h < hist.length; h++) {
@@ -136,14 +145,15 @@ function getColor(calId, date) {
 
         if((dateGreaterOrEqual(date, start) && dateLess(date, end)) || (dateGreaterOrEqual(date, start) && (end == null))) {
             if(dateEqual(date, start))
-                return '#bee685';
+                return colorStart;
             //else if(dateEqual(date, end))
             //    return '#e6c785';
             else
-                return '#d6e685';
+                return colorYes;
         }
     }
-    return '#e3e3e3';
+
+    return colorNo;
 }
 
 function dateEqual(date1, date2) {
