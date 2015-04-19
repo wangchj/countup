@@ -1,5 +1,14 @@
-RewriteEngine On
-RewriteBase /countup/
+#Options +FollowSymLinks
+#IndexIgnore */*
+
+RewriteEngine on
+
+RewriteBase /
+
+# if a directory or a file exists, use it directly
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{REQUEST_FILENAME} !-d
-RewriteRule ^(.*)\?*$ index.php/$1 [L,QSA]
+
+# otherwise forward it to index.php
+RewriteCond $0#%{REQUEST_URI} ([^#]*)#(.*)\1$
+RewriteRule ^.*$ %2index.php [QSA,L]
