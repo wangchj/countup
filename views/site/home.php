@@ -106,14 +106,14 @@ nav.navbar {
         color:#808080;
         box-shadow: 0 1px 1px 0 rgba(0, 0, 0, 0.22);
         border-radius: 6px;">
-        <div class="col-sm-12 col-md-12 col-lg-12" style="text-align:center;">
+        <div class="col-xs-12" style="text-align:center;">
             You currently have no counters. Click on Add Counter to add one!
         </div>
     </div>
 <?php else: ?>
     <div class="row">
         <?php foreach(Yii::$app->user->identity->counters as $counter):?>
-            <div class="col-sm-4 col-md-4" style="padding-top:15px; padding-bottom:15px"> <!-- Produce gutters between counters -->
+            <div class="col-sm-5" style="padding-top:15px; padding-bottom:15px"> <!-- Produce gutters between counters -->
                 <div style="
                     /*border:1px solid gray;*/
                     background-color:#fff;
@@ -125,27 +125,27 @@ nav.navbar {
                     border-radius: 6px;
                     /*margin-bottom:20px;*/
                     text-align:center;
-                    ">
+                    "> <!-- Counter panel with pretty border and round corners. -->
                     <div class="row clabel">
-                        <div class="col-md-12 col-lg-12" style=""><?=$counter->label?></div>
+                        <div class="col-xs-12" style=""><?=$counter->label?></div>
                     </div>
                     <hr>
                     <div class="row">
-                        <div class="col-sm-6 col-md-6 col-lg-6">
+                        <div class="col-xs-6">
                             <div style="font-size:10px; font-weight:normal; color:#999; margin-bottom:5px">Current Count</div>
-                            <div class="col-sm-12 col-md-12 col-lg-12" style="margin-bottom:8px"><?=$counter->getDays()?> Days</div>
+                            <div style="margin-bottom:8px"><?=$counter->getDays()?> Days</div>
                             <div style="font-size:10px; font-weight:normal; color:#ccc">
                                  <?= $counter->isActive() ? 'since ' . $counter->getCurrentStartDate()->format('F j, Y') : 'not running'?>
                             </div>
                         </div>
-                        <div class="col-sm-6 col-md-6 col-lg-6">
+                        <div class="col-xs-6">
                             <div style="font-size:10px; font-weight:normal; color:#999; margin-bottom:5px">Best</div>
                             <?=$counter->getBest()?> Days
                         </div>
                     </div>
                     <hr>
                     <div class="row">
-                        <div class="col-sm-12 col-md-12 cimg">
+                        <div class="col-xs-12 cimg">
                             <svg id="cal<?=$counter->counterId?>"></svg>
                         </div>
                     </div>
