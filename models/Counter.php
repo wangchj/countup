@@ -14,7 +14,7 @@ use Yii;
  * @property integer $counterId
  * @property integer $userId
  * @property string $label
- * @property string $timeZone
+ * @property string $timeZone Use $this->getTimeZone() instead
  * @property string $summary
  * @property boolean $public
  *
@@ -78,15 +78,23 @@ class Counter extends \yii\db\ActiveRecord
     }
 
     /**
+     * Gets the timezone of this counter returned as PHP DateTimeZone object.
+     * If this counter does not have timezone, then timezone of the owner of this counter is returned.
+     */
+    public function getTimeZone() {
+        return $this->timeZone ? 
+            new DateTimeZone($this->timeZone) : 
+            new DateTimeZone($this->user->timeZone);
+    }
+
+    /**
      * Get the DateInterval object between start date and now, using user's time zone.
      * @return DateInterval object that contains days, months, and years.
      */
     public function getDateInterval()
     {
-        $user = $this->user;
-        $timeZone = $this->timeZone ? new DateTimeZone($this->timeZone) : new DateTimeZone($user->timeZone);
         $start = $this->getCurrentStartDate();
-        $end   = new DateTime('now', $timeZone);
+        $end   = new DateTime('now', $this->getTimeZone());
         return $end->diff($start);
     }
 
@@ -95,11 +103,10 @@ class Counter extends \yii\db\ActiveRecord
      * Exception is thrown if this counter does not have a running count (is inactive).
      */
     public function getCurrentStartDate() {
-        $timeZone = $this->timeZone ? new DateTimeZone($this->timeZone) : new DateTimeZone($user->timeZone);
         $running = $this->getHistory()->where(['counterId'=>$this->counterId, 'endDate' => null])->one();
         if(!$running)
             throw new Exception('There is no current start date because counter is not active.');
-        return new DateTime($running->startDate, $timeZone);
+        return new DateTime($running->startDate, $this->getTimeZone());
     }
 
     /**
@@ -155,7 +162,7 @@ class Counter extends \yii\db\ActiveRecord
     public static function computeDateInterval($counter)
     {
         $user = $counter->user;
-        $timeZone = new \DateTimeZone($user->timeZone);
+        $timeZone = $this->getTimeZone();
         return self::computeDateIntervalBase(new \DateTime($counter->startDate, $timeZone), new \DateTime('now', $timeZone));
     }
 }
