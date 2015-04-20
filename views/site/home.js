@@ -37,6 +37,8 @@ var space   = 2; //Spacing between cells in pixels
 
 var showDateText = false;
 
+var monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+
 /**
  * Draw a figure for all counters.
  */
@@ -47,6 +49,8 @@ function drawFigures() {
     $('svg').each(function() {
         drawFigure(this, now.getFullYear(), now.getMonth());
     });
+
+    $('rect').tooltip({container:'body'});
 }
 
 /**
@@ -122,7 +126,11 @@ function drawMonthCalendar(snap, i, cwidth, year, month) {
             }
             
             //var c = s < startOn || s > numdays + startOn ? '#eeeeee' : '#d6e685';
-            var rect = snap.rect(x, y, width, width).attr({fill:c});
+            var rectId = 'rect' + s;
+            var rect = snap.rect(x, y, width, width).attr({id:rectId, fill:c});
+            if(s >= startOn && s < startOn + numdays)
+                rect.attr({'data-toggle':'tooltip', title:makeFullDateStr(year, month, date)});
+
             if(year == now.getFullYear() && month == now.getMonth() && date == now.getDate())
                 rect.attr({strokeWidth:1, stroke:'#aaa'});
             group.add(rect);
@@ -223,6 +231,13 @@ function makeDateStr(year, month, date) {
     if(month < 10) month = '0' + month;
     if(date  < 10) date  = '0' + date;
     return year + '-' + month + '-' + date;
+}
+
+/**
+ * Example: March 22, 2015
+ */
+function makeFullDateStr(year, month, date) {
+    return monthNames[month] + ' ' + date + ', ' + year;
 }
 
 function numberOfDays(year, month) {
