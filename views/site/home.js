@@ -35,6 +35,8 @@ var numcol  = 7; //Number of columns in this calendar
 var gutter  = 10; //Spacing between months in pixels
 var space   = 2; //Spacing between cells in pixels
 
+var showDateText = false;
+
 /**
  * Draw a figure for all counters.
  */
@@ -117,10 +119,24 @@ function drawMonthCalendar(snap, i, cwidth, year, month) {
                 c = getColor(calId, new Date(year, month, s - startOn + 1));
             }
             
-
             //var c = s < startOn || s > numdays + startOn ? '#eeeeee' : '#d6e685';
             var rect = snap.rect(x, y, width, width).attr({fill:c});
             group.add(rect);
+
+            if(showDateText) {
+                var date = s - startOn + 1;
+                
+                if(date > 0 && date <= numdays) {
+                    var fontSize = width / 2;
+                    var numchar = date < 10 ? 1 : 2;
+                    var textX = x + (width - fontSize) / numchar;
+                    var textY = y + (width - fontSize + (width / 6));
+                    var textColor = '#aaa';
+                    var text = snap.text(textX, textY, date).
+                        attr({'font-size': fontSize + 'px', 'fill': textColor, 'opacity':0.8});
+                    group.add(text);
+                }
+            }
         }
     }
 
