@@ -89,6 +89,7 @@ function drawMonthCalendar(snap, i, cwidth, year, month) {
     var numrow  = Math.ceil((numdays + startOn) / numcol); //Number of rows in this calendar
     var width   = (((cwidth - gutter) / 2) - ((numcol - 1) * space)) / numcol; //width of cell
     var calId   = snap.attr('id'); //Id of this svg calendar
+    var now     = new Date();
     //console.log(hist);
 
     /*console.log('year: ' + year);
@@ -108,7 +109,8 @@ function drawMonthCalendar(snap, i, cwidth, year, month) {
         for(col = 0; col < numcol; col++) {
             var x = col * width + col * space;
             var y = row * width + row * space;
-            var s = row * numcol + col;
+            var s = row * numcol + col; //Cell sequence number, starting from 0;
+            var date = s - startOn + 1; //Date number, e.g. 15
             //console.log(s);
             //console.log(startOn);
             var c = '#d6e685';
@@ -116,16 +118,16 @@ function drawMonthCalendar(snap, i, cwidth, year, month) {
             if(s < startOn || s >= numdays + startOn)
                 c = '#f2f2f2';
             else {
-                c = getColor(calId, new Date(year, month, s - startOn + 1));
+                c = getColor(calId, new Date(year, month, date));
             }
             
             //var c = s < startOn || s > numdays + startOn ? '#eeeeee' : '#d6e685';
             var rect = snap.rect(x, y, width, width).attr({fill:c});
+            if(year == now.getFullYear() && month == now.getMonth() && date == now.getDate())
+                rect.attr({strokeWidth:1, stroke:'#aaa'});
             group.add(rect);
 
             if(showDateText) {
-                var date = s - startOn + 1;
-                
                 if(date > 0 && date <= numdays) {
                     var fontSize = width / 2;
                     var numchar = date < 10 ? 1 : 2;
