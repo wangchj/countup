@@ -145,10 +145,22 @@ nav.navbar {
                     </div>
                     <hr>
                     <div class="row">
-                        <div class="col-xs-12 cimg">
-                            <svg id="cal<?=$counter->counterId?>"></svg>
+                        <div class="col-xs-12">
+                            <div class="row">
+                                <div class="col-xs-6" style="font-size:12px; font-weight:normal; color:#999; margin-bottom:5px;padding-left:50px">
+                                    <?= (new DateTime())->setTimestamp(strtotime('first day of last month'))->format('F');?>
+                                </div>
+                                <div class="col-xs-6" style="font-size:12px; font-weight:normal; color:#999; margin-bottom:5px;padding-right:50px">
+                                    <?= (new DateTime())->format('F');?>
+                                </div>
+                            </div> <!-- row -->
+                            <div class="row">
+                                <div class="col-xs-12 cimg">
+                                    <svg id="cal<?=$counter->counterId?>"></svg>
+                                </div>
+                            </div> <!-- row -->
                         </div>
-                    </div>
+                    </div> <!-- row -->
                 </div>
             </div>
         <?php endforeach;?>
