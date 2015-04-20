@@ -119,6 +119,11 @@ class Counter extends \yii\db\ActiveRecord
         return 0;
     }
 
+    public function getBest() {
+        $max = (int)Yii::$app->db->createCommand("select max(julianday(endDate) - julianday(startDate)) from History where counterId={$this->counterId}")->queryScalar();
+        return max($max, $this->getDays());
+    }
+
     /**
      * Compute the DateInterval object between start and end date. 
      * The date interval always starts with 0 day not 1; e.g. start date = end date -> 0 day.

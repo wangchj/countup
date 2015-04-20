@@ -139,7 +139,7 @@ nav.navbar {
                         </div>
                         <div class="col-sm-6 col-md-6 col-lg-6">
                             <div style="font-size:10px; font-weight:normal; color:#999; margin-bottom:5px">Best</div>
-                            <?=$counter->longest?> Days
+                            <?=$counter->getBest()?> Days
                         </div>
                     </div>
                     <hr>
