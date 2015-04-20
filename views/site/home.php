@@ -130,12 +130,21 @@ nav.navbar {
                     </div>
                     <hr>
                     <div class="row">
-                        <div class="col-md-6 col-lg-6"><?=$counter->getDays()?> Days</div>
-                        <div class="col-md-6 col-lg-6"><?=$counter->longest?> Days</div>
+                        <div class="col-sm-6 col-md-6 col-lg-6">
+                            <div style="font-size:10px; font-weight:normal; color:#999; margin-bottom:5px">Current Count</div>
+                            <div class="col-sm-12 col-md-12 col-lg-12" style="margin-bottom:8px"><?=$counter->getDays()?> Days</div>
+                            <div style="font-size:10px; font-weight:normal; color:#ccc">
+                                 <?= $counter->isActive() ? 'since ' . $counter->getCurrentStartDate()->format('F j, Y') : 'not running'?>
+                            </div>
+                        </div>
+                        <div class="col-sm-6 col-md-6 col-lg-6">
+                            <div style="font-size:10px; font-weight:normal; color:#999; margin-bottom:5px">Best</div>
+                            <?=$counter->longest?> Days
+                        </div>
                     </div>
                     <hr>
                     <div class="row">
-                        <div class="col-md-12 cimg">
+                        <div class="col-sm-12 col-md-12 cimg">
                             <svg id="cal<?=$counter->counterId?>"></svg>
                         </div>
                     </div>
