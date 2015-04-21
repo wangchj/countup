@@ -30,26 +30,6 @@ class CounterController extends \yii\web\Controller
 	}
 
     /**
-     * Show user's counters
-     */
-    public function actionIndex($token)
-    {
-        //Check if user exists
-        $user = User::findOne(['userName'=>$token]);
-        if(!$user)
-            $user = User::findOne(['userId'=>$token]);
-        if(!$user)
-            throw new HttpException(400,'User does not exist');
-
-        if(Yii::$app->user->id === $user->id)
-            $counters = Counter::find()->where(['userId'=>$user->id, 'active'=>true])->all();
-        else
-            $counters = Counter::find()->where(['userId'=>$user->id, 'active'=>true, 'public'=>true])->all();
-        
-        return $this->render('index', ['counters'=>$counters, 'user'=>$user]);
-    }
-
-    /**
      * Action for adding a new user counter
      */
     public function actionAdd()
