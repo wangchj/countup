@@ -83,8 +83,7 @@ nav.navbar {
                     <li><a href="<?=Url::to(['user/settings'])?>" data-method="post">Settings</a></li>
                     <li><a href="<?=Url::to(['site/logout'])?>" data-method="post">Logout</a></li>
                     <li>
-                        <img src="<?=Yii::$app->user->identity->picture ? Yii::$app->user->identity->picture :
-                        'http://www.k2g2.org/lib/plugins/avatar/stitchy/stitchy.php?seed=' . md5(Yii::$app->user->identity->email) . '&size=50&.png'?>"
+                        <img src="<?=Yii::$app->user->identity->getPicture()?>"
                             title="Logged in as <?=Yii::$app->user->identity->forename?>"
                             style="width:40px; margin-top:6px"
                             class="img-circle">
@@ -133,14 +132,14 @@ nav.navbar {
                     <hr>
                     <div class="row">
                         <div class="col-xs-6">
-                            <div style="font-size:10px; font-weight:normal; color:#999; margin-bottom:5px">Current Count</div>
+                            <div style="font-size:12px; font-weight:normal; color:#999; margin-bottom:5px">Current Count</div>
                             <div style="margin-bottom:8px"><?=$counter->getDays()?> Days</div>
-                            <div style="font-size:10px; font-weight:normal; color:#ccc">
+                            <div style="font-size:12px; font-weight:normal; color:#ccc">
                                  <?= $counter->isActive() ? 'since ' . $counter->getCurrentStartDate()->format('F j, Y') : 'not running'?>
                             </div>
                         </div>
                         <div class="col-xs-6">
-                            <div style="font-size:10px; font-weight:normal; color:#999; margin-bottom:5px">Best</div>
+                            <div style="font-size:12px; font-weight:normal; color:#999; margin-bottom:5px">Best</div>
                             <?=$counter->getBest()?> Days
                         </div>
                     </div>
