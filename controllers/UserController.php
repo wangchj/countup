@@ -2,6 +2,7 @@
 
 namespace app\controllers;
 
+use \DateTime;
 use Yii;
 use app\models\User;
 use app\models\TempUser;
@@ -34,15 +35,44 @@ class UserController extends Controller
      * Lists all User models.
      * @return mixed
      */
-    public function actionIndex()
+    public function actionIndex($token)
     {
-        $dataProvider = new ActiveDataProvider([
-            'query' => User::find(),
-        ]);
+        //Viewer is the user who is currently logged in and viewing.
+        $viewer = Yii::$app->user->identity;
 
-        return $this->render('index', [
-            'dataProvider' => $dataProvider,
-        ]);
+        //Viewee is the user being queried and viewed.
+        $viewee = User::findOne(['userName'=>$token]);
+        
+        //See if the object user exist
+        if(!$viewee)
+            $viewee = User::findOne(['userId'=>$token]);
+        if(!$viewee)
+            throw new HttpException(400,'User does not exist');
+
+        $data = [];
+
+        $counters = $viewer->userId == $viewee->userId ? $viewee->counters : $viewee->getCounters()->where(['public'=>true])->all();
+
+        foreach($counters as $counter) {
+            $now = new DateTime('now', $counter->getTimeZone());
+            $low = (new DateTime())->setTimestamp(strtotime('first day of last month', $now->getTimestamp()))->format('Y-m-d');
+            $hi = (new DateTime())->setTimestamp(strtotime('last day of this month', $now->getTimestamp()))->format('Y-m-d');
+            $h = [];
+
+            $history = $counter->getHistory()->select(['startDate', 'endDate'])
+                ->where("endDate >= '$low' or startDate >= '$low' or endDate is null")
+                //->andWhere('startDate != endDate')
+                ->all();
+
+            foreach($history as $hist) {
+                $h[] = ['start'=>$hist->startDate, 'end'=>$hist->endDate];
+            }
+
+            $data["cal{$counter->counterId}"] = $h;
+        }
+
+        $this->layout = '@app/views/layouts/blank';
+        return $this->render('index', ['viewer'=>$viewer, 'viewee'=>$viewee, 'counters'=>$counters, 'data'=>$data]);
     }
 
     public function actionSignupForm() {
@@ -90,7 +120,7 @@ class UserController extends Controller
                 $mail->addTo($user->email);
                 $mail->setSubject("CountUp Sign-up Verification");
                 $mail->setText("Please follow this link to complete the sign-up process. $link");
-                $sendgrid->send($mail);
+                //$sendgrid->send($mail);
 
                 return $this->render('pre-verify', ['model' => $user]);
             }
