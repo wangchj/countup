@@ -83,7 +83,8 @@ nav.navbar {
                     <li><a href="<?=Url::to(['user/settings'])?>" data-method="post">Settings</a></li>
                     <li><a href="<?=Url::to(['site/logout'])?>" data-method="post">Logout</a></li>
                     <li>
-                        <img src="<?=Yii::$app->user->identity->picture?>"
+                        <img src="<?=Yii::$app->user->identity->picture ? Yii::$app->user->identity->picture :
+                        'http://www.k2g2.org/lib/plugins/avatar/stitchy/stitchy.php?seed=' . md5(Yii::$app->user->identity->email) . '&size=50&.png'?>"
                             title="Logged in as <?=Yii::$app->user->identity->forename?>"
                             style="width:40px; margin-top:6px"
                             class="img-circle">
