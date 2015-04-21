@@ -64,6 +64,13 @@ class User extends \yii\db\ActiveRecord implements \yii\web\IdentityInterface
         ];
     }
 
+    public function getPicture() {
+        return $this->picture ? $this->picture :
+            'http://www.k2g2.org/lib/plugins/avatar/stitchy/stitchy.php?seed=' .
+                md5($this->email) .
+                '&size=50&.png';
+    }
+
     /**
      * @return \yii\db\ActiveQuery
      */
