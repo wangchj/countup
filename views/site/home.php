@@ -23,76 +23,8 @@ class HomeAsset extends AssetBundle
 HomeAsset::register($this);
 
 ?>
-<style>
-.navbar .nav li a {
-    font-family: proxima-nova, proxima-nova, Helvetica, Arial, sans-serif;
-    font-size: 16px;
-    font-weight:bold;
-    color:#505050;
-    /*opacity:0.5;*/
-    /*text-shadow:1px 1px 8px #AAA;*/
-}
 
-.navbar .nav li a:hover {
-    background-color:transparent;
-}
-
-.navbar a.navbar-brand {
-    font-family: proxima-nova, proxima-nova, Helvetica, Arial, sans-serif;
-    font-size: 24px;
-    font-weight:bold;
-    color:#505050;
-    /*opacity:0.5;*/
-    /*text-shadow:-1px -1px 0px #AAA;*/
-}
-
-body {
-    background-color: #e9e9e9;
-}
-
-nav.navbar {
-    margin-top:0px;
-    margin-bottom:0px;
-    background-color: #fff;
-    border-color: #fff;
-    padding-top:10px;
-    padding-bottom:10px;
-}
-</style>
-
-<div id="header-wrap" style="
-    /*border:1px solid black;*/
-    box-shadow:0px 1px 5px #808080;
-    padding-top:0px;
-    padding-bottom:0px;
-    margin-bottom:20px">
-    <nav id="w1" class="navbar" role="navigation">
-        <div class="container">
-            <div class="navbar-header">
-                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#w1-collapse">
-                    <span class="sr-only">Toggle navigation</span>
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                </button>
-                <a class="navbar-brand" href="/">CountUp</a>
-            </div>
-            <div id="w1-collapse" class="collapse navbar-collapse">
-                <ul id="w2" class="navbar-nav navbar-right nav">
-                    <li><a href="<?=Url::to(['counter/add'])?>" data-method="post">Add Counter</a></li>
-                    <li><a href="<?=Url::to(['user/settings'])?>" data-method="post">Settings</a></li>
-                    <li><a href="<?=Url::to(['site/logout'])?>" data-method="post">Logout</a></li>
-                    <li>
-                        <img src="<?=Yii::$app->user->identity->getPicture()?>"
-                            title="Logged in as <?=Yii::$app->user->identity->forename?>"
-                            style="width:40px; margin-top:6px"
-                            class="img-circle">
-                    </li>
-                </ul>
-            </div>
-        </div>
-    </nav>
-</div>
+<?php echo $this->render('@app/views/layouts/header-small.php');?>
 
 <div class="container">
     
