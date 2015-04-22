@@ -2,6 +2,9 @@
 
 namespace app\controllers;
 
+use \DateTime;
+use \DateTimeZone;
+use \Exception;
 use Yii;
 use yii\web\HttpException;
 use yii\web\ForbiddenHttpException;
@@ -34,6 +37,8 @@ class CounterController extends \yii\web\Controller
      */
     public function actionAdd()
     {
+        $this->layout = '@app/views/layouts/blank';
+
     	$counter = new Counter();
         
         //If post back
@@ -42,24 +47,38 @@ class CounterController extends \yii\web\Controller
             //Process label
             $counter->label = trim($counter->label);
             if($counter->label === '')
-                $counter.addError('label', 'Label cannot be blank.');
+                $counter->addError('label', 'Label cannot be blank.');
 
             //Process date
-            if($date = new \DateTime($counter->startDate, new \DateTimeZone($counter->getUser()->timeZone)))
+            $timezone = null;
+            try{
+                $timezone = new DateTimeZone($counter->timeZone);
+            }
+            catch(Exception $ex) {
+                $counter->addError('timeZone', 'Time zone is invalid');
+            }
+
+            if($date = new DateTime($counter->startDate, $timezone))
                 $counter->startDate = $date->format('Y-m-d');
             else
-                $counter.addError('startDate', 'In correct date format.');
+                $counter->addError('startDate', 'In correct date format.');
 
             $counter->userId = Yii::$app->user->id;
-            $counter->active = true;
 
             //If no error, save counter
-            if($counter->validate() && !$counter->hasErrors())
+            if($counter->validate() && !$counter->hasErrors() && $counter->save())
             {
-                $counter->save();
-                $this->redirect('index');
+                $history = new History();
+                $history->counterId = $counter->counterId;
+                $history->startDate = $counter->startDate;
+
+                if($history->validate() && $history->save())
+                    $this->redirect(['site/home']);
             }
         }
+
+        if(!Yii::$app->request->isPost)
+            $counter->timeZone = Yii::$app->user->identity->timeZone;
 
         $counter->public = true;
    		return $this->render('add', ['model'=>$counter]);

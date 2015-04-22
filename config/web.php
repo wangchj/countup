@@ -38,6 +38,7 @@ $config = [
             [
                 'logout' => 'site/logout',
                 'login' => 'site/login',
+                'counter/add'=>'counter/add',
                 //'<username>/history/<counterId:\d+>' => 'history/index',
                 //'<username>/history' => 'history/index',
                 //'<username>/<id:\d+>' => 'counter/view',

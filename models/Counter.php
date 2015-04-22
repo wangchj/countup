@@ -23,6 +23,8 @@ use Yii;
  */
 class Counter extends \yii\db\ActiveRecord
 {
+    public $startDate;
+    
     /**
      * @inheritdoc
      */
@@ -39,7 +41,7 @@ class Counter extends \yii\db\ActiveRecord
         return [
             [['userId', 'label', 'startDate'], 'required'],
             [['userId'], 'integer'],
-            [['public', 'active'], 'boolean'],
+            [['public'], 'boolean'],
             [['startDate','summary', 'timeZone'], 'string'],
             [['label'], 'string', 'max' => 30]
         ];
@@ -57,7 +59,6 @@ class Counter extends \yii\db\ActiveRecord
             'startDate' => 'Start Date',
             'summary' => 'Summary',
             'public' => 'Public',
-            'active' => 'Active',
         ];
     }
 
