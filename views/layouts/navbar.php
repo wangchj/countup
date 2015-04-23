@@ -54,7 +54,7 @@ nav.navbar {
             <ul id="w2" class="navbar-nav navbar-right nav">
                 <li><a href="<?=Url::to(['counter/add'])?>">Add Counter</a></li>
                 <li><a href="<?=Url::to(['user/settings'])?>">Settings</a></li>
-                <li><a href="<?=Url::to(['site/logout'])?>">Logout</a></li>
+                <li><a href="<?=Url::to(['site/logout'])?>" data-method="post">Logout</a></li>
                 <li>
                     <img src="<?=Yii::$app->user->identity->getPicture()?>"
                         title="Logged in as <?=Yii::$app->user->identity->forename?>"
