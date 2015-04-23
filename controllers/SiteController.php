@@ -59,31 +59,9 @@ class SiteController extends Controller
         if(Yii::$app->user->isGuest)
             return $this->render('index');
         else {
-            $user = Yii::$app->user->identity;
-
-            $data = [];
-
-            $counters = $user->getCounters()->all();
-            foreach($counters as $counter) {
-                $now = new DateTime('now', $counter->getTimeZone());
-                $low = (new DateTime())->setTimestamp(strtotime('first day of last month', $now->getTimestamp()))->format('Y-m-d');
-                $hi = (new DateTime())->setTimestamp(strtotime('last day of this month', $now->getTimestamp()))->format('Y-m-d');
-                $h = [];
-
-                $history = $counter->getHistory()->select(['startDate', 'endDate'])
-                    ->where("endDate >= '$low' or startDate >= '$low' or endDate is null")
-                    //->andWhere('startDate != endDate')
-                    ->all();
-
-                foreach($history as $hist) {
-                    $h[] = ['start'=>$hist->startDate, 'end'=>$hist->endDate];
-                }
-
-                $data["cal{$counter->counterId}"] = $h;
-            }
-
-            $this->layout = '@app/views/layouts/blank';
-            return $this->render('home', ['data'=>$data]);
+            $username = Yii::$app->user->identity->userName;
+            $userId   = Yii::$app->user->identity->userId;
+            $this->redirect(['user/index', 'token'=>$username ? $username : $userId]);
         }
     }
 
