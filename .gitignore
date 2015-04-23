@@ -29,5 +29,6 @@ phpunit.phar
 .fuse_*
 *~
 
+data/db.sqlite
 runtime
 web/assets
