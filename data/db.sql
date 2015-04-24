@@ -49,6 +49,16 @@ create table History (
     counterId integer   not null,
     startDate text      not null,
     endDate   text      null,       -- If null, this is the current count of the counter
+    type      text      not null,   -- Possible values: 'daily', 'weekly', 'monthly', 'yearly', and 'miss', which explicitly marks the end of a run.
+    every     integer   null,       -- Every n period since startDate. For example: every 2 days, or every 1 month. Every 1 day means everyday.
+    "on"      text      null,       -- Example: every 2 weeks on 'mon' and 'tue'
+                                    -- Possible values:
+                                    --     Weekly: 'mon', 'tue', 'wed', 'thu', 'fri', 'sat', 'sun'
+                                    --     Monthly:
+                                    --         Date: 1, 2, 3
+                                    --         String: 'first day', 'last day'
+                                    --     Yearly:
+                                    --         Date: '03-15'
     primary key (counterId, startDate, endDate),
     foreign key(counterId) references Counters(counterId)
 );
