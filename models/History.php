@@ -10,6 +10,9 @@ use Yii;
  * @property integer $counterId
  * @property string $startDate
  * @property string $endDate
+ * @property string $type
+ * @property integer $every
+ * @property string $on
  *
  * @property Counters $counter
  */
@@ -29,9 +32,9 @@ class History extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['counterId', 'startDate'], 'required'],
-            [['startDate', 'endDate'], 'string'],
-            [['counterId'], 'integer'],
+            [['counterId', 'startDate', 'type'], 'required'],
+            [['startDate', 'endDate', 'type', 'on'], 'string'],
+            [['counterId', 'every'], 'integer'],
             [['counterId', 'startDate', 'endDate'], 'unique', 'targetAttribute' => ['counterId', 'startDate', 'endDate'], 'message' => 'The combination of Counter ID, Start Date and End Date has already been taken.']
         ];
     }

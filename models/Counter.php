@@ -92,44 +92,89 @@ class Counter extends \yii\db\ActiveRecord
      * Get the DateInterval object between start date and now, using user's time zone.
      * @return DateInterval object that contains days, months, and years.
      */
-    public function getDateInterval()
+    /*public function getDateInterval()
     {
         $start = $this->getCurrentStartDate();
         $end   = new DateTime('now', $this->getTimeZone());
         return $end->diff($start);
-    }
+    }*/
 
     /**
      * Get start date of current running count of this counter.
      * Exception is thrown if this counter does not have a running count (is inactive).
      */
     public function getCurrentStartDate() {
-        $running = $this->getHistory()->where(['counterId'=>$this->counterId, 'endDate' => null])->one();
-        if(!$running)
-            throw new Exception('There is no current start date because counter is not active.');
-        return new DateTime($running->startDate, $this->getTimeZone());
+        //Get the most recent miss date string
+        $miss = $this->getHistory()->where(['type'=>'miss'])->max('startDate');
+
+        if($miss)
+            $startDate = $this->getHistory()->where("startDate > '$miss' and type != 'miss'")->min('startDate');
+        else
+            $startDate = $this->getHistory()->where("type != 'miss'")->min('startDate');
+
+        return new DateTime($startDate, $this->getTimeZone());
     }
 
     /**
      * Checks if this counter is active (has a running count).
      */
     public function isActive() {
-        $running = $this->getHistory()->where(['counterId'=>$this->counterId, 'endDate' => null])->one();
-        if($running)
+        $miss = $this->getHistory()->where(['type'=>'miss'])->max('startDate');
+        if(!$miss)
             return true;
-        else
-            return false;
+        return $this->getHistory()->where("startDate > '$miss'")->count() > 0;
     }
 
     public function getDays() {
-        if($this->isActive())
-            return $this->getDateInterval()->days;
-        return 0;
+        if(!$this->isActive())
+            return 0;
+
+        $start = $this->getCurrentStartDate();
+        $end   = new DateTime('now', $this->getTimeZone());
+        return $end->diff($start)->days;
     }
 
+    /**
+     * Return an array with the format ['startDate'=>DateTime, 'endDate'=>DateTime, 'count'=>integer]
+     */
     public function getBest() {
-        $max = (int)Yii::$app->db->createCommand("select max(julianday(endDate) - julianday(startDate)) from History where counterId={$this->counterId}")->queryScalar();
-        return max($max, $this->getDays());
+        $timezone = $this->getTimeZone();
+
+        $max = $this->getDays();
+        $maxStartDate = $this->getCurrentStartDate();
+        $maxEndDate = new DateTime('now', $timezone);
+        $misses = $this->getHistory()->where(['type'=>'miss'])->orderBy('startDate')->all();
+
+        for($i = 0; $i < count($misses); $i++) {
+            if($i == 0) {
+                $start = $this->getHistory()->where("type != 'miss'")->min('startDate');
+                $end   = $this->getHistory()->where("endDate < '{$misses[$i]->startDate}' and type != 'miss'")->max('endDate');
+            }
+            else {
+                $start = $this->getHistory()->where("startDate > '{$misses[$i - 1]->startDate}' and type != 'miss'")->min('startDate');
+                $end   = $this->getHistory()->where("endDate < '{$misses[$i]->startDate}' and type != 'miss'")->max('endDate');
+            }
+
+            //Yii::error($this->getHistory()->where("endDate < {$misses[$i]->startDate} and type != 'miss'")->createCommand()->sql);
+
+            if(!$start || !$end)
+                continue;
+            
+            $startDate = new DateTime($start, $timezone);
+            $endDate = new DateTime($end, $timezone);
+
+            $diff = $endDate->diff($startDate)->days + 1;
+            //Yii::error($diff);
+            
+            if($diff > $max) {
+                $max = $diff;
+                $maxStartDate = $startDate;
+                $maxEndDate = $endDate;
+            }
+        }
+
+        //$max = (int)Yii::$app->db->createCommand("select max(julianday(endDate) - julianday(startDate)) from History where counterId={$this->counterId}")->queryScalar();
+        return ['startDate'=>$maxStartDate, 'endDate'=>$maxEndDate, 'count'=>$max];
     }
 
     /**
@@ -139,7 +184,7 @@ class Counter extends \yii\db\ActiveRecord
      * @param $endDate   end date string.
      * @return DateInterval object that contains days, months, and years.
      */
-    public static function computeDateIntervalBase($start, $end)
+    /*public static function computeDateIntervalBase($start, $end)
     {
         if(is_string($start))
             $start = new \DateTime($start);
@@ -152,7 +197,7 @@ class Counter extends \yii\db\ActiveRecord
         $res = $end->diff($start);
 
         return $res;
-    }
+    }*/
 
     /**
      * Compute the DateInterval object between start and end date. 
@@ -160,10 +205,10 @@ class Counter extends \yii\db\ActiveRecord
      * @param $counter a Counter model object.
      * @return DateInterval object that contains days, months, and years.
      */
-    public static function computeDateInterval($counter)
+    /*public static function computeDateInterval($counter)
     {
         $user = $counter->user;
         $timeZone = $this->getTimeZone();
         return self::computeDateIntervalBase(new \DateTime($counter->startDate, $timeZone), new \DateTime('now', $timeZone));
-    }
+    }*/
 }
