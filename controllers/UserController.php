@@ -42,37 +42,38 @@ class UserController extends Controller
 
         //Viewee is the user being queried and viewed.
         $viewee = User::findOne(['userName'=>$token]);
-        
+
         //See if the object user exist
         if(!$viewee)
             $viewee = User::findOne(['userId'=>$token]);
         if(!$viewee)
             throw new HttpException(400,'User does not exist');
 
-        $data = [];
-
         $counters = $viewer->userId == $viewee->userId ? $viewee->counters : $viewee->getCounters()->where(['public'=>true])->all();
-
-        foreach($counters as $counter) {
-            $now = new DateTime('now', $counter->getTimeZone());
-            $low = (new DateTime())->setTimestamp(strtotime('first day of last month', $now->getTimestamp()))->format('Y-m-d');
-            $hi = (new DateTime())->setTimestamp(strtotime('last day of this month', $now->getTimestamp()))->format('Y-m-d');
-            $h = [];
-
-            $history = $counter->getHistory()->select(['startDate', 'endDate'])
-                ->where("endDate >= '$low' or startDate >= '$low' or endDate is null")
-                //->andWhere('startDate != endDate')
-                ->all();
-
-            foreach($history as $hist) {
-                $h[] = ['start'=>$hist->startDate, 'end'=>$hist->endDate];
-            }
-
-            $data["cal{$counter->counterId}"] = $h;
-        }
-
+        $data = $this->makeCalendarData($counters, $viewer, $viewee);
         $this->layout = '@app/views/layouts/blank';
         return $this->render('index', ['viewer'=>$viewer, 'viewee'=>$viewee, 'counters'=>$counters, 'data'=>$data]);
+    }
+
+    /**
+     * Get history date from $startDate to $endDate
+     */
+    private function makeCalendarData($counters, $viewer, $viewee) {
+        $res = [];
+        foreach($counters as $counter) {
+            $now = new DateTime('now', $counter->getTimeZone());
+            $start = (new DateTime())->setTimestamp(strtotime('first day of last month', $now->getTimestamp()))->format('Y-m-d');
+            $end = (new DateTime())->setTimestamp(strtotime('last day of this month', $now->getTimestamp()))->format('Y-m-d');
+            $data = [];
+
+            $history = $counter->getHistory()->where("date >= '$start' and date <= '$end'")->all();
+
+            foreach($history as $h)
+                $data[$h->date] = $h->miss ? 1 : 0; //0: a mark, 1: a miss
+
+            $res["cal{$counter->counterId}"] = $data;
+        }
+        return $res;
     }
 
     public function actionSignupForm() {

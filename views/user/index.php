@@ -20,8 +20,15 @@ class HomeAsset extends AssetBundle
     ];
 }
 
+class NewAsset extends AssetBundle {
+    public $sourcePath = '@app/views/user';
+    public $js = ['index.js'];
+    public $depends = [
+        'yii\web\JqueryAsset',
+    ];
+}
 HomeAsset::register($this);
-
+NewAsset::register($this);
 ?>
 
 <style>
@@ -46,6 +53,46 @@ h2.friendlys {
     color:#505050;
     margin-top:0px;
     text-align: center;
+}
+
+.cslink {
+    display: block;
+    padding: 5px 20px;
+    clear: both;
+    font-weight: normal;
+    line-height: 1.42857143;
+    color: #333;
+    white-space: nowrap;
+    list-style-type: none;
+    list-style: none;
+    text-decoration: none;
+    text-shadow: 0px 1px 1px #fff;
+}
+
+.cslink:hover{
+    color:#333;
+    text-decoration: none;
+}
+
+.csli {
+    list-style-type: none;"
+    margin:0px;
+}
+
+.csli:hover{
+    background-color: #eee;
+}
+
+.popover-content {
+    padding-left:0px;
+    padding-right:0px;
+}
+
+a.counter-setting, a.counter-setting:hover, a.counter-setting:active {
+    font-size:14px;
+    color:#505050;
+    text-shadow: 0px 1px 1px #fff;
+    text-decoration: none;
 }
 
 </style>
@@ -91,7 +138,24 @@ h2.friendlys {
                             text-align:center;
                             "> <!-- Counter panel with pretty border and round corners. -->
                             <div class="row clabel">
-                                <div class="col-xs-12" style=""><?=$counter->label?></div>
+                                <div class="col-xs-12" style="">
+                                    <?=$counter->label?>
+                                    <div class="pull-right">
+                                            <a class="counter-setting" href="#" id="cs<?=$counter->counterId?>">
+                                                <span class="glyphicon glyphicon-cog"></span>
+                                            </a>
+
+                                            <ul class="dropdown-menu" role="menu">
+                                                <li class="csli"><a class="cslink cs-reset" data-counterId="<?=$counter->counterId?>" onclick="resetClicked(<?=$counter->counterId?>)" href="#"><span class="glyphicon glyphicon-flash"></span> Reset Counter</a></li>
+                                                <li class="csli"><a class="cslink cs-stop" data-counterId="<?=$counter->counterId?>" href="#"><span class="glyphicon glyphicon-stop"></span> Stop Counter</a></li>
+                                                <hr style="margin:4px">
+                                                <li class="csli"><a class="cslink cs-remove" data-counterId="<?=$counter->counterId?>" href="#"><span class="glyphicon glyphicon-fire"></span> Remove Counter</a></li>
+                                                <hr style="margin:4px">
+                                                <li class="csli"><a class="cslink cs-settings" data-counterId="<?=$counter->counterId?>" href="#"><span class="glyphicon glyphicon-cog"></span> Counter Settings</a></li>
+                                            </ul>
+
+                                    </div>
+                                </div>
                             </div>
                             <hr>
                             <div class="row">
@@ -99,12 +163,19 @@ h2.friendlys {
                                     <div style="font-size:12px; font-weight:normal; color:#999; margin-bottom:5px">Current Count</div>
                                     <div style="margin-bottom:8px"><?=$counter->getDays()?> Days</div>
                                     <div style="font-size:12px; font-weight:normal; color:#ccc">
-                                         <?= $counter->isActive() ? 'since ' . $counter->getCurrentStartDate()->format('F j, Y') : 'not running'?>
+                                         <?= $counter->isActive() ? 'since ' . $counter->getCurrentStartDate()->format('M j, Y') : 'not running'?>
                                     </div>
                                 </div>
                                 <div class="col-xs-6">
                                     <div style="font-size:12px; font-weight:normal; color:#999; margin-bottom:5px">Best</div>
-                                    <?=$counter->getBest()?> Days
+                                    <div style="margin-bottom:8px"><?php $best = $counter->getBest(); ?> <?=$best['count']?> Days</div>
+                                    <div style="font-size:12px; font-weight:normal; color:#ccc">
+                                        <?php if($best['startDate'] && $best['endDate']):?>
+                                            <?= $best['startDate']->format('M j, Y') ?> - <?= $best['endDate']->format('M j, Y') ?>
+                                        <?php else:?>
+                                            &nbsp; 
+                                        <?php endif;?>
+                                    </div>
                                 </div>
                             </div>
                             <hr>
@@ -171,15 +242,4 @@ h2.friendlys {
 
 <script>
 var data = <?=json_encode($data)?>;
-for(var cal in data) {
-    var hist = data[cal];
-    for(var i = 0; i < hist.length; i++) {
-        hist[i]['start'] = new Date(hist[i]['start']);
-        hist[i]['start'].setDate(hist[i]['start'].getDate() + 1);
-        if(hist[i]['end'] != null) {
-            hist[i]['end'] = new Date(hist[i]['end']);
-            hist[i]['end'].setDate(hist[i]['end'].getDate() + 1);
-        }
-    }
-}
 </script>
