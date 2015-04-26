@@ -35,7 +35,7 @@ var numcol  = 7; //Number of columns in this calendar
 var gutter  = 10; //Spacing between months in pixels
 var space   = 2; //Spacing between cells in pixels
 
-var showDateText = false;
+var showDateText = true;
 
 var monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
 
@@ -50,7 +50,7 @@ function drawFigures() {
         drawFigure(this, now.getFullYear(), now.getMonth());
     });
 
-    $('rect').tooltip({container:'body'});
+    $('g.cell').tooltip({container:'body'});
 }
 
 /**
@@ -115,6 +115,8 @@ function drawMonthCalendar(snap, i, cwidth, year, month) {
             var y = row * width + row * space;
             var s = row * numcol + col; //Cell sequence number, starting from 0;
             var date = s - startOn + 1; //Date number, e.g. 15
+            var cellGroup = snap.group().attr({'class':'cell'});
+
             //console.log(s);
             //console.log(startOn);
             var c = '#d6e685';
@@ -129,24 +131,27 @@ function drawMonthCalendar(snap, i, cwidth, year, month) {
             var rectId = 'rect' + s;
             var rect = snap.rect(x, y, width, width).attr({id:rectId, fill:c});
             if(s >= startOn && s < startOn + numdays)
-                rect.attr({'data-toggle':'tooltip', title:makeFullDateStr(year, month, date)});
+                cellGroup.attr({'data-toggle':'tooltip', title:makeFullDateStr(year, month, date)});
 
             if(year == now.getFullYear() && month == now.getMonth() && date == now.getDate())
                 rect.attr({strokeWidth:1, stroke:'#aaa'});
-            group.add(rect);
+            cellGroup.add(rect);
 
             if(showDateText) {
                 if(date > 0 && date <= numdays) {
-                    var fontSize = width / 2;
+                    var fontSize = width / 2.4;
                     var numchar = date < 10 ? 1 : 2;
-                    var textX = x + (width - fontSize) / numchar;
-                    var textY = y + (width - fontSize + (width / 6));
-                    var textColor = '#aaa';
+                    var textX = x + (width - fontSize) / (numchar == 1 ? 1.4 : 2);
+                    //var textY = y + (width - fontSize + (width / 6));
+                    var textY = y + (width - fontSize + (fontSize / 6));
+                    var textColor = '#777';
                     var text = snap.text(textX, textY, date).
                         attr({'font-size': fontSize + 'px', 'fill': textColor, 'opacity':0.8});
-                    group.add(text);
+                    cellGroup.add(text);
                 }
             }
+
+            group.add(cellGroup);
         }
     }
 

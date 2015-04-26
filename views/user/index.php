@@ -4,31 +4,16 @@ use yii\helpers\Url;
 use yii\web\AssetBundle;
 use app\lib\DateTime;
 
-//use app\views\site\HomeAsset;
-
-class HomeAsset extends AssetBundle
-{
-    public $sourcePath = '@app/views/site';
-    public $css = [
-        //'home.css',
-        'cal.css'
-    ];
-    public $js = ['home.js'];
+class Asset extends AssetBundle {
+    public $sourcePath = '@app/views/user';
+    public $js = ['cal.js', 'index.js'];
+    public $css = ['cal.css'];
     public $depends = [
         'app\assets\SnapsvgAsset',
         'yii\web\JqueryAsset',
     ];
 }
-
-class NewAsset extends AssetBundle {
-    public $sourcePath = '@app/views/user';
-    public $js = ['index.js'];
-    public $depends = [
-        'yii\web\JqueryAsset',
-    ];
-}
-HomeAsset::register($this);
-NewAsset::register($this);
+Asset::register($this);
 ?>
 
 <style>
@@ -124,7 +109,7 @@ a.counter-setting, a.counter-setting:hover, a.counter-setting:active {
         <div class="col-md-10 col-sm-12"> <!-- Container for counters -->
             <div class="row">
                 <?php foreach($counters as $counter):?>
-                    <div class="col-xs-6" style="padding-top:15px; padding-bottom:15px"> <!-- Produce gutters between counters -->
+                    <div class="col-sm-6" style="padding-top:15px; padding-bottom:15px"> <!-- Produce gutters between counters -->
                         <div style="
                             /*border:1px solid gray;*/
                             background-color:#fff;
