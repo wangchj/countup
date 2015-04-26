@@ -13,9 +13,14 @@ use Yii;
  *
  * @property integer $counterId
  * @property integer $userId
- * @property string $label
- * @property string $timeZone Use $this->getTimeZone() instead
- * @property string $summary
+ * @property string  $label
+ * @property string  $summary
+ * @property string  $timeZone Use $this->getTimeZone() instead
+ * @property string  $startDate
+ * @property string  $type
+ * @property integer $every
+ * @property string  $on
+ * @property boolean $active
  * @property boolean $public
  *
  * @property Users $user
@@ -39,10 +44,10 @@ class Counter extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['userId', 'label', 'startDate'], 'required'],
-            [['userId'], 'integer'],
-            [['public'], 'boolean'],
-            [['startDate','summary', 'timeZone'], 'string'],
+            [['userId', 'label', 'startDate', 'type', 'active'], 'required'],
+            [['userId', 'every'], 'integer'],
+            [['public', 'active'], 'boolean'],
+            [['startDate','summary', 'timeZone', 'type', 'on'], 'string'],
             [['label'], 'string', 'max' => 30]
         ];
     }
@@ -101,41 +106,46 @@ class Counter extends \yii\db\ActiveRecord
 
     /**
      * Get start date of current running count of this counter.
-     * Exception is thrown if this counter does not have a running count (is inactive).
+     * If this counter does not have a start date, null is returned. This happens on the first day
+     * of the counter when there is no history entry (either mark or miss) for this counter.
      */
     public function getCurrentStartDate() {
         //Get the most recent miss date string
-        $miss = $this->getHistory()->where(['type'=>'miss'])->max('startDate');
+        $miss = $this->getHistory()->where(['miss'=>true])->max('date');
 
         if($miss)
-            $startDate = $this->getHistory()->where("startDate > '$miss' and type != 'miss'")->min('startDate');
+            $date = $this->getHistory()->where("date > '$miss' and miss = 0")->min('date');
         else
-            $startDate = $this->getHistory()->where("type != 'miss'")->min('startDate');
+            $date = $this->getHistory()->where(['miss'=>false])->min('date');
 
-        return new DateTime($startDate, $this->getTimeZone());
+        return $date ? new DateTime($date, $this->getTimeZone()) : null;
     }
 
     /**
-     * Checks if this counter is active (has a running count).
+     * Checks if this counter is active.
      */
     public function isActive() {
-        $miss = $this->getHistory()->where(['type'=>'miss'])->max('startDate');
-        if(!$miss)
-            return true;
-        return $this->getHistory()->where("startDate > '$miss'")->count() > 0;
+        return $this->active;
     }
 
+    /**
+     * Get the current span in days.
+     */
     public function getDays() {
         if(!$this->isActive())
             return 0;
 
-        $start = $this->getCurrentStartDate();
-        $end   = new DateTime('now', $this->getTimeZone());
+        if(!$start = $this->getCurrentStartDate())
+            return 0;
+        $end = new DateTime('now', $this->getTimeZone());
         return $end->diff($start)->days;
     }
 
     /**
+     * Get the longest span in days.
+     *
      * Return an array with the format ['startDate'=>DateTime, 'endDate'=>DateTime, 'count'=>integer]
+     * where 'startDate' could be null.
      */
     public function getBest() {
         $timezone = $this->getTimeZone();
@@ -143,19 +153,19 @@ class Counter extends \yii\db\ActiveRecord
         $max = $this->getDays();
         $maxStartDate = $this->getCurrentStartDate();
         $maxEndDate = new DateTime('now', $timezone);
-        $misses = $this->getHistory()->where(['type'=>'miss'])->orderBy('startDate')->all();
+        $misses = $this->getHistory()->where(['miss'=>true])->orderBy('date')->all();
 
         for($i = 0; $i < count($misses); $i++) {
             if($i == 0) {
-                $start = $this->getHistory()->where("type != 'miss'")->min('startDate');
-                $end   = $this->getHistory()->where("endDate < '{$misses[$i]->startDate}' and type != 'miss'")->max('endDate');
+                $start = $this->getHistory()->min('date');
+                $end   = $this->getHistory()->where("date < '{$misses[$i]->date}'")->max('date');
             }
             else {
-                $start = $this->getHistory()->where("startDate > '{$misses[$i - 1]->startDate}' and type != 'miss'")->min('startDate');
-                $end   = $this->getHistory()->where("endDate < '{$misses[$i]->startDate}' and type != 'miss'")->max('endDate');
+                $start = $this->getHistory()->where("date > '{$misses[$i - 1]->date}'")->min('date');
+                $end   = $this->getHistory()->where("date < '{$misses[$i]->date}'")->max('date');
             }
 
-            //Yii::error($this->getHistory()->where("endDate < {$misses[$i]->startDate} and type != 'miss'")->createCommand()->sql);
+            //Yii::error($this->getHistory()->where("endDate < {$misses[$i]->date} and type != 'miss'")->createCommand()->sql);
 
             if(!$start || !$end)
                 continue;
@@ -173,7 +183,6 @@ class Counter extends \yii\db\ActiveRecord
             }
         }
 
-        //$max = (int)Yii::$app->db->createCommand("select max(julianday(endDate) - julianday(startDate)) from History where counterId={$this->counterId}")->queryScalar();
         return ['startDate'=>$maxStartDate, 'endDate'=>$maxEndDate, 'count'=>$max];
     }
 

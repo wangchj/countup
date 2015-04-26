@@ -34,31 +34,40 @@ create table TempUsers (
     code     text        not null     -- Verification code
 );
 
+/**
+ * The optional column 'on' is used with weekly, monthly, and yearly counters and specifies on which days or dates the calendar should be
+ * marked for the counter (have an entry in the History table). If the calendar is not marked on a specified day, a miss (for that day)
+ * is inserted into history.
+ * 
+ * Examples for 'on' column: every 2 weeks on 'mon' and 'tue'.
+ *
+ * The following are possible values for 'on':
+ *  Weekly: 'mon', 'tue', 'wed', 'thu', 'fri', 'sat', 'sun'
+ *  Monthly:
+ *      Date: 1, 2, 3
+ *      String: 'first day', 'last day'
+ *  Yearly:
+ *      Date: '03-15'
+ */
 create table Counters (
     counterId integer     primary key,
     userId    integer     not null,
     label     varchar(30) not null,
     summary   text        null,               -- Describe this counter
     timeZone  text        null,               -- Timezone of this counter. If null, user's default timezone should be used.
-    longest   integer     not null default 0, -- Longest day streak
-    public    integer     not null default 1,
+    startDate date        not null,           -- The start date in format 'YYYY-MM-DD' as in '2015-01-15'
+    type      text        not null,           -- Possible values: 'daily', 'weekly', 'monthly', and 'yearly'.
+    every     integer     null,               -- Every n period since startDate. For example: every 2 days, or every 1 month. Every 1 day means everyday.
+    "on"      text        null,               -- See comment above
+    active    boolean     not null default 1,
+    public    boolean     not null default 1,
     foreign key(userId) references Users(userId)
 );
 
 create table History (
-    counterId integer   not null,
-    startDate text      not null,
-    endDate   text      null,       -- If null, this is the current count of the counter
-    type      text      not null,   -- Possible values: 'daily', 'weekly', 'monthly', 'yearly', and 'miss', which explicitly marks the end of a run.
-    every     integer   null,       -- Every n period since startDate. For example: every 2 days, or every 1 month. Every 1 day means everyday.
-    "on"      text      null,       -- Example: every 2 weeks on 'mon' and 'tue'
-                                    -- Possible values:
-                                    --     Weekly: 'mon', 'tue', 'wed', 'thu', 'fri', 'sat', 'sun'
-                                    --     Monthly:
-                                    --         Date: 1, 2, 3
-                                    --         String: 'first day', 'last day'
-                                    --     Yearly:
-                                    --         Date: '03-15'
-    primary key (counterId, startDate, endDate),
+    counterId integer not null,
+    date      date    not null,
+    miss      boolean not null default 0,
+    primary key (counterId, date),
     foreign key(counterId) references Counters(counterId)
 );
