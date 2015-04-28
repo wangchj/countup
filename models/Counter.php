@@ -122,6 +122,21 @@ class Counter extends \yii\db\ActiveRecord
     }
 
     /**
+     * Get the date of most recent mark.
+     * Return null if this counter has no start date.
+     */
+    public function getCurrentEndDate() {
+        $miss = $this->getHistory()->where(['miss'=>true])->max('date');
+
+        if($miss)
+            $date = $this->getHistory()->where("date > '$miss' and miss = 0")->max('date');
+        else
+            $date = $this->getHistory()->where(['miss'=>false])->max('date');
+
+        return $date ? new DateTime($date, $this->getTimeZone()) : null;
+    }
+
+    /**
      * Checks if this counter is active.
      */
     public function isActive() {
@@ -137,8 +152,10 @@ class Counter extends \yii\db\ActiveRecord
 
         if(!$start = $this->getCurrentStartDate())
             return 0;
-        $end = new DateTime('now', $this->getTimeZone());
-        return $end->diff($start)->days;
+        if(!$end = $this->getCurrentEndDate())
+            return 0;
+
+        return $end->diff($start)->days + 1;
     }
 
     /**
