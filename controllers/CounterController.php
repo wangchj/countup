@@ -31,7 +31,7 @@ class CounterController extends \yii\web\Controller
 				'class'=>AccessControl::className(),
 				'rules'=>[
                     ['allow'=>true, 'actions'=>['index','view'], 'roles'=>['?','@']],
-					['allow'=>true, 'actions'=>['add','update','reset','deactivate', 'mark', 'get-days'], 'roles'=>['@']],
+					['allow'=>true, 'actions'=>['add','update','reset','deactivate', 'mark', 'get-days', 'ajax-remove'], 'roles'=>['@']],
 				]
 			]
 		];
@@ -194,6 +194,18 @@ class CounterController extends \yii\web\Controller
         if(!$counter = Counter::findOne($counterId))
             throw new NotFoundHttpException('Counter not found');
         return $counter->getDays();
+    }
+
+    /**
+     * Entry point for ajax remove of a counter.
+     */
+    public function actionAjaxRemove($counterId) {
+        if(!$counter = Counter::findone($counterId))
+            throw new NotFoundHttpException('Counter not found.');
+        if(Yii::$app->user->isGuest || Yii::$app->user->identity->userId != $counter->userId)
+            throw new ForbiddenHttpException();
+        History::deleteAll(['counterId'=>$counterId]);
+        $counter->delete();
     }
 
     /**

@@ -255,4 +255,5 @@ a.counter-setting, a.counter-setting:hover, a.counter-setting:active {
 var data = <?=json_encode($data)?>;
 var markUrl = '<?=Url::to(['counter/mark'])?>';
 var getDaysUrl = '<?=Url::to(['counter/get-days'])?>';
+var counterRemoveUrl = '<?=Url::to(['counter/ajax-remove'])?>';
 </script>
