@@ -18,7 +18,6 @@ function initFigureEvents() {
             var missStr = '<li class="date-menu-item"><a class="checkmark" onclick="markClicked(' + 2 + ',' + counterId + ',' + '\'' + date + '\'' + ')" href="#"><span class="glyphicon glyphicon-remove"></span> Mark Miss</a></li>';
             var clearStr = '<li class="date-menu-item"><a class="checkmark" onclick="markClicked(' + 0 + ',' + counterId + ',' + '\'' + date + '\'' + ')" href="#"><span class="glyphicon glyphicon-unchecked"></span> Clear</a></li>';
             var res = '<ul class="date-menu">' + markStr + missStr + clearStr + '</ul>';
-            //console.log(res);
             return res;
         },
         html:      true,
@@ -26,36 +25,27 @@ function initFigureEvents() {
     });
 
     $('g.cell').on('show.bs.popover', function(){
-        console.log('popover show');
         if(popElement != null)
             $(popElement).popover('hide');
-
-        //Create content
-
 
         //Track which element for which popover is open.
         popElement = this;
     });
 
     $('g.cell').on('hide.bs.popover', function(){
-        console.log('popover hide');
         popElement = null;
     });
 
     $('g.cell').on('click', function(){
-        console.log('cell click');
         return false;
     });
 
     $(document).on('click', function(){
-        console.log('document click');
         if(popElement != null) {
             $(popElement).popover('hide');
             popElement = null;
         }
     });
-
-    //$('svg g.cell').click(function(){console.log('hello');});
 }
 
 function initWindowResizing() {
