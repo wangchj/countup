@@ -48,7 +48,7 @@ nav.navbar {
                 <span class="icon-bar"></span>
                 <span class="icon-bar"></span>
             </button>
-            <a class="navbar-brand" href="/">CountUp</a>
+            <a class="navbar-brand" href="<?=Url::to(['site/index'])?>">CountUp</a>
         </div>
         <div id="w1-collapse" class="collapse navbar-collapse">
             <ul id="w2" class="navbar-nav navbar-right nav">
