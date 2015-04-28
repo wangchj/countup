@@ -1,15 +1,28 @@
 /*asdfas*/
 $(function(){
-    initCounterSettingsPopup();
+    initCounterMenu();
     //initEvents();
 });
 
-function initCounterSettingsPopup() {
+function initCounterMenu() {
     $('.counter-setting').popover({
-        content:   counterSettingMenu,
+        content: function() {
+            var counterId = $(this).attr('counterId');
+            var setStr = '<li class="counter-menu-item">' +
+                '<a onclick="counterSettingClicked(' + counterId + ')" href="#">' +
+                '<span class="glyphicon glyphicon-cog"></span> Counter Settings</a></li>';
+            var remStr = '<li class="counter-menu-item">' +
+                '<a onclick="counterRemoveClicked(' + counterId + ')" href="#">' +
+                '<span class="glyphicon glyphicon-fire"></span> Remove Counter</a></li>';
+
+            var res = '<ul class="counter-menu">' + setStr + '<hr style="margin:5px">' + remStr + '</ul>';
+
+            return res;
+        },
+        container: 'body',
         html:      true,
         placement: 'bottom',
-        trigger:   'focus'
+        trigger:   'click'
     });
 }
 
@@ -29,24 +42,27 @@ var colorNone  = '#e3e3e3';
 //var colorStart = '#bee685';
 var colorMiss = '#e6c785';
 
-function resetClicked(counterId) {
-    console.log(counterId);
+function counterSettingClicked(counterId) {
+    console.log('counter setting clicked');
 }
 
-function stopClicked(counterId) {
-
-}
-
-function removeClicked(counterId) {
+function counterRemoveClicked(counterId) {
     
-}
-
-function counterSettingMenu() {
-    return $(this).siblings('ul').html();
+    
+    $.ajax({
+        type:'GET',
+        url: counterRemoveUrl + '?counterId=' + counterId,
+        error: function(jqXHR, textStatus, errorThrown) {
+            console.log('Counter remove error ' + textStatus + ' ' + errorThrown);
+        },
+        success: function(data, textStatus, jqXHR) {
+            $('.counter-container-' + counterId).remove();
+        }
+    });
 }
 
 function markClicked(action, counterId, date) {
-    console.log('markClicked: ' + counterId + ', ' + date);
+    //console.log('markClicked: ' + counterId + ', ' + date);
     
     //Make sure we're not marking date in the future.
     var markDate = new Date(date);
@@ -55,7 +71,7 @@ function markClicked(action, counterId, date) {
         return;
 
     var state = getCellState(counterId, date);
-    console.log(state);
+    //console.log(state);
 
     if(action == state || action < 0 || action > 2)
         return;
@@ -91,7 +107,7 @@ function getCellState(counterId, date) {
     var rect = cell.find('rect');
     var color = rect.attr('fill');
 
-    console.log(cell);
+    //console.log(cell);
 
     switch(color) {
         case colorDone:

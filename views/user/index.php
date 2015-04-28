@@ -40,12 +40,18 @@ h2.friendlys {
     text-align: center;
 }
 
-.cslink {
+.counter-menu {
+    padding-left:0px;
+    padding-right:0px;
+    margin:0px;
+}
+
+.counter-menu-item a {
     display: block;
     padding: 5px 20px;
     clear: both;
     font-weight: normal;
-    line-height: 1.42857143;
+    line-height: 1.5;
     color: #333;
     white-space: nowrap;
     list-style-type: none;
@@ -54,17 +60,17 @@ h2.friendlys {
     text-shadow: 0px 1px 1px #fff;
 }
 
-.cslink:hover{
+/*.counter-menu-item a:hover{
     color:#333;
     text-decoration: none;
-}
+}*/
 
-.csli {
+.counter-menu-item {
     list-style-type: none;"
     margin:0px;
 }
 
-.csli:hover{
+.counter-menu-item:hover{
     background-color: #eee;
 }
 
@@ -75,7 +81,7 @@ h2.friendlys {
 
 a.counter-setting, a.counter-setting:hover, a.counter-setting:active {
     font-size:14px;
-    color:#505050;
+    color:#999;
     text-shadow: 0px 1px 1px #fff;
     text-decoration: none;
 }
@@ -156,19 +162,9 @@ a.counter-setting, a.counter-setting:hover, a.counter-setting:active {
                                 <div class="col-xs-12" style="">
                                     <?=$counter->label?>
                                     <div class="pull-right">
-                                            <a class="counter-setting" href="#" id="cs<?=$counter->counterId?>">
+                                            <a class="counter-setting" href="#" counterId="<?=$counter->counterId?>">
                                                 <span class="glyphicon glyphicon-cog"></span>
                                             </a>
-
-                                            <ul class="dropdown-menu" role="menu">
-                                                <li class="csli"><a class="cslink cs-reset" data-counterId="<?=$counter->counterId?>" onclick="resetClicked(<?=$counter->counterId?>)" href="#"><span class="glyphicon glyphicon-flash"></span> Reset Counter</a></li>
-                                                <li class="csli"><a class="cslink cs-stop" data-counterId="<?=$counter->counterId?>" href="#"><span class="glyphicon glyphicon-stop"></span> Stop Counter</a></li>
-                                                <hr style="margin:4px">
-                                                <li class="csli"><a class="cslink cs-remove" data-counterId="<?=$counter->counterId?>" href="#"><span class="glyphicon glyphicon-fire"></span> Remove Counter</a></li>
-                                                <hr style="margin:4px">
-                                                <li class="csli"><a class="cslink cs-settings" data-counterId="<?=$counter->counterId?>" href="#"><span class="glyphicon glyphicon-cog"></span> Counter Settings</a></li>
-                                            </ul>
-
                                     </div>
                                 </div>
                             </div>
