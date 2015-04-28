@@ -8,6 +8,7 @@ use \Exception;
 use Yii;
 use yii\web\HttpException;
 use yii\web\ForbiddenHttpException;
+use yii\web\NotFoundHttpException;
 use yii\filters\AccessControl;
 
 //Models
@@ -30,7 +31,7 @@ class CounterController extends \yii\web\Controller
 				'class'=>AccessControl::className(),
 				'rules'=>[
                     ['allow'=>true, 'actions'=>['index','view'], 'roles'=>['?','@']],
-					['allow'=>true, 'actions'=>['add','update','reset','deactivate', 'mark'], 'roles'=>['@']],
+					['allow'=>true, 'actions'=>['add','update','reset','deactivate', 'mark', 'get-days'], 'roles'=>['@']],
 				]
 			]
 		];
@@ -184,6 +185,15 @@ class CounterController extends \yii\web\Controller
                 $history->delete();
             }
         }
+    }
+
+    /**
+     * Ajax get counter current day count.
+     */
+    public function actionGetDays($counterId) {
+        if(!$counter = Counter::findOne($counterId))
+            throw new NotFoundHttpException('Counter not found');
+        return $counter->getDays();
     }
 
     /**

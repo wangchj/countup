@@ -139,7 +139,7 @@ a.counter-setting, a.counter-setting:hover, a.counter-setting:active {
         <div class="col-md-10 col-sm-12"> <!-- Container for counters -->
             <div class="row">
                 <?php foreach($counters as $counter):?>
-                    <div class="col-sm-6" style="padding-top:15px; padding-bottom:15px"> <!-- Produce gutters between counters -->
+                    <div id="counter-container-<?=$counter->counterId?>" class="col-sm-6" style="padding-top:15px; padding-bottom:15px"> <!-- Produce gutters between counters -->
                         <div style="
                             /*border:1px solid gray;*/
                             background-color:#fff;
@@ -176,7 +176,7 @@ a.counter-setting, a.counter-setting:hover, a.counter-setting:active {
                             <div class="row">
                                 <div class="col-xs-6">
                                     <div style="font-size:12px; font-weight:normal; color:#999; margin-bottom:5px">Current Count</div>
-                                    <div style="margin-bottom:8px"><?=$counter->getDays()?> Days</div>
+                                    <div style="margin-bottom:8px"><span class="current-count"><?=$counter->getDays()?></span> Days</div>
                                     <div style="font-size:12px; font-weight:normal; color:#ccc">
                                          <?= $counter->isActive() && $counter->getCurrentStartDate() ? 'since ' . $counter->getCurrentStartDate()->format('M j, Y') : 'not running'?>
                                     </div>
@@ -258,4 +258,5 @@ a.counter-setting, a.counter-setting:hover, a.counter-setting:active {
 <script>
 var data = <?=json_encode($data)?>;
 var markUrl = '<?=Url::to(['counter/mark'])?>';
+var getDaysUrl = '<?=Url::to(['counter/get-days'])?>';
 </script>

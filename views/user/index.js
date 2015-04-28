@@ -64,6 +64,17 @@ function markClicked(action, counterId, date) {
             //console.log('mark ajax success:' + textStatus);
             Snap.select("g.cell[counter='" + counterId + "']" + "[date='" + date + "'] rect").
                 animate({fill: action == markNone ? colorNone : action == markDone ? colorDone : colorMiss}, 400);
+            
+            $.ajax({
+                type:'GET',
+                url: getDaysUrl + '?counterId=' + counterId,
+                error: function(jqXHR, textStatus, errorThrown) {
+                    console.log('get-days ajax ' + textStatus + ':' + errorThrown);
+                },
+                success: function(data, textStatus, jqXHR) {
+                    $('div#counter-container-' + counterId + ' ' + 'span.current-count').text(data);
+                }
+            });
         }
     });
 }
