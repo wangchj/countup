@@ -47,6 +47,13 @@ function counterSettingMenu() {
 
 function markClicked(action, counterId, date) {
     console.log('markClicked: ' + counterId + ', ' + date);
+    
+    //Make sure we're not marking date in the future.
+    var markDate = new Date(date);
+    var today = new Date();
+    if(dateGreater(markDate, today))
+        return;
+
     var state = getCellState(counterId, date);
     console.log(state);
 
