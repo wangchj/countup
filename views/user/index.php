@@ -80,6 +80,36 @@ a.counter-setting, a.counter-setting:hover, a.counter-setting:active {
     text-decoration: none;
 }
 
+.date-menu {
+    padding-left:0px;
+    padding-right:0px;
+    margin:0px;
+}
+
+.date-menu-item {
+    display: block;
+    padding: 5px 20px;
+    clear: both;
+    font-weight: normal;
+    font-size:12px;
+    line-height: 1.5;
+    color: #333;
+    white-space: nowrap;
+    list-style-type: none;
+    list-style: none;
+    text-decoration: none;
+    text-shadow: 0px 1px 1px #fff;
+}
+
+.date-menu-item:hover {
+    background-color: #eee;
+}
+
+.date-menu-item a{
+    color: #333;
+    text-decoration:none;
+}
+
 </style>
 
 <?php echo $this->render('@app/views/layouts/header-big.php', ['viewer'=>$viewer, 'viewee'=>$viewee]);?>
@@ -148,7 +178,7 @@ a.counter-setting, a.counter-setting:hover, a.counter-setting:active {
                                     <div style="font-size:12px; font-weight:normal; color:#999; margin-bottom:5px">Current Count</div>
                                     <div style="margin-bottom:8px"><?=$counter->getDays()?> Days</div>
                                     <div style="font-size:12px; font-weight:normal; color:#ccc">
-                                         <?= $counter->isActive() ? 'since ' . $counter->getCurrentStartDate()->format('M j, Y') : 'not running'?>
+                                         <?= $counter->isActive() && $counter->getCurrentStartDate() ? 'since ' . $counter->getCurrentStartDate()->format('M j, Y') : 'not running'?>
                                     </div>
                                 </div>
                                 <div class="col-xs-6">
@@ -176,7 +206,7 @@ a.counter-setting, a.counter-setting:hover, a.counter-setting:active {
                                     </div> <!-- row -->
                                     <div class="row">
                                         <div class="col-xs-12 cimg">
-                                            <svg id="cal<?=$counter->counterId?>"></svg>
+                                            <svg id="<?=$counter->counterId?>"></svg>
                                         </div>
                                     </div> <!-- row -->
                                 </div>
@@ -227,4 +257,5 @@ a.counter-setting, a.counter-setting:hover, a.counter-setting:active {
 
 <script>
 var data = <?=json_encode($data)?>;
+var markUrl = '<?=Url::to(['counter/mark'])?>';
 </script>

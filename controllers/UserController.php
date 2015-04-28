@@ -71,7 +71,7 @@ class UserController extends Controller
             foreach($history as $h)
                 $data[$h->date] = $h->miss ? 1 : 0; //0: a mark, 1: a miss
 
-            $res["cal{$counter->counterId}"] = $data;
+            $res["{$counter->counterId}"] = $data;
         }
         return $res;
     }

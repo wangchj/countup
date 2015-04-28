@@ -1,9 +1,62 @@
 $(function() {
     drawFigures();
+    initFigureEvents();
     initWindowResizing();
 });
 
 var prevWidth; //Figure container width before resizing
+
+var popElement = null;
+
+function initFigureEvents() {
+    $('g.cell').popover({
+        container: 'body',
+        content:   function(){
+            var counterId = $(this).attr('counter');
+            var date = $(this).attr('date');
+            var markStr = '<li class="date-menu-item"><a class="checkmark" onclick="markClicked(' + 1 + ',' + counterId + ',' + '\'' + date + '\'' + ')" href="#"><span class="glyphicon glyphicon-ok"></span> Mark Done</a></li>';
+            var missStr = '<li class="date-menu-item"><a class="checkmark" onclick="markClicked(' + 2 + ',' + counterId + ',' + '\'' + date + '\'' + ')" href="#"><span class="glyphicon glyphicon-remove"></span> Mark Miss</a></li>';
+            var clearStr = '<li class="date-menu-item"><a class="checkmark" onclick="markClicked(' + 0 + ',' + counterId + ',' + '\'' + date + '\'' + ')" href="#"><span class="glyphicon glyphicon-unchecked"></span> Clear</a></li>';
+            var res = '<ul class="date-menu">' + markStr + missStr + clearStr + '</ul>';
+            //console.log(res);
+            return res;
+        },
+        html:      true,
+        placement: 'bottom'
+    });
+
+    $('g.cell').on('show.bs.popover', function(){
+        console.log('popover show');
+        if(popElement != null)
+            $(popElement).popover('hide');
+
+        //Create content
+
+
+        //Track which element for which popover is open.
+        popElement = this;
+    });
+
+    $('g.cell').on('hide.bs.popover', function(){
+        console.log('popover hide');
+        popElement = null;
+    });
+
+    $('g.cell').on('click', function(){
+        console.log('cell click');
+        return false;
+    });
+
+    $(document).on('click', function(){
+        console.log('document click');
+        if(popElement != null) {
+            $(popElement).popover('hide');
+            popElement = null;
+        }
+    });
+
+    //$('svg g.cell').click(function(){console.log('hello');});
+}
 
 function initWindowResizing() {
     prevWidth = $('.cimg').width();
@@ -29,6 +82,7 @@ function resizeFigures() {
     });
 
     drawFigures();
+    initFigureEvents();
 }
 
 var numcol  = 7; //Number of columns in this calendar
@@ -92,7 +146,7 @@ function drawMonthCalendar(snap, i, cwidth, year, month) {
     var startOn = (new Date(year, month, 1)).getDay(); //Day of the first of this month; 0 = Sunday, 1 = Monday, etc
     var numrow  = Math.ceil((numdays + startOn) / numcol); //Number of rows in this calendar
     var width   = (((cwidth - gutter) / 2) - ((numcol - 1) * space)) / numcol; //width of cell
-    var calId   = snap.attr('id'); //Id of this svg calendar
+    var counterId = snap.attr('id'); //Counter Id
     var now     = new Date();
     //console.log(hist);
 
@@ -115,7 +169,7 @@ function drawMonthCalendar(snap, i, cwidth, year, month) {
             var y = row * width + row * space;
             var s = row * numcol + col; //Cell sequence number, starting from 0;
             var date = s - startOn + 1; //Date number, e.g. 15
-            var cellGroup = snap.group().attr({'class':'cell'});
+            var cellGroup = snap.group().attr({'class':'cell', 'counter':counterId, 'date':makeDateStr(year, month + 1, date)});
 
             //console.log(s);
             //console.log(startOn);
@@ -124,18 +178,19 @@ function drawMonthCalendar(snap, i, cwidth, year, month) {
             if(s < startOn || s >= numdays + startOn)
                 c = '#f2f2f2';
             else {
-                c = getColor(calId, new Date(year, month, date));
+                c = getColor(counterId, new Date(year, month, date));
             }
             
             //var c = s < startOn || s > numdays + startOn ? '#eeeeee' : '#d6e685';
             var rectId = 'rect' + s;
             var rect = snap.rect(x, y, width, width).attr({id:rectId, fill:c});
-            if(s >= startOn && s < startOn + numdays)
-                cellGroup.attr({'data-toggle':'tooltip', title:makeFullDateStr(year, month, date)});
-
+            //if(s >= startOn && s < startOn + numdays)
+                //cellGroup.attr({'data-toggle':'tooltip', title:makeFullDateStr(year, month, date)});
+            //var a = snap.element('a').attr({href:'#'});
             if(year == now.getFullYear() && month == now.getMonth() && date == now.getDate())
                 rect.attr({strokeWidth:1, stroke:'#aaa'});
             cellGroup.add(rect);
+            //cellGroup.add(a);
 
             if(showDateText) {
                 if(date > 0 && date <= numdays) {
@@ -163,12 +218,12 @@ var colorNo  = '#e3e3e3';
 var colorStart = '#bee685';
 var colorMiss = '#e6c785';
 
-function getColor(calId, date) {
+function getColor(counterId, date) {
     //If this date is today or in the future, set this cell as no color.
     if(dateGreaterOrEqual(date, new Date()))
         return colorNo;
 
-    var hist = data[calId]; //History data for this counter 
+    var hist = data[counterId]; //History data for this counter 
     var val = hist[makeDateStr(date.getFullYear(), date.getMonth() + 1, date.getDate())];
     return val === undefined ? colorNo : val == 0 ? colorYes : colorMiss;
 

@@ -15,6 +15,8 @@ use Yii;
  */
 class History extends \yii\db\ActiveRecord
 {
+    public static $dateFormat = 'Y-m-d';
+
     /**
      * @inheritdoc
      */

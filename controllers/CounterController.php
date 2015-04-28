@@ -19,6 +19,10 @@ use app\controllers\HistoryController;
 
 class CounterController extends \yii\web\Controller
 {
+    public $markNone = 0;
+    public $markDone = 1;
+    public $markMiss = 2;
+
 	public function behaviors()
 	{
 		return [
@@ -26,7 +30,7 @@ class CounterController extends \yii\web\Controller
 				'class'=>AccessControl::className(),
 				'rules'=>[
                     ['allow'=>true, 'actions'=>['index','view'], 'roles'=>['?','@']],
-					['allow'=>true, 'actions'=>['add','update','reset','deactivate'], 'roles'=>['@']],
+					['allow'=>true, 'actions'=>['add','update','reset','deactivate', 'mark'], 'roles'=>['@']],
 				]
 			]
 		];
@@ -127,6 +131,59 @@ class CounterController extends \yii\web\Controller
         }
 
         throw new ForbiddenHttpException();
+    }
+
+    /**
+     * Ajax call to set a date.
+     */
+    public function actionMark($action, $counterId, $date) {
+        $counter = Counter::findOne($counterId);
+        if(!$counter)
+            throw new NotFoundHttpException('Counter not found');
+
+        //Check counter owner
+        if(Yii::$app->user->identity->userId != $counter->userId)
+            throw new ForbiddenHttpException();
+
+        //$date = new DateTime($date, $counter->getTimeZone());
+
+        if(!$date = new DateTime($date, $counter->getTimeZone()))
+            throw new HttpException('Invalid date');
+        $date = $date->format(History::$dateFormat);
+
+        $history = History::findOne(['counterId'=>$counterId, 'date'=>$date]);
+
+        if(!$history) { //This date is not marked
+            if($action == $this->markNone)
+                return;
+            $history = new History();
+            $history->counterId = $counterId;
+            $history->date = $date;
+            $history->miss = ($action == $this->markMiss ? true : false);
+            $history->save();
+        }
+        else if($history->miss) { //This date is marked as miss
+            if($action == $this->markMiss)
+                return;
+            else if($action == $this->markDone) {
+                $history->miss = false;
+                $history->save();
+            }
+            else if($action == $this->markNone) {
+                $history->delete();
+            }
+        }
+        else { //This date is marked as done
+            if($action == $this->markDone)
+                return;
+            else if($action == $this->markMiss) {
+                $history->miss = true;
+                $history->save();
+            }
+            else if($action == $this->markNone) {
+                $history->delete();
+            }
+        }
     }
 
     /**
