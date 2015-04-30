@@ -1,4 +1,3 @@
-/*asdfas*/
 $(function(){
     initCounterMenu();
     //initEvents();
