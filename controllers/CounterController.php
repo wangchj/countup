@@ -9,7 +9,9 @@ use Yii;
 use yii\web\HttpException;
 use yii\web\ForbiddenHttpException;
 use yii\web\NotFoundHttpException;
+use yii\web\BadRequestHttpException;
 use yii\filters\AccessControl;
+use yii\filters\VerbFilter;
 
 //Models
 use app\models\Counter;
@@ -33,7 +35,14 @@ class CounterController extends \yii\web\Controller
                     ['allow'=>true, 'actions'=>['index','view'], 'roles'=>['?','@']],
 					['allow'=>true, 'actions'=>['add','update','reset','deactivate', 'mark', 'get-days', 'ajax-remove'], 'roles'=>['@']],
 				]
-			]
+			],
+            'verbs' => [
+                'class' => VerbFilter::className(),
+                'actions' => [
+                    'add' => ['post'],
+                ],
+            ],
+
 		];
 	}
 
@@ -42,51 +51,54 @@ class CounterController extends \yii\web\Controller
      */
     public function actionAdd()
     {
-        $this->layout = '@app/views/layouts/blank';
-
     	$counter = new Counter();
+        $counter->load(Yii::$app->request->post());
+
+        //Process label
+        if(!$counter->label = trim($counter->label))
+           throw new BadRequestHttpException('Please fill in a label.');
+
+        try{
+            $timezone = new DateTimeZone($counter->timeZone);
+        }
+        catch(Exception $ex) {
+            throw new BadRequestHttpException("Time zone {$counter->timeZone} is invalid.");
+        }
         
-        //If post back
-        if($counter->load(Yii::$app->request->post()))
-        {
-            //Process label
-            $counter->label = trim($counter->label);
-            if($counter->label === '')
-                $counter->addError('label', 'Label cannot be blank.');
+        if($counter->startDate && $date = new DateTime($counter->startDate, $timezone))
+           $counter->startDate = $date->format('Y-m-d');
+        else
+           throw new BadRequestHttpException('Format for start date cannot be understood.');
 
-            //Process date
-            $timezone = null;
-            try{
-                $timezone = new DateTimeZone($counter->timeZone);
-            }
-            catch(Exception $ex) {
-                $counter->addError('timeZone', 'Time zone is invalid');
-            }
+        $counter->userId = Yii::$app->user->id;
 
-            if($date = new DateTime($counter->startDate, $timezone))
-                $counter->startDate = $date->format('Y-m-d');
-            else
-                $counter->addError('startDate', 'In correct date format.');
-
-            $counter->userId = Yii::$app->user->id;
-
-            //If no error, save counter
-            if($counter->validate() && !$counter->hasErrors() && $counter->save())
-            {
-                $history = new History();
-                $history->counterId = $counter->counterId;
-                $history->startDate = $counter->startDate;
-
-                if($history->validate() && $history->save())
-                    $this->redirect(['site/home']);
+        if($counter->type == 'weekly') {
+            foreach($_POST['day'] as $day=>$val) {
+                if($val) {
+                    if($counter->on)
+                        $counter->on .= ',';
+                    $counter->on .= $day;
+                }
             }
         }
 
-        if(!Yii::$app->request->isPost)
-            $counter->timeZone = Yii::$app->user->identity->timeZone;
+        if(!$counter->public)
+            $counter->public = false;
 
-        $counter->public = true;
-   		return $this->render('add', ['model'=>$counter]);
+        //If no error, save counter
+        if(!$counter->validate())
+           throw new BadRequestHttpException(reset(reset($counter->errors)));
+
+        if(!$counter->save()) {
+            Yii::error($counter);
+            throw new BadRequestHttpException('Oh no, something is wrong. Your error has been logged.');
+        }
+
+        $firstEntry = new History();
+        $firstEntry->counterId = $counter->counterId;
+        $firstEntry->date = $counter->startDate;
+        $firstEntry->miss = false;
+        $firstEntry->save();
     }
 
     /**

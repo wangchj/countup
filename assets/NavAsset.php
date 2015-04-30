@@ -9,10 +9,10 @@ namespace app\assets;
 
 use yii\web\AssetBundle;
 
-class CounterAddAsset extends AssetBundle
+class NavAsset extends AssetBundle
 {
     public $sourcePath = '@app/views/layouts';
     public $css = [];
-    public $js = ['counter-add.js'];
-    public $depends = ['app\assets\JqueryUiAsset'];
+    public $js = ['navbar.js'];
+    public $depends = ['app\assets\CounterAddAsset'];
 }

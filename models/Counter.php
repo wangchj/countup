@@ -27,9 +27,7 @@ use Yii;
  * @property History[] $histories
  */
 class Counter extends \yii\db\ActiveRecord
-{
-    public $startDate;
-    
+{   
     /**
      * @inheritdoc
      */

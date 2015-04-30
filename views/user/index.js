@@ -56,6 +56,7 @@ function counterRemoveClicked(counterId) {
             console.log('Counter remove error ' + textStatus + ' ' + errorThrown);
         },
         success: function(data, textStatus, jqXHR) {
+            console.log('Counter remove success');
             $('.counter-container-' + counterId).remove();
         }
     });
