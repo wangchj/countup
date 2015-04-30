@@ -46,28 +46,14 @@ h2.friendlys {
     margin:0px;
 }
 
-.counter-menu-item a {
-    display: block;
-    padding: 5px 20px;
-    clear: both;
-    font-weight: normal;
-    line-height: 1.5;
-    color: #333;
-    white-space: nowrap;
-    list-style-type: none;
-    list-style: none;
-    text-decoration: none;
-    text-shadow: 0px 1px 1px #fff;
-}
-
-/*.counter-menu-item a:hover{
-    color:#333;
-    text-decoration: none;
-}*/
-
 .counter-menu-item {
     list-style-type: none;"
     margin:0px;
+    padding: 5px 20px;
+    color:#333;
+    white-space: nowrap;
+    text-shadow: 0px 1px 1px #fff;
+    cursor: pointer;
 }
 
 .counter-menu-item:hover{
@@ -219,7 +205,7 @@ h2.friendlys {
                                     <?=$counter->label?>
                                     <div class="pull-right">
                                             <!-- a class="counter-menu-toggle" href="#" counterId="<?=$counter->counterId?>" -->
-                                            <button class="counter-menu-toggle"><span class="glyphicon glyphicon-cog"></span></button>
+                                            <button class="counter-menu-toggle" counterId="<?=$counter->counterId?>"><span class="glyphicon glyphicon-cog"></span></button>
                                             <!-- /a -->
                                     </div>
                                 </div>
@@ -434,3 +420,22 @@ var counterAddUrl = '<?=Url::to(['counter/add'])?>';
         </div><!-- /.modal-content -->
     </div><!-- /.modal-dialog -->
 </div><!-- /.modal -->
+
+
+<div id="remove-confirm-modal" class="modal fade">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title"><b>Remove Counter</b></h4>
+            </div>
+            <div class="modal-body">
+                All history of this counter will be removed. Are you sure?
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary btn-no">No, I don't want this!</button>
+                <button type="button" class="btn btn-danger btn-yes">Yes, I am sure</button>
+            </div>
+        </div><!-- .modal-content -->
+    </div><!-- .modal-dialog -->
+</div><!-- .modal -->
