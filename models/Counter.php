@@ -44,7 +44,7 @@ class Counter extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['userId', 'label', 'startDate', 'type', 'active'], 'required'],
+            [['userId', 'label', 'startDate', 'type'], 'required'],
             [['userId', 'every'], 'integer'],
             [['public', 'active'], 'boolean'],
             [['startDate','summary', 'timeZone', 'type', 'on'], 'string'],
@@ -64,6 +64,8 @@ class Counter extends \yii\db\ActiveRecord
             'startDate' => 'Start Date',
             'summary' => 'Summary',
             'public' => 'Public',
+            'type' => 'Type',
+            'on' => 'On'
         ];
     }
 
