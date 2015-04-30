@@ -209,8 +209,8 @@ var colorStart = '#bee685';
 var colorMiss = '#e6c785';
 
 function getColor(counterId, date) {
-    //If this date is today or in the future, set this cell as no color.
-    if(dateGreaterOrEqual(date, new Date()))
+    //If this date is in the future, set this cell as no color.
+    if(dateGreater(date, new Date()))
         return colorNo;
 
     var hist = data[counterId]; //History data for this counter 
