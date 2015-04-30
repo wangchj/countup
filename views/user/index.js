@@ -4,7 +4,7 @@ $(function(){
 });
 
 function initCounterMenu() {
-    $('.counter-setting').popover({
+    $('.counter-menu-toggle').popover({
         content: function() {
             var counterId = $(this).attr('counterId');
             var setStr = '<li class="counter-menu-item">' +
@@ -21,7 +21,7 @@ function initCounterMenu() {
         container: 'body',
         html:      true,
         placement: 'bottom',
-        trigger:   'click'
+        trigger:   'focus'
     });
 }
 

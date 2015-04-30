@@ -79,7 +79,10 @@ h2.friendlys {
     padding-right:0px;
 }
 
-a.counter-setting, a.counter-setting:hover, a.counter-setting:active {
+.counter-menu-toggle, .counter-menu-toggle:focus {
+    background-color: transparent;
+    outline:0px;
+    border:0px;
     font-size:14px;
     color:#999;
     text-shadow: 0px 1px 1px #fff;
@@ -215,9 +218,9 @@ a.counter-setting, a.counter-setting:hover, a.counter-setting:active {
                                 <div class="col-xs-12" style="">
                                     <?=$counter->label?>
                                     <div class="pull-right">
-                                            <a class="counter-setting" href="#" counterId="<?=$counter->counterId?>">
-                                                <span class="glyphicon glyphicon-cog"></span>
-                                            </a>
+                                            <!-- a class="counter-menu-toggle" href="#" counterId="<?=$counter->counterId?>" -->
+                                            <button class="counter-menu-toggle"><span class="glyphicon glyphicon-cog"></span></button>
+                                            <!-- /a -->
                                     </div>
                                 </div>
                             </div>
