@@ -159,15 +159,14 @@ function drawMonthCalendar(snap, i, cwidth, year, month) {
             var y = row * width + row * space;
             var s = row * numcol + col; //Cell sequence number, starting from 0;
             var date = s - startOn + 1; //Date number, e.g. 15
-            var cellGroup = snap.group().attr({'class':'cell', 'counter':counterId, 'date':makeDateStr(year, month + 1, date)});
+            var cellGroup = snap.group();
 
-            //console.log(s);
-            //console.log(startOn);
             var c = '#d6e685';
 
             if(s < startOn || s >= numdays + startOn)
                 c = '#f2f2f2';
             else {
+                cellGroup.attr({'class':'cell', 'counter':counterId, 'date':makeDateStr(year, month + 1, date)});
                 c = getColor(counterId, new Date(year, month, date));
             }
             
@@ -216,26 +215,6 @@ function getColor(counterId, date) {
     var hist = data[counterId]; //History data for this counter 
     var val = hist[makeDateStr(date.getFullYear(), date.getMonth() + 1, date.getDate())];
     return val === undefined ? colorNo : val == 0 ? colorYes : colorMiss;
-
-    //console.log(val);
-
-    /*
-
-    for(var h = 0; h < hist.length; h++) {
-        var start = hist[h].start;
-        var end = hist[h].end == null ? null : hist[h].end;
-
-        if((dateGreaterOrEqual(date, start) && dateLess(date, end)) || (dateGreaterOrEqual(date, start) && (end == null))) {
-            if(dateEqual(date, start))
-                return colorStart;
-            //else if(dateEqual(date, end))
-            //    return '#e6c785';
-            else
-                return colorYes;
-        }
-    }*/
-
-    //return colorYes;
 }
 
 function dateEqual(date1, date2) {

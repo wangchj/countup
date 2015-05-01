@@ -87,7 +87,7 @@ function markClicked(action, counterId, date) {
     var state = getCellState(counterId, date);
     //console.log(state);
 
-    if(action == state || action < 0 || action > 2)
+    if(action == state || state == markError || action < 0 || action > 2)
         return;
 
     $.ajax({
