@@ -7,7 +7,6 @@ function initCounterMenu() {
     $('.counter-menu-toggle').popover({
         content: function() {
             var counterId = $(this).attr('counterId');
-            console.log(counterId);
             var setStr = '<li class="counter-menu-item" onclick="counterSettingClicked(' + counterId + ')">' +
                 '<span class="glyphicon glyphicon-cog"></span> Counter Settings</li>';
             var remStr =
@@ -47,7 +46,6 @@ function counterSettingClicked(counterId) {
 }
 
 function counterRemoveClicked(counterId) {
-    console.log('counterRemoveClicked() ' + counterId);
     $('#remove-confirm-modal').modal('show');
     $('#remove-confirm-modal').attr('counterId', counterId);
 }
