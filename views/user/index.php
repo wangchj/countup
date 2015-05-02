@@ -94,6 +94,7 @@ h2.friendlys {
     list-style: none;
     text-decoration: none;
     text-shadow: 0px 1px 1px #fff;
+    cursor: pointer;
 }
 
 .date-menu-item:hover {

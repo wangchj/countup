@@ -14,9 +14,9 @@ function initFigureEvents() {
         content:   function(){
             var counterId = $(this).attr('counter');
             var date = $(this).attr('date');
-            var markStr = '<li class="date-menu-item"><a class="checkmark" onclick="markClicked(' + 1 + ',' + counterId + ',' + '\'' + date + '\'' + ')" href="#"><span class="glyphicon glyphicon-ok"></span> Mark Done</a></li>';
-            var missStr = '<li class="date-menu-item"><a class="checkmark" onclick="markClicked(' + 2 + ',' + counterId + ',' + '\'' + date + '\'' + ')" href="#"><span class="glyphicon glyphicon-remove"></span> Mark Miss</a></li>';
-            var clearStr = '<li class="date-menu-item"><a class="checkmark" onclick="markClicked(' + 0 + ',' + counterId + ',' + '\'' + date + '\'' + ')" href="#"><span class="glyphicon glyphicon-unchecked"></span> Clear</a></li>';
+            var markStr = '<li class="date-menu-item" onclick="markClicked(' + 1 + ',' + counterId + ',' + '\'' + date + '\'' + ')"><span class="glyphicon glyphicon-ok"></span> Mark Done</li>';
+            var missStr = '<li class="date-menu-item" onclick="markClicked(' + 2 + ',' + counterId + ',' + '\'' + date + '\'' + ')"><span class="glyphicon glyphicon-remove"></span> Mark Miss</li>';
+            var clearStr = '<li class="date-menu-item" onclick="markClicked(' + 0 + ',' + counterId + ',' + '\'' + date + '\'' + ')"><span class="glyphicon glyphicon-unchecked"></span> Clear</li>';
             var res = '<ul class="date-menu">' + markStr + missStr + clearStr + '</ul>';
             return res;
         },
