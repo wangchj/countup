@@ -14,5 +14,5 @@ class NavAsset extends AssetBundle
     public $sourcePath = '@app/views/layouts';
     public $css = [];
     public $js = ['navbar.js'];
-    public $depends = ['app\assets\CounterAddAsset'];
+    public $depends = ['app\assets\CounterFormModalAsset'];
 }

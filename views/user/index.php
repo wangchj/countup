@@ -128,6 +128,7 @@ h2.friendlys {
     /*text-decoration: none;*/
     background-color: #fff;
     border: 1px solid #ddd;
+    cursor: pointer;
 }
 
 .modal .box-select>li:first-child {
@@ -144,7 +145,6 @@ h2.friendlys {
 .modal .box-select>li.active {
     z-index: 2;
     color: #fff;
-    cursor: default;
     background-color: #337ab7;
     border-color: #337ab7;
 }
@@ -300,6 +300,7 @@ var markUrl = '<?=Url::to(['counter/mark'])?>';
 var getDaysUrl = '<?=Url::to(['counter/get-days'])?>';
 var counterRemoveUrl = '<?=Url::to(['counter/ajax-remove'])?>';
 var counterAddUrl = '<?=Url::to(['counter/add'])?>';
+var counterDataUrl = '<?=Url::to(['counter/data'])?>';
 </script>
 
 <style>
@@ -357,17 +358,17 @@ var counterAddUrl = '<?=Url::to(['counter/add'])?>';
 
                             <div class="row" id="weekly-day-select" style="display:none">
                                 <div class="col-xs-12">
-                                    <div class="form-group field-counter-type">
+                                    <div class="form-group">
                                         <label class="control-label">On</label>
                                         <div>
                                         <ul class="box-select" style="margin-right:20px">
-                                            <li><a href="#">Mon</a></li>
-                                            <li><a href="#">Tue</a></li>
-                                            <li><a href="#">Wed</a></li>
-                                            <li><a href="#">Thu</a></li>
-                                            <li><a href="#">Fri</a></li>
-                                            <li><a href="#">Sat</a></li>
-                                            <li><a href="#">Sun</a></li>
+                                            <li>Mon</li>
+                                            <li>Tue</li>
+                                            <li>Wed</li>
+                                            <li>Thu</li>
+                                            <li>Fri</li>
+                                            <li>Sat</li>
+                                            <li>Sun</li>
                                         </ul>
                                         <input type="hidden" id="day-mon" name="day[mon]">
                                         <input type="hidden" id="day-tue" name="day[tue]">

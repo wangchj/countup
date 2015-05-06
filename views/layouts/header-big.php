@@ -35,12 +35,12 @@ h1 {
 
     <div class="container">
         <div class="row">
-            <div class="col-xs-8 col-xs-offset-2" style="text-align:center;">
-                <h1><img src="<?=$viewee->getPicture()?>" style="width:50px; margin-top:6px" class="img-circle">
-                <?="$viewee->forename $viewee->surname"?></h1>
-            </div>
-            <div class="col-xs-2" style="margin-top:15px;text-align:right">
-                <button class="btn btn-default followBtn">Follow</button>
+            <div class="col-xs-12" style="text-align:center">
+                <h1>
+                    <img src="<?=$viewee->getPicture()?>" style="width:50px; margin-top:6px" class="img-circle">
+                    <?="$viewee->forename $viewee->surname"?>
+                    <button class="btn btn-default followBtn pull-right" style="margin-top:12px">Follow</button>
+                </h1>    
             </div>
         </div><!-- row -->
     </div><!-- container -->

@@ -1,3 +1,4 @@
 $('#add-counter').click(function(){
-    $('#add-counter-modal').modal('show');
+    CounterForm.resetForAdd();
+    CounterForm.show();
 });

@@ -21,7 +21,7 @@ function initFigureEvents() {
             return res;
         },
         html:      true,
-        placement: 'bottom'
+        //placement: 'bottom'
     });
 
     $('g.cell').on('show.bs.popover', function(){
