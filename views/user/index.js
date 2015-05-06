@@ -86,7 +86,7 @@ function initRemoveModalBtnEvents() {
             },
             success: function(data, textStatus, jqXHR) {
                 console.log('Counter remove success');
-                $('#counter-container-' + counterId).remove();
+                $('#counter-container-' + counterId).fadeOut(400, function(){this.remove();});
             }
         });
 
