@@ -42,20 +42,44 @@ CounterForm.initBtnClick = function() {
     $('#add-counter-modal .modal-footer button').click(function() {
         console.log(counterAddUrl);
         console.log($('#counter-form').serialize());
-        $.ajax({
-            type: 'POST',
-            url: counterAddUrl,
-            data: $('#counter-form').serialize(),
-            error: function(jqXHR, textStatus, errorThrown) {
-                console.log('Counter add ' + textStatus + ' ' + errorThrown);
-            },
-            success: function(data, textStatus, jqXHR) {
-                $('#add-counter-modal').modal('hide');
-                console.log(data);
-                location.reload();
-            }
-        });
+        var mode = CounterForm.getMode();
+
+        if(mode == 'add') {
+            $.ajax({
+                type: 'POST',
+                url: counterAddUrl,
+                data: $('#counter-form').serialize(),
+                error: function(jqXHR, textStatus, errorThrown) {
+                    console.log('Counter add ' + textStatus + ' ' + errorThrown);
+                },
+                success: function(data, textStatus, jqXHR) {
+                    $('#add-counter-modal').modal('hide');
+                    console.log(data);
+                    location.reload();
+                }
+            });
+        }
+        else if(mode == 'update') {
+            console.log($('#counter-form').serialize());
+            $.ajax({
+                type: 'POST',
+                url: counterUpdateUrl,
+                data: $('#counter-form').serialize(),
+                error: function(jqXHR, textStatus, errorThrown) {
+                    console.log('Counter update error ' + textStatus + ' ' + errorThrown);
+                },
+                success: function(data, textStatus, jqXHR) {
+                    $('#add-counter-modal').modal('hide');
+                    console.log('counter update success');
+                    //location.reload();
+                }
+            });
+        }
     });
+}
+
+CounterForm.setCounterId = function(counterId) {
+    $('#add-counter-modal input#counter-counterid').val(counterId);
 }
 
 CounterForm.setLabel = function(text) {
@@ -183,16 +207,18 @@ CounterForm.setTitle = function(title) {
     $('#add-counter-modal .modal-title').html('<b>' + title + '</b>');
 }
 
-CounterForm.initDatePicker = function() {
-    var monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+var monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+var dateInputSel = '#counter-startdate';
 
-    $('#counter-startdate').datepicker({dateFormat: 'MM d, yy'});
+CounterForm.initDatePicker = function() {
+    $(dateInputSel).datepicker({dateFormat: 'MM d, yy'});
     var now = new Date();
-    $('#counter-startdate').val(monthNames[now.getMonth()] + ' ' + now.getDate() + ', ' + now.getFullYear());
+    $(dateInputSel).val(monthNames[now.getMonth()] + ' ' + now.getDate() + ', ' + now.getFullYear());
 }
 
 CounterForm.setStartDate = function(dateStr) {
-    $('#add-counter-modal input#counter-startDate').val(data['startDate']);
+    var date = new Date(dateStr);
+    $(dateInputSel).datepicker('setDate', date);
 }
 
 CounterForm.setTimeZone = function(name) {

@@ -301,6 +301,7 @@ var getDaysUrl = '<?=Url::to(['counter/get-days'])?>';
 var counterRemoveUrl = '<?=Url::to(['counter/ajax-remove'])?>';
 var counterAddUrl = '<?=Url::to(['counter/add'])?>';
 var counterDataUrl = '<?=Url::to(['counter/data'])?>';
+var counterUpdateUrl = '<?=Url::to(['counter/update'])?>';
 </script>
 
 <style>
@@ -318,6 +319,7 @@ var counterDataUrl = '<?=Url::to(['counter/data'])?>';
             </div>
             <div class="modal-body">
                 <form id="counter-form">
+                    <input type="hidden" id="counter-counterid" name="Counter[counterId]">
                     <div class="form-group field-counter-label required">
                         <label class="control-label" for="counter-label">Label</label>
                         <input type="text" id="counter-label" class="form-control" name="Counter[label]" maxlength="30">

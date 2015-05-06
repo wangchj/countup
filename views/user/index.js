@@ -50,6 +50,7 @@ function counterSettingClicked(counterId) {
             console.log('Counter data success ' + data);
             CounterForm.setMode('update');
             CounterForm.setTitle('Counter Settings');
+            CounterForm.setCounterId(data['counterId']);
             CounterForm.setLabel(data['label']);
             CounterForm.setSummary(data['summary']);
             CounterForm.setType(data['type']);

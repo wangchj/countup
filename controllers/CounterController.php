@@ -33,7 +33,7 @@ class CounterController extends \yii\web\Controller
 				'class'=>AccessControl::className(),
 				'rules'=>[
                     ['allow'=>true, 'actions'=>['index','view'], 'roles'=>['?','@']],
-					['allow'=>true, 'actions'=>['add','update','reset','deactivate', 'mark', 'get-days', 'ajax-remove'], 'roles'=>['@']],
+					['allow'=>true, 'actions'=>['add','update','reset','deactivate', 'mark', 'get-days', 'ajax-remove', 'data'], 'roles'=>['@']],
 				]
 			],
             'verbs' => [
@@ -47,7 +47,7 @@ class CounterController extends \yii\web\Controller
 	}
 
     /**
-     * Action for adding a new user counter
+     * Ajax action for adding a new user counter
      */
     public function actionAdd()
     {
@@ -102,21 +102,85 @@ class CounterController extends \yii\web\Controller
     }
 
     /**
-     * Updates a counter.
-     * @param $id counter id.
-     * @throws NotFoundHttpException if the model cannot be found
+     * Returns the json data for a counter.
      */
-    public function actionUpdate($id)
-    {
-        $model = $this->findModel($id);
+    public function actionData($counterId) {
+        if(!$counter = Counter::findOne($counterId))
+            throw new NotFoundHttpException('Counter not found');
+        if(Yii::$app->user->isGuest || !$this->canAccessCounter(Yii::$app->user->identity, $counter))
+            throw new ForbiddenHttpException();
 
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            return $this->redirect(['view', 'id' => $model->userId]);
+        $res = [
+            'counterId'=>$counter->counterId,
+            'userId'=>$counter->userId,
+            'label'=>$counter->label,
+            'summary'=>$counter->summary,
+            'timeZone'=>$counter->getTimeZone(),
+            'startDate'=>(new DateTime($counter->startDate, $counter->getTimeZone()))->format('m/j/Y'),
+            'type'=>$counter->type,
+            'every'=>$counter->every,
+            'on'=>$counter->on,
+            'active'=>$counter->isActive(),
+            'public'=>$counter->public
+        ];
+
+        return json_encode($res);
+    }
+
+    private function canAccessCounter($user, $counter) {
+        return $counter->public || $user->userId == $counter->userId;
+    }
+
+    /**
+     * Ajax counter update
+     * @throws NotFoundHttpException if the counter cannot be found
+     */
+    public function actionUpdate()
+    {
+        $counter = $this->findModel($_REQUEST['Counter']['counterId']);
+
+        $counter->load(Yii::$app->request->post());
+
+        if(!$counter->label = trim($counter->label))
+           throw new BadRequestHttpException('Please fill in a label.');
+
+        try{
+            $timezone = new DateTimeZone($counter->timeZone);
         }
-        else {
-            return $this->render('update', [
-                'model' => $model,
-            ]);
+        catch(Exception $ex) {
+            throw new BadRequestHttpException("Time zone {$counter->timeZone} is invalid.");
+        }
+        
+        if($counter->startDate && $date = new DateTime($counter->startDate, $timezone))
+           $counter->startDate = $date->format('Y-m-d');
+        else
+           throw new BadRequestHttpException('Format for start date cannot be understood.');
+
+        //$counter->userId = Yii::$app->user->id;
+
+        if($counter->type == 'weekly') {
+            $counter->on = '';
+            foreach($_POST['day'] as $day=>$val) {
+                if($val) {
+                    if($counter->on)
+                        $counter->on .= ',';
+                    $counter->on .= $day;
+                }
+            }
+        }
+
+        if(isset($_POST['Counter']['public']))
+            $counter->public = true;
+        else
+            $counter->public = false;
+
+        //If no error, save counter
+        if(!$counter->validate())
+           throw new BadRequestHttpException(reset(reset($counter->errors)));
+
+        if(!$counter->save()) {
+            Yii::error($counter);
+            throw new BadRequestHttpException('Oh no, something is wrong. Your error has been logged.');
         }
     }
 
