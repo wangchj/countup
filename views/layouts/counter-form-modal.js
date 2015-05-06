@@ -207,7 +207,7 @@ CounterForm.setTitle = function(title) {
     $('#add-counter-modal .modal-title').html('<b>' + title + '</b>');
 }
 
-var monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+//var monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
 var dateInputSel = '#counter-startdate';
 
 CounterForm.initDatePicker = function() {
