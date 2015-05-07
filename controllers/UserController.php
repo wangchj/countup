@@ -38,7 +38,11 @@ class UserController extends Controller
     public function actionIndex($token)
     {
         //Viewer is the user who is currently logged in and viewing.
-        $viewer = Yii::$app->user->identity;
+        if(!$viewer = Yii::$app->user->identity) {
+            Yii::$app->user->logout();
+            $this->goHome();
+        }
+
 
         //Viewee is the user being queried and viewed.
         $viewee = User::findOne(['userName'=>$token]);
@@ -49,7 +53,10 @@ class UserController extends Controller
         if(!$viewee)
             throw new HttpException(400,'User does not exist');
 
-        $counters = $viewer->userId == $viewee->userId ? $viewee->counters : $viewee->getCounters()->where(['public'=>true])->all();
+        $counters = $viewer->userId == $viewee->userId ?
+            $viewee->getCounters()->orderBy('dispOrder')->all() :
+            $viewee->getCounters()->where(['public'=>true])->orderBy('dispOrder')->all();
+
         $data = $this->makeCalendarData($counters, $viewer, $viewee);
         $this->layout = '@app/views/layouts/blank';
         return $this->render('index', ['viewer'=>$viewer, 'viewee'=>$viewee, 'counters'=>$counters, 'data'=>$data]);
