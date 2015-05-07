@@ -33,7 +33,7 @@ class CounterController extends \yii\web\Controller
 				'class'=>AccessControl::className(),
 				'rules'=>[
                     ['allow'=>true, 'actions'=>['index','view'], 'roles'=>['?','@']],
-					['allow'=>true, 'actions'=>['add','update','reset','deactivate', 'mark', 'get-days', 'ajax-remove', 'data'], 'roles'=>['@']],
+					['allow'=>true, 'actions'=>['add','update','reset','deactivate', 'mark', 'get-days', 'ajax-remove', 'data', 'update-display-order'], 'roles'=>['@']],
 				]
 			],
             'verbs' => [
@@ -84,6 +84,8 @@ class CounterController extends \yii\web\Controller
 
         if(!$counter->public)
             $counter->public = false;
+
+        $counter->dispOrder = Counter::getNextOrderNum($counter->userId);
 
         //If no error, save counter
         if(!$counter->validate())
@@ -185,6 +187,30 @@ class CounterController extends \yii\web\Controller
     }
 
     /**
+     * Ajax update counter display order.
+     * Index are 0 based where smaller index is displayed before larger index.
+     */
+    public function actionUpdateDisplayOrder($counterId, $oldIndex, $newIndex) {
+        if(!$counter = Counter::findOne($counterId))
+            throw new NotFoundHttpException('Counter not found');
+        if(Yii::$app->user->isGuest || Yii::$app->user->identity->userId != $counter->userId)
+            throw new ForbiddenHttpException('Permission denied');
+        if($oldIndex == $newIndex || $newIndex < 0)
+            return;
+        if($oldIndex > $newIndex)
+            $command = Yii::$app->db->createCommand(
+                "update Counters set dispOrder = dispOrder + 1 where dispOrder < $oldIndex and dispOrder >= $newIndex"
+            );
+        else
+            $command = Yii::$app->db->createCommand(
+                "update Counters set dispOrder = dispOrder - 1 where dispOrder > $oldIndex and dispOrder <= $newIndex"
+            );
+        $command->execute();
+        $counter->dispOrder = $newIndex;
+        $counter->save();
+    }
+
+    /**
      * Sets start date of the count to today's date.
      * @param $id counter id.
      * @throws ForbiddenHttpException current user is not the owner of the counter.
@@ -281,6 +307,7 @@ class CounterController extends \yii\web\Controller
         if(Yii::$app->user->isGuest || Yii::$app->user->identity->userId != $counter->userId)
             throw new ForbiddenHttpException();
         History::deleteAll(['counterId'=>$counterId]);
+        $command = Yii::$app->db->createCommand("update Counters set dispOrder = dispOrder - 1 where dispOrder > {$counter->dispOrder}")->execute();
         $counter->delete();
     }
 

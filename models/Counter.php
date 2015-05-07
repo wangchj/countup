@@ -22,6 +22,7 @@ use Yii;
  * @property string  $on
  * @property boolean $active
  * @property boolean $public
+ * @property integer $dispOrder
  *
  * @property Users $user
  * @property History[] $histories
@@ -42,8 +43,8 @@ class Counter extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['userId', 'label', 'startDate', 'type'], 'required'],
-            [['userId', 'every'], 'integer'],
+            [['userId', 'label', 'startDate', 'type', 'dispOrder'], 'required'],
+            [['userId', 'every', 'dispOrder'], 'integer'],
             [['public', 'active'], 'boolean'],
             [['startDate','summary', 'timeZone', 'type', 'on'], 'string'],
             [['label'], 'string', 'max' => 30]
@@ -63,7 +64,8 @@ class Counter extends \yii\db\ActiveRecord
             'summary' => 'Summary',
             'public' => 'Public',
             'type' => 'Type',
-            'on' => 'On'
+            'on' => 'On',
+            'dispOrder' => 'Display Order'
         ];
     }
 
@@ -201,6 +203,20 @@ class Counter extends \yii\db\ActiveRecord
         }
 
         return ['startDate'=>$maxStartDate, 'endDate'=>$maxEndDate, 'count'=>$max];
+    }
+
+    /**
+     * Gets the next counter display order number of an user.
+     * If userId is invalid or error occurred, 1 is returned.
+     */
+    public static function getNextOrderNum($userId) {
+        if(!$userId)
+            return 1;
+
+        if($max = Counter::find()->where(['userId'=>$userId])->max('dispOrder'))
+            return $max + 1;
+        else
+            return 1;
     }
 
     /**

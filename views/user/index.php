@@ -6,11 +6,12 @@ use app\lib\DateTime;
 
 class Asset extends AssetBundle {
     public $sourcePath = '@app/views/user';
-    public $js = ['cal.js', 'index.js'];
-    public $css = ['cal.css'];
+    public $js = ['cal.js', 'index.js', 'counter-sortable.js'];
+    public $css = ['cal.css', 'counter-sortable.css'];
     public $depends = [
         'app\assets\SnapsvgAsset',
         'yii\web\JqueryAsset',
+        'app\assets\SortableAsset',
     ];
 }
 Asset::register($this);
@@ -132,9 +133,9 @@ h2.friendlys {
 <?php else: ?>
     <div class="row">
         <div class="col-md-10 col-sm-12"> <!-- Container for counters -->
-            <div class="row">
+            <div class="row counters-sortable">
                 <?php foreach($counters as $counter):?>
-                    <div id="counter-container-<?=$counter->counterId?>" class="col-sm-6" style="padding-top:15px; padding-bottom:15px"> <!-- Produce gutters between counters -->
+                    <div id="counter-container-<?=$counter->counterId?>" counterid="<?=$counter->counterId?>" class="col-sm-6" style="padding-top:15px; padding-bottom:15px"> <!-- Produce gutters between counters -->
                         <div style="
                             /*border:1px solid gray;*/
                             background-color:#fff;
@@ -248,6 +249,7 @@ var counterRemoveUrl = '<?=Url::to(['counter/ajax-remove'])?>';
 var counterAddUrl = '<?=Url::to(['counter/add'])?>';
 var counterDataUrl = '<?=Url::to(['counter/data'])?>';
 var counterUpdateUrl = '<?=Url::to(['counter/update'])?>';
+var updateOrderUrl = '<?=Url::to(['counter/update-display-order'])?>';
 </script>
 
 <?=$this->render('@app/views/layouts/CounterFormModal.php');?>

@@ -11,7 +11,8 @@ INSERT INTO Counters VALUES(
     /*every*/     1,
     /*on*/        null,
     /*active*/    1,
-    /*public*/    1
+    /*public*/    1,
+    /*dispOrder*/ 0
 );
 
 INSERT INTO Counters VALUES(
@@ -25,7 +26,8 @@ INSERT INTO Counters VALUES(
     /*every*/     2,
     /*on*/        null,
     /*active*/    1,
-    /*public*/    1
+    /*public*/    1,
+    /*dispOrder*/ 1
 );
 
 -- # Section 1: Daily Tests

@@ -61,6 +61,7 @@ create table Counters (
     "on"      text        null,               -- See comment above
     active    boolean     not null default 1,
     public    boolean     not null default 1,
+    dispOrder integer     not null default 0, -- Display order on the UI
     foreign key(userId) references Users(userId)
 );
 

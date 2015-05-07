@@ -23,7 +23,8 @@
     "require-dev": {
         "yiisoft/yii2-codeception": "*",
         "yiisoft/yii2-debug": "*",
-        "yiisoft/yii2-gii": "*"
+        "yiisoft/yii2-gii": "*",
+        "bower-asset/sortable": "*"
     },
     "config": {
         "process-timeout": 1800
@@ -49,6 +50,12 @@
         "asset-installer-paths": {
             "npm-asset-library": "vendor/npm",
             "bower-asset-library": "vendor/bower"
+        },
+        "asset-repositories": {
+            "bowser-asset/sortable": {
+                "type": "bower-github",
+                "url": "https://github.com/RubaXa/Sortable.git"
+            }
         }
     }
 }
