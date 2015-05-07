@@ -7,7 +7,7 @@ use app\lib\DateTime;
 class Asset extends AssetBundle {
     public $sourcePath = '@app/views/user';
     public $js = ['cal.js', 'index.js', 'counter-sortable.js'];
-    public $css = ['cal.css', 'counter-sortable.css'];
+    public $css = ['cal.css'];
     public $depends = [
         'app\assets\SnapsvgAsset',
         'yii\web\JqueryAsset',
