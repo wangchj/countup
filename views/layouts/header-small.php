@@ -10,14 +10,6 @@ h1 {
     color:#505050;
     margin-top:0px;
 }
-
-.followBtn {
-    font-family: proxima-nova, proxima-nova, Helvetica, Arial, sans-serif;
-    font-size: 12px;
-    font-weight:bold;
-    color:#505050;
-}
-
 </style>
 
 <div id="header-wrap" style="

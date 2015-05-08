@@ -1,4 +1,107 @@
-INSERT INTO Users VALUES(1,'Jeff','Jeff', 'Wang', 'me@test.com', null, '$2y$10$KO5HdM03CdSOrpfBGJEKNedmvN1yLGNEE9w6AK73O.0QdEg6qlPAi','2014-08-22 19:50:49', null, 'America/Chicago', null, 'weMW5GI3aQbaV-IgsdE3VS8Wish83uFI');
+INSERT INTO Users VALUES(
+    /*userId*/   1,
+    /*userName*/ 'Jeff',
+    /*foreName*/ 'Jeff',
+    /*surname*/  'Wang',
+    /*email*/    'me@test.com',
+    /*fbId*/     null,
+    /*phash*/    '$2y$10$KO5HdM03CdSOrpfBGJEKNedmvN1yLGNEE9w6AK73O.0QdEg6qlPAi',
+    /*joinDate*/ '2014-08-22 19:50:49',
+    /*location*/ null,
+    /*timeZone*/ 'America/Chicago',
+    /*picture*/  null,
+    /*authKey*/  'weMW5GI3aQbaV-IgsdE3VS8Wish83uFI'
+);
+
+INSERT INTO Users VALUES(
+    /*userId*/   2,
+    /*userName*/ null,
+    /*foreName*/ 'Eugenie',
+    /*surname*/  'Bouchard',
+    /*email*/    'a@a.com',
+    /*fbId*/     null,
+    /*phash*/    '$2y$10$KO5HdM03CdSOrpfBGJEKNedmvN1yLGNEE9w6AK73O.0QdEg6qlPAi',
+    /*joinDate*/ '2014-08-22 19:50:49',
+    /*location*/ null,
+    /*timeZone*/ 'America/Chicago',
+    /*picture*/  null,
+    /*authKey*/  'weMW5GI3aQbaV-IgsdE3VS8Wish83uFI'
+);
+
+INSERT INTO Users VALUES(
+    /*userId*/   3,
+    /*userName*/ null,
+    /*foreName*/ 'Nei',
+    /*surname*/  'Nishikori',
+    /*email*/    'b@b.com',
+    /*fbId*/     null,
+    /*phash*/    '$2y$10$KO5HdM03CdSOrpfBGJEKNedmvN1yLGNEE9w6AK73O.0QdEg6qlPAi',
+    /*joinDate*/ '2014-08-22 19:50:49',
+    /*location*/ null,
+    /*timeZone*/ 'America/Chicago',
+    /*picture*/  null,
+    /*authKey*/  'weMW5GI3aQbaV-IgsdE3VS8Wish83uFI'
+);
+
+INSERT INTO Users VALUES(
+    /*userId*/   4,
+    /*userName*/ null,
+    /*foreName*/ 'Ana',
+    /*surname*/  'Ivanovic',
+    /*email*/    'c@c.com',
+    /*fbId*/     null,
+    /*phash*/    '$2y$10$KO5HdM03CdSOrpfBGJEKNedmvN1yLGNEE9w6AK73O.0QdEg6qlPAi',
+    /*joinDate*/ '2014-08-22 19:50:49',
+    /*location*/ null,
+    /*timeZone*/ 'America/Chicago',
+    /*picture*/  null,
+    /*authKey*/  'weMW5GI3aQbaV-IgsdE3VS8Wish83uFI'
+);
+
+INSERT INTO Users VALUES(
+    /*userId*/   5,
+    /*userName*/ null,
+    /*foreName*/ 'Roger',
+    /*surname*/  'Federer',
+    /*email*/    'd@d.com',
+    /*fbId*/     null,
+    /*phash*/    '$2y$10$KO5HdM03CdSOrpfBGJEKNedmvN1yLGNEE9w6AK73O.0QdEg6qlPAi',
+    /*joinDate*/ '2014-08-22 19:50:49',
+    /*location*/ null,
+    /*timeZone*/ 'America/Chicago',
+    /*picture*/  null,
+    /*authKey*/  'weMW5GI3aQbaV-IgsdE3VS8Wish83uFI'
+);
+
+INSERT INTO Users VALUES(
+    /*userId*/   6,
+    /*userName*/ null,
+    /*foreName*/ 'Michael',
+    /*surname*/  'Jordan',
+    /*email*/    'e@e.com',
+    /*fbId*/     null,
+    /*phash*/    '$2y$10$KO5HdM03CdSOrpfBGJEKNedmvN1yLGNEE9w6AK73O.0QdEg6qlPAi',
+    /*joinDate*/ '2014-08-22 19:50:49',
+    /*location*/ null,
+    /*timeZone*/ 'America/Chicago',
+    /*picture*/  null,
+    /*authKey*/  'weMW5GI3aQbaV-IgsdE3VS8Wish83uFI'
+);
+
+INSERT INTO Users VALUES(
+    /*userId*/   7,
+    /*userName*/ null,
+    /*foreName*/ 'Ivy',
+    /*surname*/  'Chung',
+    /*email*/    'f@f.com',
+    /*fbId*/     null,
+    /*phash*/    '$2y$10$KO5HdM03CdSOrpfBGJEKNedmvN1yLGNEE9w6AK73O.0QdEg6qlPAi',
+    /*joinDate*/ '2014-08-22 19:50:49',
+    /*location*/ null,
+    /*timeZone*/ 'America/Chicago',
+    /*picture*/  null,
+    /*authKey*/  'weMW5GI3aQbaV-IgsdE3VS8Wish83uFI'
+);
 
 INSERT INTO Counters VALUES(
     /*counterId*/ 1,
@@ -70,3 +173,12 @@ insert into History values(2, '2015-04-16', 0);
 insert into History values(2, '2015-04-18', 1);
 insert into History values(2, '2015-04-22', 0);
 insert into History values(2, '2015-04-24', 0);
+
+
+insert into Follows values(1, 2);
+insert into Follows values(1, 3);
+insert into Follows values(1, 4);
+insert into Follows values(1, 5);
+insert into Follows values(2, 1);
+insert into Follows values(3, 4);
+insert into Follows values(6, 1);

@@ -72,3 +72,11 @@ create table History (
     primary key (counterId, date),
     foreign key(counterId) references Counters(counterId)
 );
+
+create table Follows (
+    followerId integer not null,
+    followeeId integer not null,
+    primary key (followerId, followeeId),
+    foreign key (followerid) references Users(userId),
+    foreign key (followeeId) references Users(userId)
+);

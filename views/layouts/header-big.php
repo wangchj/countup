@@ -10,14 +10,6 @@ h1 {
     color:#505050;
     margin-top:0px;
 }
-
-.followBtn {
-    font-family: proxima-nova, proxima-nova, Helvetica, Arial, sans-serif;
-    font-size: 12px;
-    font-weight:bold;
-    color:#505050;
-}
-
 </style>
 
 <div id="header-wrap" style="
@@ -39,7 +31,13 @@ h1 {
                 <h1>
                     <img src="<?=$viewee->getPicture()?>" style="width:50px; margin-top:6px" class="img-circle">
                     <?="$viewee->forename $viewee->surname"?>
-                    <button class="btn btn-default followBtn pull-right" style="margin-top:12px">Follow</button>
+                    <?php if($viewer->userId != $viewee->userId):?>
+                        <?php if($viewer->isFollowerOf($viewee->userId)):?>
+                            <button class="btn btn-default btn-unfollow pull-right" user-id="<?=$viewee->userId?>" style="">Unfollow</button>
+                        <?php else:?>
+                            <button class="btn btn-default btn-follow pull-right" user-id="<?=$viewee->userId?>" style="margin-top:12px">Follow</button>
+                        <?php endif;?>
+                    <?php endif;?>
                 </h1>    
             </div>
         </div><!-- row -->

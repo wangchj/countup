@@ -6,9 +6,11 @@ use \DateTime;
 use Yii;
 use app\models\User;
 use app\models\TempUser;
+use app\models\Follow;
 use yii\data\ActiveDataProvider;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
+use yii\web\ForbiddenHttpException;
 use yii\filters\VerbFilter;
 use yii\web\HttpException;
 use yii\helpers\Url;
@@ -250,6 +252,41 @@ class UserController extends Controller
         }
 
         return $this->render('update', ['user' => $user]);
+    }
+
+    /**
+     * Add a link between two users where follower follows followee.
+     * This is to be called by ajax.
+     */
+    public function actionFollow($followerId, $followeeId) {
+        if(Yii::$app->user->isGuest || Yii::$app->user->identity->userId != $followerId)
+            throw new ForbiddenHttpException();
+        if(!$follower = User::findOne($followerId))
+            throw new NotFoundHttpException('Follower does not exist');
+        if(!$followee = User::findOne($followeeId))
+            throw new NotFoundHttpException('Followee does not exist');
+
+        $follow = new Follow();
+        $follow->followerId = $followerId;
+        $follow->followeeId = $followeeId;
+        $follow->save();
+    }
+
+    /**
+     * Removes a link between two users where follower unfollos followee.
+     * This is to be called by ajax.
+     */
+    public function actionUnfollow($followerId, $followeeId) {
+        if(Yii::$app->user->isGuest || Yii::$app->user->identity->userId != $followerId)
+            throw new ForbiddenHttpException();
+        if(!$follower = User::findOne($followerId))
+            throw new NotFoundHttpException('Follower does not exist');
+        if(!$followee = User::findOne($followeeId))
+            throw new NotFoundHttpException('Followee does not exist');
+        if(!$follow = Follow::findOne(['followerId'=>$followerId, 'followeeId'=>$followeeId]))
+            throw new NotFoundHttpException('Following relationship is not found.');
+
+        $follow->delete();
     }
 
     /**

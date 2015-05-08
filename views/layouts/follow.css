@@ -1,0 +1,11 @@
+.btn-follow, .btn-unfollow, .btn-follow:focus, .btn-unfollow:focus{
+    font-family: proxima-nova, proxima-nova, Helvetica, Arial, sans-serif;
+    font-size: 12px;
+    font-weight:bold;
+    background-color:#fff;
+    color:#505050;
+}
+
+h1 .btn-follow, h1 .btn-unfollow {
+    margin-top:12px;
+}

@@ -250,6 +250,14 @@ var counterAddUrl = '<?=Url::to(['counter/add'])?>';
 var counterDataUrl = '<?=Url::to(['counter/data'])?>';
 var counterUpdateUrl = '<?=Url::to(['counter/update'])?>';
 var updateOrderUrl = '<?=Url::to(['counter/update-display-order'])?>';
+var followUrl = '<?=Url::to(['user/follow'])?>';
+var unfollowUrl = '<?=Url::to(['user/unfollow'])?>';
+
+var app = {
+    user: {
+        userId: <?=Yii::$app->user->identity->userId?>
+    }
+};
 </script>
 
 <?=$this->render('@app/views/layouts/CounterFormModal.php');?>

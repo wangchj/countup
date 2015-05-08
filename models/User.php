@@ -72,6 +72,13 @@ class User extends \yii\db\ActiveRecord implements \yii\web\IdentityInterface
     }
 
     /**
+     * If this user follows user specified by $userId.
+     */
+    public function isFollowerOf($userId) {
+        return Follow::findOne(['followerId'=>$this->userId, 'followeeId'=>$userId]) != null;
+    }
+
+    /**
      * @return \yii\db\ActiveQuery
      */
     public function getCounters()
