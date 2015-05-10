@@ -111,28 +111,13 @@ h2.friendlys {
 <?php echo $this->render('@app/views/layouts/header-big.php', ['viewer'=>$viewer, 'viewee'=>$viewee]);?>
 
 <div class="container">
-
-<?php if(count($counters) == 0): ?>
-    <div class="row" style="
-        /*border:1px solid gray;*/
-        background-color:#fff;
-        padding:20px;
-        font-size:18px;
-        font-weight:bold;
-        color:#808080;
-        box-shadow: 0 1px 1px 0 rgba(0, 0, 0, 0.22);
-        border-radius: 6px;">
-        <div class="col-xs-12" style="text-align:center;">
-            <?php if($viewer->userId == $viewee->userId) : ?>
-                You currently have no counters. Click on Add Counter to add one!
-            <?php else: ?>
-                <?=$viewee->forename?> currently have no counters.
-            <?php endif;?>
-        </div>
-    </div>
-<?php else: ?>
     <div class="row">
         <div class="col-md-10 col-sm-12"> <!-- Container for counters -->
+            
+            <?php if(count($counters) == 0):?>
+                <?php echo $this->render('@app/views/layouts/NoCounterWidget.php', ['viewer'=>$viewer, 'viewee'=>$viewee])?>
+            <?php endif;?>
+
             <div class="row counters-sortable">
                 <?php foreach($counters as $counter):?>
                     <div id="counter-container-<?=$counter->counterId?>" counterid="<?=$counter->counterId?>" class="col-sm-6" style="padding-top:15px; padding-bottom:15px"> <!-- Produce gutters between counters -->
@@ -238,7 +223,6 @@ h2.friendlys {
             </div>
         </div>
     </div>
-<?php endif;?>
 </div>
 
 <script>
