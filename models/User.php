@@ -64,6 +64,13 @@ class User extends \yii\db\ActiveRecord implements \yii\web\IdentityInterface
         ];
     }
 
+    /**
+     * Returns user's user name if exist, else user's user id number.
+     */
+    public function getIdentifier() {
+        return $this->userName ? $this->userName : $this->userId;
+    }
+
     public function getPicture() {
         return $this->picture ? $this->picture :
             'http://www.k2g2.org/lib/plugins/avatar/stitchy/stitchy.php?seed=' .
@@ -77,6 +84,47 @@ class User extends \yii\db\ActiveRecord implements \yii\web\IdentityInterface
     public function isFollowerOf($userId) {
         return Follow::findOne(['followerId'=>$this->userId, 'followeeId'=>$userId]) != null;
     }
+
+    /**
+     * Get a random list of users who this user follows.
+     */
+    public function getRandomFollows($limit) {
+        $followCount = Follow::find()->where(['followerId'=>$this->userId])->count();
+        
+        if($followCount <= $limit) {
+            $res = User::find()->innerJoin(Follow::tableName(), 'userId=followeeId')
+                ->where(['followerId'=>$this->userId])->all();
+        }
+        else {
+            $offset = rand(0, $followCount - $limit);
+            $res = User::find()->innerJoin(Follow::tableName(), 'userId=followeeId')
+                ->where(['followerId'=>$this->userId])
+                ->offset($offset)->limit($limit)->all();
+        }
+
+        shuffle($res);
+        return $res;
+    }
+
+    public function getRandomFollowers($limit) {
+        $followerCount = Follow::find()->where(['followeeId'=>$this->userId])->count();
+        
+        if($followerCount <= $limit) {
+            $res = User::find()->innerJoin(Follow::tableName(), 'userId=followerId')
+                ->where(['followeeId'=>$this->userId])->all();
+        }
+        else {
+            $offset = rand(0, $followCount - $limit);
+            $res = User::find()->innerJoin(Follow::tableName(), 'userId=followerId')
+                ->where(['followeeId'=>$this->userId])
+                ->offset($offset)->limit($limit)->all();
+        }
+
+        shuffle($res);
+        return $res;
+    }
+
+
 
     /**
      * @return \yii\db\ActiveQuery

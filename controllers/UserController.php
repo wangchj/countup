@@ -61,7 +61,14 @@ class UserController extends Controller
 
         $data = $this->makeCalendarData($counters, $viewer, $viewee);
         $this->layout = '@app/views/layouts/blank';
-        return $this->render('index', ['viewer'=>$viewer, 'viewee'=>$viewee, 'counters'=>$counters, 'data'=>$data]);
+        return $this->render('index', [
+            'viewer'=>$viewer,
+            'viewee'=>$viewee,
+            'counters'=>$counters,
+            'follows'=>$viewee->getRandomFollows(6),
+            'followers'=>$viewee->getRandomFollowers(6),
+            'data'=>$data
+        ]);
     }
 
     /**

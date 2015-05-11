@@ -18,29 +18,6 @@ Asset::register($this);
 ?>
 
 <style>
-.friendly {
-    height:100px;
-}
-
-h2.friendlys {
-    font-family: proxima-nova, proxima-nova, Helvetica, Arial, sans-serif;
-    font-size: 16px;
-    font-weight:bold;
-    color:#505050;
-    text-shadow: 0px 1px 1px #fff;
-    text-align: center;
-    margin-bottom: 20px;
-}
-
-.friendly-name {
-    font-family: proxima-nova, proxima-nova, Helvetica, Arial, sans-serif;
-    font-size: 11px;
-    font-weight:bold;
-    color:#505050;
-    margin-top:0px;
-    text-align: center;
-}
-
 .counter-menu {
     padding-left:0px;
     padding-right:0px;
@@ -187,40 +164,47 @@ h2.friendlys {
                 <?php endforeach;?>
             </div>
         </div>
-        <div class="col-sm-2 hidden-sm">
-            <div class="row">
-                <div class="col-sm-12">
-                    <h2 class="friendlys">Friendly's</h2>
-                </div>
-            </div>
-            <div class="row">
-                <?php
-                $pics = [
-                    ['name'=>'Ana Ivanovic', 'pic'=>'ai.jpg'], 
-                    ['name'=>'Ivy Chung', 'pic'=>'ic.jpg'],
-                    ['name'=>'Kei Nishikori', 'pic'=>'kn.jpg'],
-                    ['name'=>'Maria Sharapova', 'pic'=>'ms.jpg'],
-                    ['name'=>' Pete Sampras', 'pic'=>'ps.jpg'],
-                    ['name'=>'Rafael Nadal', 'pic'=>'rn.jpg'],
-                    ['name'=>'Eugenie Bouchard', 'pic'=>'gb.jpg'],
-                    ['name'=>'John Isner', 'pic'=>'ji.jpg'],
-                    ['name'=>'Michael Jordan', 'pic'=>'mj.jpg'],
-                    ['name'=>'Novak Djokovic', 'pic'=>'nd.png'],
-                    ['name'=>'Roger Federer', 'pic'=>'rf.jpg'],
-                    ['name'=>'Venice Williams', 'pic'=>'vw.png']
-                ];
-                for($i = 0; $i < 12; $i++):
-                ?>
-                    <?php
-                        $rand = rand(0, count($pics) - 1);
-                    ?>
-                    <div class="col-sm-6 friendly" style="text-align:center">
-                        <img src="/~wangchj/countup/web/images/friends/<?=$pics[$rand]['pic']?>" style="width:50px;" class="img-circle img-thumbnail">
-                        <div class="friendly-name"><?=$pics[$rand]['name']?> <!-- span class="badge" style="font-size:8px;"><?=rand(1, 100)?></span--></div>
+        <div class="col-sm-2 hidden-sm friends-side">
+            <?php if($follows):?>
+                <div class="row">
+                    <div class="col-sm-12">
+                        <h2>Follows</h2>
                     </div>
-                    <?php array_splice($pics, $rand, 1);?>
-                <?php endfor;?>
-            </div>
+                </div>
+                <div class="row">
+                    <?php foreach($follows as $follow): ?>
+                        <div class="col-sm-6 friend" style="text-align:center">
+                            <a href="<?=Url::to(['user/index', 'token'=>$follow->getIdentifier()])?>">
+                                <img src="<?=$follow->getPicture()?>" style="width:50px;" class="img-circle img-thumbnail">
+                                <div>
+                                    <?="{$follow->forename} {$follow->surname}"?>
+                                </div>
+                            </a>
+                        </div>
+                    <?php endforeach;?>
+                </div>
+            <?php endif;?>
+
+            <?php if($followers):?>
+                <div class="row">
+                    <div class="col-sm-12">
+                        <h2>Followers</h2>
+                    </div>
+                </div>
+                <div class="row">
+                    <?php foreach($followers as $follower): ?>
+                        <div class="col-sm-6 friend" style="text-align:center">
+                            <a href="<?=Url::to(['user/index', 'token'=>$follower->getIdentifier()])?>">
+                                <img src="<?=$follower->getPicture()?>" style="width:50px;" class="img-circle img-thumbnail">
+                                <div>
+                                    <?="{$follower->forename} {$follower->surname}"?>
+                                </div>
+                            </a>
+                        </div>
+                    <?php endforeach;?>
+                </div>
+            <?php endif;?>
+            
         </div>
     </div>
 </div>
