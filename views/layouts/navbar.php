@@ -59,10 +59,17 @@ nav.navbar {
                 <li><a href="<?=Url::to(['user/settings'])?>">Settings</a></li>
                 <li><a href="<?=Url::to(['site/logout'])?>" data-method="post">Logout</a></li>
                 <li>
-                    <img src="<?=Yii::$app->user->identity->getPicture()?>"
-                        title="Logged in as <?=Yii::$app->user->identity->forename?>"
-                        style="width:40px; margin-top:6px"
-                        class="img-circle">
+                    <?php if(Yii::$app->user->identity->picture): ?>
+                        <img src="<?=Yii::$app->user->identity->getPicture()?>"
+                            title="Logged in as <?=Yii::$app->user->identity->forename?>"
+                            style="width:40px; margin-top:6px"
+                            class="img-circle">
+                    <?php else: ?>
+                        <img src="<?=Yii::$app->user->identity->getPicture()?>"
+                            title="Logged in as <?=Yii::$app->user->identity->forename?>"
+                            style="width:40px; margin-top:6px; border-width:2px; border-color:#eee"
+                            class="img-circle img-thumbnail">
+                    <?php endif;?>
                 </li>
             </ul>
         </div>

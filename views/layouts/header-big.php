@@ -29,7 +29,11 @@ h1 {
         <div class="row">
             <div class="col-xs-12" style="text-align:center">
                 <h1>
-                    <img src="<?=$viewee->getPicture()?>" style="width:50px; margin-top:6px" class="img-circle">
+                    <?php if($viewee->picture): ?>
+                        <img src="<?=$viewee->getPicture()?>" style="width:50px; margin-top:6px" class="img-circle">
+                    <?php else: ?>
+                        <img src="<?=$viewee->getPicture()?>" style="width:50px; margin-top:6px; border-width:3px; border-color:#eee" class="img-circle img-thumbnail">
+                    <?php endif;?>
                     <?="$viewee->forename $viewee->surname"?>
                     <?php if($viewer->userId != $viewee->userId):?>
                         <?php if($viewer->isFollowerOf($viewee->userId)):?>
