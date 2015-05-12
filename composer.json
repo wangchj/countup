@@ -32,6 +32,10 @@
     "scripts": {
         "post-create-project-cmd": [
             "yii\\composer\\Installer::postCreateProject"
+        ],
+        "post-update-cmd": [
+            "rm -fr vendor/bower/Sortable/meteor",
+            "rm -fr vendor/bower/Sortable/st"
         ]
     },
     "extra": {
