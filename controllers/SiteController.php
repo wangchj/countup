@@ -56,8 +56,10 @@ class SiteController extends Controller
 
     public function actionIndex()
     {
-        if(Yii::$app->user->isGuest)
+        if(Yii::$app->user->isGuest) {
+            $this->layout = '@app/views/layouts/landing';
             return $this->render('index');
+        }
         else {
             $username = Yii::$app->user->identity->userName;
             $userId   = Yii::$app->user->identity->userId;
