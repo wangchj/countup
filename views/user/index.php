@@ -15,6 +15,9 @@ class Asset extends AssetBundle {
     ];
 }
 Asset::register($this);
+
+$this->params['viewer'] = $viewer;
+$this->params['viewee'] = $viewee;
 ?>
 
 <style>
@@ -85,127 +88,123 @@ Asset::register($this);
 }
 </style>
 
-<?php echo $this->render('@app/views/layouts/header-big.php', ['viewer'=>$viewer, 'viewee'=>$viewee]);?>
+<div class="row">
+    <div class="col-md-10 col-sm-12"> <!-- Container for counters -->
+        
+        <?php if(count($counters) == 0):?>
+            <?php echo $this->render('@app/views/layouts/NoCounterWidget.php', ['viewer'=>$viewer, 'viewee'=>$viewee])?>
+        <?php endif;?>
 
-<div class="container">
-    <div class="row">
-        <div class="col-md-10 col-sm-12"> <!-- Container for counters -->
-            
-            <?php if(count($counters) == 0):?>
-                <?php echo $this->render('@app/views/layouts/NoCounterWidget.php', ['viewer'=>$viewer, 'viewee'=>$viewee])?>
-            <?php endif;?>
-
-            <div class="row counters-sortable">
-                <?php foreach($counters as $counter):?>
-                    <div id="counter-container-<?=$counter->counterId?>" counterid="<?=$counter->counterId?>" class="col-sm-6" style="padding-top:15px; padding-bottom:15px"> <!-- Produce gutters between counters -->
-                        <div style="
-                            /*border:1px solid gray;*/
-                            background-color:#fff;
-                            padding:15px 20px;
-                            font-size:18px;
-                            font-weight:bold;
-                            color:#505050;
-                            box-shadow: 0 1px 1px 0 rgba(0, 0, 0, 0.22);
-                            border-radius: 6px;
-                            /*margin-bottom:20px;*/
-                            text-align:center;
-                            "> <!-- Counter panel with pretty border and round corners. -->
-                            <div class="row clabel">
-                                <div class="col-xs-12" style="">
-                                    <?=$counter->label?>
-                                    <div class="pull-right">
-                                            <!-- a class="counter-menu-toggle" href="#" counterId="<?=$counter->counterId?>" -->
-                                            <button class="counter-menu-toggle" counterId="<?=$counter->counterId?>"><span class="glyphicon glyphicon-cog"></span></button>
-                                            <!-- /a -->
-                                    </div>
+        <div class="row counters-sortable">
+            <?php foreach($counters as $counter):?>
+                <div id="counter-container-<?=$counter->counterId?>" counterid="<?=$counter->counterId?>" class="col-sm-6" style="padding-top:15px; padding-bottom:15px"> <!-- Produce gutters between counters -->
+                    <div style="
+                        /*border:1px solid gray;*/
+                        background-color:#fff;
+                        padding:15px 20px;
+                        font-size:18px;
+                        font-weight:bold;
+                        color:#505050;
+                        box-shadow: 0 1px 1px 0 rgba(0, 0, 0, 0.22);
+                        border-radius: 6px;
+                        /*margin-bottom:20px;*/
+                        text-align:center;
+                        "> <!-- Counter panel with pretty border and round corners. -->
+                        <div class="row clabel">
+                            <div class="col-xs-12" style="">
+                                <?=$counter->label?>
+                                <div class="pull-right">
+                                        <!-- a class="counter-menu-toggle" href="#" counterId="<?=$counter->counterId?>" -->
+                                        <button class="counter-menu-toggle" counterId="<?=$counter->counterId?>"><span class="glyphicon glyphicon-cog"></span></button>
+                                        <!-- /a -->
                                 </div>
                             </div>
-                            <hr>
-                            <div class="row">
-                                <div class="col-xs-6">
-                                    <div style="font-size:12px; font-weight:normal; color:#999; margin-bottom:5px">Current Count</div>
-                                    <div style="margin-bottom:8px"><span class="current-count"><?=$counter->getDays()?></span> Days</div>
-                                    <div style="font-size:12px; font-weight:normal; color:#ccc">
-                                         <?= $counter->isActive() && $counter->getCurrentStartDate() ? 'since ' . $counter->getCurrentStartDate()->format('M j, Y') : 'not running'?>
-                                    </div>
-                                </div>
-                                <div class="col-xs-6">
-                                    <div style="font-size:12px; font-weight:normal; color:#999; margin-bottom:5px">Best</div>
-                                    <div style="margin-bottom:8px"><?php $best = $counter->getBest(); ?> <?=$best['count']?> Days</div>
-                                    <div style="font-size:12px; font-weight:normal; color:#ccc">
-                                        <?php if($best['startDate'] && $best['endDate']):?>
-                                            <?= $best['startDate']->format('M j, Y') ?> - <?= $best['endDate']->format('M j, Y') ?>
-                                        <?php else:?>
-                                            &nbsp; 
-                                        <?php endif;?>
-                                    </div>
-                                </div>
-                            </div>
-                            <hr>
-                            <div class="row">
-                                <div class="col-xs-12">
-                                    <div class="row">
-                                        <div class="col-xs-6" style="font-size:12px; font-weight:normal; color:#999; margin-bottom:5px;padding-left:50px">
-                                            <?= (new DateTime())->setTimestamp(strtotime('first day of last month'))->format('F');?>
-                                        </div>
-                                        <div class="col-xs-6" style="font-size:12px; font-weight:normal; color:#999; margin-bottom:5px;padding-right:50px">
-                                            <?= (new DateTime())->format('F');?>
-                                        </div>
-                                    </div> <!-- row -->
-                                    <div class="row">
-                                        <div class="col-xs-12 cimg">
-                                            <svg id="<?=$counter->counterId?>"></svg>
-                                        </div>
-                                    </div> <!-- row -->
-                                </div>
-                            </div> <!-- row -->
                         </div>
+                        <hr>
+                        <div class="row">
+                            <div class="col-xs-6">
+                                <div style="font-size:12px; font-weight:normal; color:#999; margin-bottom:5px">Current Count</div>
+                                <div style="margin-bottom:8px"><span class="current-count"><?=$counter->getDays()?></span> Days</div>
+                                <div style="font-size:12px; font-weight:normal; color:#ccc">
+                                     <?= $counter->isActive() && $counter->getCurrentStartDate() ? 'since ' . $counter->getCurrentStartDate()->format('M j, Y') : 'not running'?>
+                                </div>
+                            </div>
+                            <div class="col-xs-6">
+                                <div style="font-size:12px; font-weight:normal; color:#999; margin-bottom:5px">Best</div>
+                                <div style="margin-bottom:8px"><?php $best = $counter->getBest(); ?> <?=$best['count']?> Days</div>
+                                <div style="font-size:12px; font-weight:normal; color:#ccc">
+                                    <?php if($best['startDate'] && $best['endDate']):?>
+                                        <?= $best['startDate']->format('M j, Y') ?> - <?= $best['endDate']->format('M j, Y') ?>
+                                    <?php else:?>
+                                        &nbsp; 
+                                    <?php endif;?>
+                                </div>
+                            </div>
+                        </div>
+                        <hr>
+                        <div class="row">
+                            <div class="col-xs-12">
+                                <div class="row">
+                                    <div class="col-xs-6" style="font-size:12px; font-weight:normal; color:#999; margin-bottom:5px;padding-left:50px">
+                                        <?= (new DateTime())->setTimestamp(strtotime('first day of last month'))->format('F');?>
+                                    </div>
+                                    <div class="col-xs-6" style="font-size:12px; font-weight:normal; color:#999; margin-bottom:5px;padding-right:50px">
+                                        <?= (new DateTime())->format('F');?>
+                                    </div>
+                                </div> <!-- row -->
+                                <div class="row">
+                                    <div class="col-xs-12 cimg">
+                                        <svg id="<?=$counter->counterId?>"></svg>
+                                    </div>
+                                </div> <!-- row -->
+                            </div>
+                        </div> <!-- row -->
+                    </div>
+                </div>
+            <?php endforeach;?>
+        </div>
+    </div>
+    <div class="col-sm-2 hidden-sm friends-side">
+        <?php if($follows):?>
+            <div class="row">
+                <div class="col-sm-12">
+                    <h2>Follows</h2>
+                </div>
+            </div>
+            <div class="row">
+                <?php foreach($follows as $follow): ?>
+                    <div class="col-sm-6 friend" style="text-align:center">
+                        <a href="<?=Url::to(['user/index', 'token'=>$follow->getIdentifier()])?>">
+                            <img src="<?=$follow->getPicture()?>" style="width:50px;" class="img-circle img-thumbnail">
+                            <div>
+                                <?="{$follow->forename} {$follow->surname}"?>
+                            </div>
+                        </a>
                     </div>
                 <?php endforeach;?>
             </div>
-        </div>
-        <div class="col-sm-2 hidden-sm friends-side">
-            <?php if($follows):?>
-                <div class="row">
-                    <div class="col-sm-12">
-                        <h2>Follows</h2>
-                    </div>
-                </div>
-                <div class="row">
-                    <?php foreach($follows as $follow): ?>
-                        <div class="col-sm-6 friend" style="text-align:center">
-                            <a href="<?=Url::to(['user/index', 'token'=>$follow->getIdentifier()])?>">
-                                <img src="<?=$follow->getPicture()?>" style="width:50px;" class="img-circle img-thumbnail">
-                                <div>
-                                    <?="{$follow->forename} {$follow->surname}"?>
-                                </div>
-                            </a>
-                        </div>
-                    <?php endforeach;?>
-                </div>
-            <?php endif;?>
+        <?php endif;?>
 
-            <?php if($followers):?>
-                <div class="row">
-                    <div class="col-sm-12">
-                        <h2>Followers</h2>
+        <?php if($followers):?>
+            <div class="row">
+                <div class="col-sm-12">
+                    <h2>Followers</h2>
+                </div>
+            </div>
+            <div class="row">
+                <?php foreach($followers as $follower): ?>
+                    <div class="col-sm-6 friend" style="text-align:center">
+                        <a href="<?=Url::to(['user/index', 'token'=>$follower->getIdentifier()])?>">
+                            <img src="<?=$follower->getPicture()?>" style="width:50px;" class="img-circle img-thumbnail">
+                            <div>
+                                <?="{$follower->forename} {$follower->surname}"?>
+                            </div>
+                        </a>
                     </div>
-                </div>
-                <div class="row">
-                    <?php foreach($followers as $follower): ?>
-                        <div class="col-sm-6 friend" style="text-align:center">
-                            <a href="<?=Url::to(['user/index', 'token'=>$follower->getIdentifier()])?>">
-                                <img src="<?=$follower->getPicture()?>" style="width:50px;" class="img-circle img-thumbnail">
-                                <div>
-                                    <?="{$follower->forename} {$follower->surname}"?>
-                                </div>
-                            </a>
-                        </div>
-                    <?php endforeach;?>
-                </div>
-            <?php endif;?>
-            
-        </div>
+                <?php endforeach;?>
+            </div>
+        <?php endif;?>
+        
     </div>
 </div>
 

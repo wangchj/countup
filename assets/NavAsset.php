@@ -12,7 +12,7 @@ use yii\web\AssetBundle;
 class NavAsset extends AssetBundle
 {
     public $sourcePath = '@app/views/layouts';
-    public $css = [];
+    public $css = ['navbar.css'];
     public $js = ['navbar.js'];
     public $depends = ['app\assets\CounterFormModalAsset'];
 }

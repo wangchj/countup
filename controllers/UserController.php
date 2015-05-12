@@ -60,7 +60,7 @@ class UserController extends Controller
             $viewee->getCounters()->where(['public'=>true])->orderBy('dispOrder')->all();
 
         $data = $this->makeCalendarData($counters, $viewer, $viewee);
-        $this->layout = '@app/views/layouts/blank';
+        //$this->layout = '@app/views/layouts/blank';
         return $this->render('index', [
             'viewer'=>$viewer,
             'viewee'=>$viewee,
