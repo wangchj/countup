@@ -52,7 +52,7 @@
             "bower-asset-library": "vendor/bower"
         },
         "asset-repositories": {
-            "bowser-asset/sortable": {
+            "bower-asset/sortable": {
                 "type": "bower-github",
                 "url": "https://github.com/RubaXa/Sortable.git"
             }
