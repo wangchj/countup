@@ -4,8 +4,47 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "ed5cf60ebc852278960034d36ab08974",
+    "hash": "8689f01e4a634c87ef6b8dced92910ee",
     "packages": [
+        {
+            "name": "bower-asset/Sortable",
+            "version": "1.2.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/RubaXa/Sortable.git",
+                "reference": "b30ece99c5c87752db61b452e04467e0a3cf5f79"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/RubaXa/Sortable/zipball/b30ece99c5c87752db61b452e04467e0a3cf5f79",
+                "reference": "b30ece99c5c87752db61b452e04467e0a3cf5f79",
+                "shasum": ""
+            },
+            "type": "bower-asset-library",
+            "extra": {
+                "bower-asset-main": "Sortable.js",
+                "bower-asset-ignore": [
+                    "node_modules",
+                    "bower_components",
+                    "test",
+                    "tests"
+                ]
+            },
+            "license": [
+                "MIT"
+            ],
+            "description": "Minimalist library for reorderable drag-and-drop lists on modern browsers and touch devices. No jQuery.",
+            "keywords": [
+                "and",
+                "dnd",
+                "drag",
+                "drop",
+                "html5",
+                "list",
+                "reorder",
+                "sortable"
+            ]
+        },
         {
             "name": "bower-asset/bootstrap",
             "version": "v3.3.4",
@@ -720,45 +759,6 @@
         }
     ],
     "packages-dev": [
-        {
-            "name": "bower-asset/Sortable",
-            "version": "1.2.0",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/RubaXa/Sortable.git",
-                "reference": "b30ece99c5c87752db61b452e04467e0a3cf5f79"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/RubaXa/Sortable/zipball/b30ece99c5c87752db61b452e04467e0a3cf5f79",
-                "reference": "b30ece99c5c87752db61b452e04467e0a3cf5f79",
-                "shasum": ""
-            },
-            "type": "bower-asset-library",
-            "extra": {
-                "bower-asset-main": "Sortable.js",
-                "bower-asset-ignore": [
-                    "node_modules",
-                    "bower_components",
-                    "test",
-                    "tests"
-                ]
-            },
-            "license": [
-                "MIT"
-            ],
-            "description": "Minimalist library for reorderable drag-and-drop lists on modern browsers and touch devices. No jQuery.",
-            "keywords": [
-                "and",
-                "dnd",
-                "drag",
-                "drop",
-                "html5",
-                "list",
-                "reorder",
-                "sortable"
-            ]
-        },
         {
             "name": "bower-asset/typeahead.js",
             "version": "v0.10.5",

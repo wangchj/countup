@@ -18,13 +18,13 @@
         "yiisoft/yii2-bootstrap": "*",
         "sendgrid/sendgrid": "2.2.1",
         "facebook/php-sdk-v4" : "4.0.*",
-        "npm-asset/snapsvg": "*"
+        "npm-asset/snapsvg": "*",
+        "bower-asset/sortable": "*"
     },
     "require-dev": {
         "yiisoft/yii2-codeception": "*",
         "yiisoft/yii2-debug": "*",
-        "yiisoft/yii2-gii": "*",
-        "bower-asset/sortable": "*"
+        "yiisoft/yii2-gii": "*"
     },
     "config": {
         "process-timeout": 1800
