@@ -19,7 +19,8 @@
         "sendgrid/sendgrid": "2.2.1",
         "facebook/php-sdk-v4" : "4.0.*",
         "npm-asset/snapsvg": "*",
-        "bower-asset/sortable": "*"
+        "bower-asset/sortable": "*",
+        "bower-asset/datejs": "*"
     },
     "require-dev": {
         "yiisoft/yii2-codeception": "*",
@@ -59,6 +60,10 @@
             "bower-asset/sortable": {
                 "type": "bower-github",
                 "url": "https://github.com/RubaXa/Sortable.git"
+            },
+            "bower-asset/datejs": {
+                "type": "bower-github",
+                "url": "https://github.com/wangchj/Datejs.git"
             }
         }
     }
