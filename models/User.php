@@ -106,6 +106,9 @@ class User extends \yii\db\ActiveRecord implements \yii\web\IdentityInterface
         return $res;
     }
 
+    /**
+     * Gets a random list of users who follow this user.
+     */
     public function getRandomFollowers($limit) {
         $followerCount = Follow::find()->where(['followeeId'=>$this->userId])->count();
         
