@@ -157,34 +157,6 @@ class UserController extends Controller
         
         if(Yii::$app->request->isPost && $user->load(Yii::$app->request->post()))
         {
-            /*
-            //Check email already exist
-            if(User::findOne(['email'=>$user->email]) != null || TempUser::findOne(['email'=>$user->email]) != null)
-                $user->addError('email', 'User with given email already exist');
-            //Check user name already taken
-            if(User::findOne(['userName'=>$user->userName]) != null || TempUser::findOne(['userName'=>$user->userName]) != null)
-                $user->addError('userName', 'User name is taken');
-
-            if(!$user->hasErrors()){
-                $tempUser = new TempUser();
-                $tempUser->userName = $user->userName;
-                $tempUser->email = $user->email;
-                $tempUser->phash = password_hash($user->phash, PASSWORD_BCRYPT);
-                $tempUser->joinDate = date('Y-m-d H:i:s');
-                $tempUser->timeZone = $user->timeZone;
-                $tempUser->code = substr(md5(time()), 0, 10); //Random string of length 10
-                $tempUser->save();
-
-                Yii::$app->mailer->compose('verify_email', ['email'=> $tempUser->email, 'code'=>$tempUser->code])
-                    ->setFrom('signup@countup.org')
-                    ->setTo($tempUser->email)
-                    ->setSubject('Please verify email')
-                    ->send();
-
-                return $this->render('pre-verify', ['model' => $user]);
-                
-            }*/
-
             return $this->processFbSignup($user);
         }
 
