@@ -3,6 +3,7 @@
 use yii\helpers\Html;
 use yii\widgets\ActiveForm;
 use app\assets\SignupAsset;
+use app\models\User;
 
 require_once(__DIR__ . '/../components/path.php');
 
@@ -44,6 +45,7 @@ SignupAsset::register($this);
             <?= $form->field($model, 'surname')->textInput() ?>
             <?= $form->field($model, 'email')->textInput() ?>
             <?= $form->field($model, 'phash')->passwordInput() ?>
+            <?= $form->field($model, 'gender')->dropDownList(User::getGenders()) ?>
        
             <div class="form-group">
                 <?= Html::submitButton('Next', ['class' => 'btn btn-primary']) ?>

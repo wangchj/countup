@@ -79,6 +79,7 @@ function fbLogin() {
                 $('#user-fbId').val(response.id);
                 $('#user-forename').val(response.first_name);
                 $('#user-surname').val(response.last_name);
+                $('#user-gender').val(response.gender);
                 if(response.email && response.email != '')
                     $('#user-email').val(response.email);
                 if(response.location) {
@@ -231,6 +232,7 @@ button.btn {
     <input type="hidden" id="user-fbId" name="User[fbId]">
     <input type="hidden" id="user-forename" name="User[forename]">
     <input type="hidden" id="user-surname" name="User[surname]">
+    <input type="hidden" id="user-gender" name="User[gender]">
     <input type="hidden" id="user-email" name="User[email]">
     <input type="hidden" id="user-location" name="User[location]">
     <input type="hidden" id="user-timezone" name="User[timezone]">

@@ -121,6 +121,7 @@ class UserController extends Controller
                 //$tempUser->userName = $user->userName;
                 $tempUser->forename = $user->forename;
                 $tempUser->surname = $user->surname;
+                $tempUser->gender = $user->gender;
                 $tempUser->email = $user->email;
                 $tempUser->phash = password_hash($user->phash, PASSWORD_BCRYPT);
                 $tempUser->joinDate = date('Y-m-d H:i:s');
@@ -207,6 +208,7 @@ class UserController extends Controller
         $user = new User;
         $user->forename = $tempUser->forename;
         $user->surname = $tempUser->surname;
+        $user->gender = $tempUser->gender;
         $user->email = $tempUser->email;
         $user->phash = $tempUser->phash;
         $user->joinDate = $tempUser->joinDate;

@@ -46,6 +46,7 @@ SignupAsset::register($this);
 <?php $form = ActiveForm::begin(); ?>
     <?= $form->field($model, 'forename')->label(false)->hiddenInput() ?>
     <?= $form->field($model, 'surname')->label(false)->hiddenInput() ?>
+    <?= $form->field($model, 'gender')->label(false)->hiddenInput() ?>
     <?= $form->field($model, 'email')->label(false)->hiddenInput() ?>
     <?= $form->field($model, 'phash')->label(false)->hiddenInput() ?>
     <?= $form->field($model, 'timeZone')->label(false)->hiddenInput()?>

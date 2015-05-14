@@ -11,6 +11,7 @@ use Yii;
  * @property string $userName
  * @property string $forename
  * @property string $surname
+ * @property string $gender
  * @property string $email
  * @property string $phash
  * @property string $joinDate
@@ -38,8 +39,8 @@ class User extends \yii\db\ActiveRecord implements \yii\web\IdentityInterface
     public function rules()
     {
         return [
-            [['forename', 'surname', 'email', 'joinDate', 'timeZone'], 'required'],
-            [['userName', 'forename', 'surname', 'email', 'phash', 'joinDate', 'location', 'timeZone', 'picture'], 'string'],
+            [['forename', 'surname', 'email', 'joinDate', 'timeZone', 'gender'], 'required'],
+            [['userName', 'forename', 'surname', 'gender', 'email', 'phash', 'joinDate', 'location', 'timeZone', 'picture'], 'string'],
             [['userName'], 'string', 'max' => 30],
             [['userName'], 'unique'],
             ['email', 'email'],
@@ -57,6 +58,7 @@ class User extends \yii\db\ActiveRecord implements \yii\web\IdentityInterface
             'userName' => 'User Name',
             'forename' => 'First Name',
             'surname'  => 'Last Name',
+            'gender' => 'Gender',
             'email' => 'Email',
             'phash' => 'Password',
             'joinDate' => 'Join Date',
@@ -127,7 +129,12 @@ class User extends \yii\db\ActiveRecord implements \yii\web\IdentityInterface
         return $res;
     }
 
-
+    /**
+     * Gets an array of genders for drop-down menus.
+     */
+    public static function getGenders() {
+        return [''=>'', 'female'=>'Female', 'male'=>'Male'];
+    }
 
     /**
      * @return \yii\db\ActiveQuery

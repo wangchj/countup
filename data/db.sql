@@ -7,6 +7,7 @@ create table Users (
     userName varchar(30) null unique, -- unique, max_len = 30
     forename text        not null,
     surname  text        not null,
+    gender   text        not null,
     email    text        not null,
     fbId     integer     null,
     phash    text        null,        -- password hash with salt appended
@@ -25,6 +26,7 @@ create table TempUsers (
     userName varchar(30) null unique,
     forename text        not null,
     surname  text        not null,
+    gender   text        not null,
     email    text        not null,
     fbId     integer     null,
     phash    text        not null,

@@ -3,6 +3,7 @@ INSERT INTO Users VALUES(
     /*userName*/ 'Jeff',
     /*foreName*/ 'Jeff',
     /*surname*/  'Wang',
+    /*gender*/   'male',
     /*email*/    'me@test.com',
     /*fbId*/     null,
     /*phash*/    '$2y$10$KO5HdM03CdSOrpfBGJEKNedmvN1yLGNEE9w6AK73O.0QdEg6qlPAi',
@@ -18,6 +19,7 @@ INSERT INTO Users VALUES(
     /*userName*/ null,
     /*foreName*/ 'Eugenie',
     /*surname*/  'Bouchard',
+    /*gender*/   'female',
     /*email*/    'a@a.com',
     /*fbId*/     null,
     /*phash*/    '$2y$10$KO5HdM03CdSOrpfBGJEKNedmvN1yLGNEE9w6AK73O.0QdEg6qlPAi',
@@ -33,6 +35,7 @@ INSERT INTO Users VALUES(
     /*userName*/ null,
     /*foreName*/ 'Nei',
     /*surname*/  'Nishikori',
+    /*gender*/   'male',
     /*email*/    'b@b.com',
     /*fbId*/     null,
     /*phash*/    '$2y$10$KO5HdM03CdSOrpfBGJEKNedmvN1yLGNEE9w6AK73O.0QdEg6qlPAi',
@@ -48,6 +51,7 @@ INSERT INTO Users VALUES(
     /*userName*/ null,
     /*foreName*/ 'Ana',
     /*surname*/  'Ivanovic',
+    /*gender*/   'female',
     /*email*/    'c@c.com',
     /*fbId*/     null,
     /*phash*/    '$2y$10$KO5HdM03CdSOrpfBGJEKNedmvN1yLGNEE9w6AK73O.0QdEg6qlPAi',
@@ -63,6 +67,7 @@ INSERT INTO Users VALUES(
     /*userName*/ null,
     /*foreName*/ 'Roger',
     /*surname*/  'Federer',
+    /*gender*/   'male',
     /*email*/    'd@d.com',
     /*fbId*/     null,
     /*phash*/    '$2y$10$KO5HdM03CdSOrpfBGJEKNedmvN1yLGNEE9w6AK73O.0QdEg6qlPAi',
@@ -78,6 +83,7 @@ INSERT INTO Users VALUES(
     /*userName*/ null,
     /*foreName*/ 'Michael',
     /*surname*/  'Jordan',
+    /*gender*/   'male',
     /*email*/    'e@e.com',
     /*fbId*/     null,
     /*phash*/    '$2y$10$KO5HdM03CdSOrpfBGJEKNedmvN1yLGNEE9w6AK73O.0QdEg6qlPAi',
@@ -93,6 +99,7 @@ INSERT INTO Users VALUES(
     /*userName*/ null,
     /*foreName*/ 'Ivy',
     /*surname*/  'Chung',
+    /*gender*/   'female',
     /*email*/    'f@f.com',
     /*fbId*/     null,
     /*phash*/    '$2y$10$KO5HdM03CdSOrpfBGJEKNedmvN1yLGNEE9w6AK73O.0QdEg6qlPAi',
@@ -102,6 +109,9 @@ INSERT INTO Users VALUES(
     /*picture*/  null,
     /*authKey*/  'weMW5GI3aQbaV-IgsdE3VS8Wish83uFI'
 );
+
+
+
 
 INSERT INTO Counters VALUES(
     /*counterId*/ 1,
@@ -132,6 +142,8 @@ INSERT INTO Counters VALUES(
     /*public*/    1,
     /*dispOrder*/ 1
 );
+
+
 
 -- # Section 1: Daily Tests
 
