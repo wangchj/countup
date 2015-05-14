@@ -4,8 +4,31 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "8f8e0b16e93e6da7d94357504f6de994",
+    "hash": "a654a81aa3d7ad493d671d6077676707",
     "packages": [
+        {
+            "name": "bower-asset/Datejs",
+            "version": "1.0.0-alpha.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/wangchj/Datejs.git",
+                "reference": "dfa55cb0160ea8c2ace97498650adecb0efa692a"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/wangchj/Datejs/zipball/dfa55cb0160ea8c2ace97498650adecb0efa692a",
+                "reference": "dfa55cb0160ea8c2ace97498650adecb0efa692a",
+                "shasum": ""
+            },
+            "type": "bower-asset-library",
+            "extra": {
+                "bower-asset-ignore": [
+                    "test",
+                    "src"
+                ]
+            },
+            "description": "Datejs is an open source JavaScript Date library for parsing, formatting and processing."
+        },
         {
             "name": "bower-asset/Sortable",
             "version": "1.2.0",
@@ -968,7 +991,9 @@
     ],
     "aliases": [],
     "minimum-stability": "stable",
-    "stability-flags": [],
+    "stability-flags": {
+        "bower-asset/datejs": 15
+    },
     "prefer-stable": false,
     "prefer-lowest": false,
     "platform": {
