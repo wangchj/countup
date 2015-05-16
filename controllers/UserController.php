@@ -9,10 +9,11 @@ use app\models\TempUser;
 use app\models\Follow;
 use yii\data\ActiveDataProvider;
 use yii\web\Controller;
+use yii\web\HttpException;
 use yii\web\NotFoundHttpException;
 use yii\web\ForbiddenHttpException;
+use yii\web\BadRequestHttpException;
 use yii\filters\VerbFilter;
-use yii\web\HttpException;
 use yii\helpers\Url;
 use SendGrid;
 
@@ -222,17 +223,31 @@ class UserController extends Controller
     }
 
     /**
-     * Updates basic user information.
+     * Ajax update basic user information, without password.
      */
     public function actionUpdate()
     {
-        $user = $this->findModel(Yii::$app->user->id);
-        if($user->load(Yii::$app->request->post()))
-        {
+        if(!isset($_POST['User']) || !isset($_POST['User']['userId']))
+            throw new HttpException('Request invalid');
+        if(!$user = User::findOne($_POST['User']['userId']))
+            throw new NotFoundHttpException('User not found.');
 
+        $user->load(Yii::$app->request->post());
+
+        if(!$user->validate()) {
+            $errors = $user->errors;
+            $msg = $errors[key($errors)][0];
+            throw new BadRequestHttpException($msg);
         }
 
-        return $this->render('update', ['user' => $user]);
+        if(!$user->validate() || !$user->save()) {
+            Yii::error($user);
+            throw new BadRequestHttpException('Oh no, something is wrong. Your error has been logged.');
+        }
+    }
+
+    public function actionChangePassword() {
+        
     }
 
     /**
