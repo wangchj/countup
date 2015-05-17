@@ -20,6 +20,7 @@
         "facebook/php-sdk-v4" : "4.0.*",
         "npm-asset/snapsvg": "*",
         "bower-asset/sortable": "*",
+        "bower-asset/dropzone": "*",
         "bower-asset/datejs": "@alpha"
     },
     "require-dev": {
