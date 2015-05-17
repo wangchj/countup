@@ -137,6 +137,20 @@ class User extends \yii\db\ActiveRecord implements \yii\web\IdentityInterface
     }
 
     /**
+     * Produces an hash for $password.
+     */
+    public static function hashPassword($password){
+        return password_hash($password, PASSWORD_BCRYPT);
+    }
+
+    /**
+     * Verify that $password matches current user's password.
+     */
+    public function verifyPassword($password) {
+        return password_verify($password, $this->phash);
+    }
+
+    /**
      * @return \yii\db\ActiveQuery
      */
     public function getCounters()

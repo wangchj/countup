@@ -101,7 +101,7 @@ class SiteController extends Controller
 
         //Facebook login was unsuccessful. Try to login using email
         $user = User::findOne(['email'=>$form->email]);
-        if($user && password_verify($form->password, $user->phash))
+        if($user && $user->verifyPassword($form->password))
         {
             Yii::$app->user->login($user, $form->rememberMe ? 3600*24*30 : 0);
             return $this->goBack();

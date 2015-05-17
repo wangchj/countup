@@ -124,7 +124,7 @@ class UserController extends Controller
                 $tempUser->surname = $user->surname;
                 $tempUser->gender = $user->gender;
                 $tempUser->email = $user->email;
-                $tempUser->phash = password_hash($user->phash, PASSWORD_BCRYPT);
+                $tempUser->phash = User::hashPassword($user->phash);
                 $tempUser->joinDate = date('Y-m-d H:i:s');
                 $tempUser->timeZone = $user->timeZone;
                 $tempUser->code = substr(md5(time()), 0, 10); //Random string of length 10
