@@ -246,8 +246,31 @@ class UserController extends Controller
         }
     }
 
+    /**
+     * Ajax change password of the current user.
+     */
     public function actionChangePassword() {
-        
+        if(!isset($_POST['userId']) || !isset($_POST['old-password']) || !isset($_POST['new-password']) ||!$_POST['userId'])
+            throw new BadRequestHttpException('Request invalid');
+        if(Yii::$app->user->isGuest)
+            throw new HttpException('User is not logged in');
+
+        $userId = $_POST['userId'];
+        $old = $_POST['old-password'];
+        $new = $_POST['new-password'];
+
+        if($userId != Yii::$app->user->identity->userId)
+            throw new ForbiddenHttpException('Your identity does not match logged in user.');
+
+        if(!$user = User::findOne($userId))
+            throw NotFoundHttpException('User is not found.');
+        if($user->phash && !$user->verifyPassword($old))
+            throw new ForbiddenHttpException('Current password is incorrect.');
+        $user->phash = User::hashPassword($new);
+        if(!$user->validate() || !$user->save()){
+            Yii::error($user);
+            throw new BadRequestHttpException('Oh no, something is wrong. Your error has been logged.');
+        }
     }
 
     /**

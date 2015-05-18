@@ -23,7 +23,7 @@ class SettingsController extends Controller
             'access'=>[
                 'class'=>AccessControl::className(),
                 'rules'=>[
-                    ['allow'=>true, 'actions'=>['index'], 'roles'=>['@']],
+                    ['allow'=>true, 'actions'=>['index','password'], 'roles'=>['@']],
                 ]
             ],
             'verbs' => [
@@ -38,5 +38,9 @@ class SettingsController extends Controller
     public function actionIndex()
     {
         return $this->render('index');
+    }
+
+    public function actionPassword() {
+        return $this->render('password');
     }
 }
