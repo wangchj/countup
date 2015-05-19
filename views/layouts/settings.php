@@ -26,7 +26,7 @@ nav.vertical-menu a {
     margin:0px;
 }
 
-nav.vertical-menu a:hover {
+/*nav.vertical-menu a:hover,*/ nav.vertical-menu a.active {
     background-color:#eee;
 }
 
@@ -44,14 +44,18 @@ nav.vertical-menu hr {
 }
 </style>
 
+<?php
+    $action = $this->context->action->id;
+?>
+
 <div class="row">
     <div class="col-xs-3 col-xs-offset-1">
         <nav class="vertical-menu">
-            <a href="<?=Url::to(['settings/index'])?>">Account Basics</a>
+            <a href="<?=Url::to(['settings/index'])?>" class="<?=$action == 'index' ? 'active' : ''?>">Account Basics</a>
             <hr>
-            <a href="<?=Url::to(['settings/password'])?>">Change Password</a>
+            <a href="<?=Url::to(['settings/password'])?>" class="<?=$action == 'password' ? 'active' : ''?>">Change Password</a>
             <hr>
-            <a href="<?=Url::to(['settings/integration'])?>">Facebook Integration</a>
+            <a href="<?=Url::to(['settings/facebook'])?>" class="<?=$action == 'facebook' ? 'active' : ''?>">Facebook Integration</a>
         </nav>
     </div>
     <div class="col-xs-6">
