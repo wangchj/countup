@@ -65,7 +65,7 @@ NavAsset::register($this);
             <div id="w1-collapse" class="collapse navbar-collapse">
                 <ul id="w2" class="navbar-nav navbar-right nav">
                     <li><a id="add-counter" href="#">Add Counter</a></li>
-                    <li><a href="<?=Url::to(['user/settings'])?>">Settings</a></li>
+                    <li><a href="<?=Url::to(['settings/index'])?>">Settings</a></li>
                     <li><a href="<?=Url::to(['site/logout'])?>" data-method="post">Logout</a></li>
                     <li>
                         <?php if(Yii::$app->user->identity->picture): ?>
