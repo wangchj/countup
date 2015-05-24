@@ -226,7 +226,7 @@ class UserController extends Controller
      * Ajax update basic user information, without password.
      */
     public function actionUpdate()
-    {
+    {        
         if(!isset($_POST['User']) || !isset($_POST['User']['userId']))
             throw new HttpException('Request invalid');
         if(!$user = User::findOne($_POST['User']['userId']))
@@ -244,6 +244,52 @@ class UserController extends Controller
             Yii::error($user);
             throw new BadRequestHttpException('Oh no, something is wrong. Your error has been logged.');
         }
+    }
+
+    public function actionUploadPicture() {
+        //Validation
+        if(count($_FILES) == 0 || !$file = $_FILES[key($_FILES)])
+            throw new BadRequestHttpException('No user picture found.');
+        if($file['error'])
+            throw new BadRequestHttpException('Error uploading picture.');
+        if($file['size'] > Yii::$app->params['userPicture']['maxSize'])
+            throw new BadRequestHttpException('Picture exceeds file size limit.');
+        if(!preg_match('/\/(jpe?g|png)/i', $file['type']))
+            throw new BadRequestHttpException('File type is not allowed.');
+        if(!isset($_POST['User']) || !isset($_POST['User']['userId']) || !$user = User::findOne($_POST['User']['userId']))
+            throw new BadRequestHttpException('User is not found.');
+        if($user->userId != Yii::$app->user->identity->userId)
+            throw new ForbiddenHttpException('Something fishy has happened. User identifiers do not match.');
+
+        //Copying file
+        $folder = self::getPictureDirPath($user);
+        $name = $file['name'];
+
+        if(!file_exists($folder)) {
+            $old = umask(0);
+            mkdir($folder, 0333);
+            umask($old);
+        }
+
+        if(!move_uploaded_file($file['tmp_name'], "{$folder}/{$name}")) //TODO: make safe (random) name for file.
+            throw new BadRequestHttpException('Temporary file is not found.');
+
+        //TODO: Make thumbnails
+
+        //Modify picture path of user model
+        $user->picture = "{$user->userId}/{$name}";
+        if(!$user->validate() || !$user->save()) {
+            Yii::error($user);
+            throw new BadRequestHttpException('Oh no, something is wrong. The error has been logged');
+        }
+    }
+
+    /**
+     * Gets the directory path where user's pictures are stored.
+     * @param $user User model object.
+     */
+    public static function getPictureDirPath($user) {
+        return Yii::getAlias("@webroot/pictures/{$user->userId}");
     }
 
     /**

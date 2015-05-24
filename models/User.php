@@ -3,6 +3,7 @@
 namespace app\models;
 
 use Yii;
+use yii\helpers\Url;
 
 /**
  * This is the model class for table "Users".
@@ -74,10 +75,10 @@ class User extends \yii\db\ActiveRecord implements \yii\web\IdentityInterface
     }
 
     public function getPicture() {
-        return $this->picture ? $this->picture :
-            'http://www.k2g2.org/lib/plugins/avatar/stitchy/stitchy.php?seed=' .
-                md5($this->email) .
-                '&size=50&.png';
+        if($this->picture)
+            return Url::isRelative($this->picture) ? Yii::getAlias("@web/pictures/{$this->picture}") : $this->picture;
+        else
+            return 'http://www.k2g2.org/lib/plugins/avatar/stitchy/stitchy.php?seed=' . md5($this->email) . '&size=50&.png';
     }
 
     /**

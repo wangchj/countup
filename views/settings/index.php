@@ -10,6 +10,7 @@ class SetBasicsAsset extends AssetBundle {
     public $js = ['basics.js'];
     public $depends = [
         'yii\web\JqueryAsset',
+        'app\assets\BlueimpFileUploadAsset'
     ];
 }
 SetBasicsAsset::register($this);
@@ -31,10 +32,16 @@ $user = Yii::$app->user->identity;
     <div class="form-group">
         <label class="control-label">Profile Picture</label>
         <div style="margin-top:10px">
-            <img src="<?=$user->getPicture()?>" class="img-circle"
+            <img id="user-picture" src="<?=$user->getPicture()?>" class="img-circle"
                 style="width:60px; margin-right:20px"
             >
-            <button>Change Picture</button>
+            <span class="btn btn-default fileinput-button">
+                <span>Change Picture</span>
+                <!-- The file input field used as target for the file upload widget -->
+                <input id="fileupload" type="file" name="picture">
+            </span>
+
+        <!-- button id="change-pic-btn" class="btn btn-default">Change Picture</button -->  
         </div>
     </div>
 
@@ -103,4 +110,6 @@ $user = Yii::$app->user->identity;
 
 <script>
 var userUpdateUrl = '<?=Url::to(['user/update'])?>';
+var userPictureUploadUrl = '<?=Url::to(['user/upload-picture'])?>';
+var userPictureMaxSize = <?=Yii::$app->params['userPicture']['maxSize']?>;
 </script>
