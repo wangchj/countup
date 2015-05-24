@@ -12,5 +12,8 @@ return [
     'fb' => [
         'appId' => '',
         'appSecret' => ''
+    ],
+    'userPicture' => [
+        'maxSize' => 1048576, //In bytes
     ]
 ];
