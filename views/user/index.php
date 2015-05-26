@@ -9,6 +9,7 @@ class Asset extends AssetBundle {
     public $js = ['cal.js', 'index.js', 'counter-sortable.js'];
     public $css = ['cal.css'];
     public $depends = [
+        'app\assets\MarkDateModalAsset',
         'app\assets\SnapsvgAsset',
         'yii\web\JqueryAsset',
         'app\assets\SortableAsset',
@@ -228,6 +229,8 @@ var app = {
 </script>
 
 <?=$this->render('@app/views/layouts/CounterFormModal.php');?>
+
+<?=$this->render('@app/views/layouts/MarkDateModal.php');?>
 
 <div id="remove-confirm-modal" class="modal fade">
     <div class="modal-dialog">

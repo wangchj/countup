@@ -7,6 +7,8 @@ function initCounterMenu() {
     $('.counter-menu-toggle').popover({
         content: function() {
             var counterId = $(this).attr('counterId');
+            var markStr = '<li class="counter-menu-item" onclick="markDateModal(' + counterId + ')">' +
+                '<span class="glyphicon glyphicon-th-large"></span> Mark a Date</li>'; 
             var setStr = '<li class="counter-menu-item" onclick="counterSettingClicked(' + counterId + ')">' +
                 '<span class="glyphicon glyphicon-cog"></span> Counter Settings</li>';
             var remStr =
@@ -14,7 +16,7 @@ function initCounterMenu() {
                     '<span class="glyphicon glyphicon-fire"></span> Remove Counter' +
                 '</li>';
 
-            var res = '<ul class="counter-menu">' + setStr + '<hr style="margin:5px">' + remStr + '</ul>';
+            var res = '<ul class="counter-menu">' + markStr + setStr + '<hr style="margin:5px">' + remStr + '</ul>';
 
             return res;
         },
@@ -67,6 +69,12 @@ function counterSettingClicked(counterId) {
 function counterRemoveClicked(counterId) {
     $('#remove-confirm-modal').modal('show');
     $('#remove-confirm-modal').attr('counterId', counterId);
+}
+
+function markDateModal(counterId){
+    MarkDateModal.clearError();
+    MarkDateModal.setCounterId(counterId);
+    MarkDateModal.show();
 }
 
 function initRemoveModalBtnEvents() {

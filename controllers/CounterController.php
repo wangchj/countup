@@ -250,8 +250,13 @@ class CounterController extends \yii\web\Controller
 
         //$date = new DateTime($date, $counter->getTimeZone());
 
-        if(!$date = new DateTime($date, $counter->getTimeZone()))
-            throw new HttpException('Invalid date');
+        try{
+            $date = new DateTime($date, $counter->getTimeZone());
+        }
+        catch(Exception $ex) {
+            throw new BadRequestHttpException('Date format is invalid');
+        }
+
         $date = $date->format(History::$dateFormat);
 
         $history = History::findOne(['counterId'=>$counterId, 'date'=>$date]);
