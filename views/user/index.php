@@ -115,7 +115,7 @@ $this->params['viewee'] = $viewee;
                                 <?=$counter->label?>
                                 <div class="pull-right">
                                         <!-- a class="counter-menu-toggle" href="#" counterId="<?=$counter->counterId?>" -->
-                                        <button class="counter-menu-toggle" counterId="<?=$counter->counterId?>"><span class="glyphicon glyphicon-cog"></span></button>
+                                        <button class="counter-menu-toggle" counterId="<?=$counter->counterId?>"><span class="glyphicon glyphicon-option-horizontal"></span></button>
                                         <!-- /a -->
                                 </div>
                             </div>
