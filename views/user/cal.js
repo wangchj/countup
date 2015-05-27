@@ -4,6 +4,8 @@ $(function() {
     initWindowResizing();
 });
 
+const dbDateFormat = 'yyyy-MM-dd';
+
 var prevWidth; //Figure container width before resizing
 
 var popElement = null;
@@ -52,7 +54,7 @@ function markClicked(action, counterId, date) {
     //Make sure we're not marking date in the future.
     var markDate = new Date(date);
     var today = new Date();
-    if(dateGreater(markDate, today))
+    if(markDate.isAfter(today))
         return;
 
     var state = getCellState(counterId, date);
@@ -155,6 +157,9 @@ function drawFigures() {
 
 /**
  * Draw a figure, which contains multiple calendar.
+ * @param svg   DOM element
+ * @param year  year, as in 2014
+ * @param month month: 0 = Jan, 1 = Feb, ... , 11 = Dec
  */
 function drawFigure(svg, year, month) {
     var width = Math.min($('.cimg').width() - 50, 900); //Width of the figure
@@ -188,12 +193,13 @@ function drawFigure(svg, year, month) {
  * @param month     month: 0 = Jan, 1 = Feb, ... , 11 = Dec
  */
 function drawMonthCalendar(snap, i, cwidth, year, month) {
-    var numdays = numberOfDays(year, month + 1); //Number of days in this month;
+    var numdays = Date.getDaysInMonth(year, month);    //Number of days in this month;
     var startOn = (new Date(year, month, 1)).getDay(); //Day of the first of this month; 0 = Sunday, 1 = Monday, etc
     var numrow  = Math.ceil((numdays + startOn) / numcol); //Number of rows in this calendar
     var width   = (((cwidth - gutter) / 2) - ((numcol - 1) * space)) / numcol; //width of cell
     var counterId = snap.attr('id'); //Counter Id
     var now     = new Date();
+    var date    = new Date(year, month, 1);
     //console.log(hist);
 
     /*console.log('year: ' + year);
@@ -216,13 +222,12 @@ function drawMonthCalendar(snap, i, cwidth, year, month) {
             var s = row * numcol + col; //Cell sequence number, starting from 0;
             var date = s - startOn + 1; //Date number, e.g. 15
             var cellGroup = snap.group();
-
             var c = '#d6e685';
-
+            
             if(s < startOn || s >= numdays + startOn)
                 c = '#f2f2f2';
             else {
-                cellGroup.attr({'class':'cell', 'counter':counterId, 'date':makeDateStr(year, month + 1, date)});
+                cellGroup.attr({'class':'cell', 'counter':counterId, 'date':new Date(year, month, date).toString(dbDateFormat)});
                 c = getColor(counterId, new Date(year, month, date));
             }
             
@@ -230,7 +235,7 @@ function drawMonthCalendar(snap, i, cwidth, year, month) {
             var rectId = 'rect' + s;
             var rect = snap.rect(x, y, width, width).attr({id:rectId, fill:c});
             //if(s >= startOn && s < startOn + numdays)
-                //cellGroup.attr({'data-toggle':'tooltip', title:makeFullDateStr(year, month, date)});
+                //cellGroup.attr({'data-toggle':'tooltip', title:new Date(year, month, date).toString('MMMM d, yyyy')});
             //var a = snap.element('a').attr({href:'#'});
             if(year == now.getFullYear() && month == now.getMonth() && date == now.getDate())
                 rect.attr({strokeWidth:1, stroke:'#aaa'});
@@ -263,12 +268,16 @@ var colorNo  = '#e3e3e3';
 var colorStart = '#bee685';
 var colorMiss = '#e6c785';
 
+/**
+ * @param counterId database counter id.
+ * @param date      JavaScript date object.
+ */
 function getColor(counterId, date) {
     //If this date is in the future, set this cell as no color.
-    if(dateGreater(date, new Date()))
+    if(date.isAfter(new Date()))
         return colorNo;
 
     var hist = data[counterId]; //History data for this counter 
-    var val = hist[makeDateStr(date.getFullYear(), date.getMonth() + 1, date.getDate())];
+    var val = hist[date.toString(dbDateFormat)];
     return val === undefined ? colorNo : val == 0 ? colorYes : colorMiss;
 }

@@ -6,6 +6,6 @@ use yii\web\AssetBundle;
 
 class DatejsAsset extends AssetBundle
 {
-    public $sourcePath = '@app/views/layouts';
+    public $sourcePath = '@bower/Datejs/build';
     public $js = ['date.js'];
 }

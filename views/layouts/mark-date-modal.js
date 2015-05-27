@@ -100,11 +100,11 @@ $(function(){
     $('#mark-date-modal .modal-footer button').click(function(){MarkDateModal.okClicked();});
 });
 
-MarkDateModal.initDatePicker = function() {
-    $(dateInputSel).datepicker({dateFormat: 'MM d, yy'});
-    var now = new Date();
-    $(dateInputSel).val(monthNames[now.getMonth()] + ' ' + now.getDate() + ', ' + now.getFullYear());
-}
+// MarkDateModal.initDatePicker = function() {
+//     $(dateInputSel).datepicker({dateFormat: 'MM d, yy'});
+//     var now = new Date();
+//     $(dateInputSel).val(Date.monthNames[now.getMonth()] + ' ' + now.getDate() + ', ' + now.getFullYear());
+// }
 
 MarkDateModal.setStartDate = function(dateStr) {
     var date = new Date(dateStr);

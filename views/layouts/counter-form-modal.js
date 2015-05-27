@@ -207,13 +207,12 @@ CounterForm.setTitle = function(title) {
     $('#add-counter-modal .modal-title').html('<b>' + title + '</b>');
 }
 
-//var monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
 var dateInputSel = '#counter-startdate';
 
 CounterForm.initDatePicker = function() {
     $(dateInputSel).datepicker({dateFormat: 'MM d, yy'});
     var now = new Date();
-    $(dateInputSel).val(monthNames[now.getMonth()] + ' ' + now.getDate() + ', ' + now.getFullYear());
+    $(dateInputSel).val(Date.CultureInfo.monthNames[now.getMonth()] + ' ' + now.getDate() + ', ' + now.getFullYear());
 }
 
 CounterForm.setStartDate = function(dateStr) {
