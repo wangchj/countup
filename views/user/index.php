@@ -220,6 +220,7 @@ var counterUpdateUrl = '<?=Url::to(['counter/update'])?>';
 var updateOrderUrl = '<?=Url::to(['counter/update-display-order'])?>';
 var followUrl = '<?=Url::to(['user/follow'])?>';
 var unfollowUrl = '<?=Url::to(['user/unfollow'])?>';
+var fastForwardUrl = '<?=Url::to(['counter/fast-forward'])?>';
 
 var app = {
     user: {

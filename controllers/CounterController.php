@@ -33,7 +33,12 @@ class CounterController extends \yii\web\Controller
 				'class'=>AccessControl::className(),
 				'rules'=>[
                     ['allow'=>true, 'actions'=>['index','view'], 'roles'=>['?','@']],
-					['allow'=>true, 'actions'=>['add','update','reset','deactivate', 'mark', 'get-days', 'ajax-remove', 'data', 'update-display-order'], 'roles'=>['@']],
+					['allow'=>true, 
+                        'actions'=>[
+                            'add','update','reset','deactivate', 'mark',
+                            'get-days', 'ajax-remove', 'data', 'update-display-order', 'fast-forward'
+                        ],
+                        'roles'=>['@']],
 				]
 			],
             'verbs' => [
@@ -314,6 +319,29 @@ class CounterController extends \yii\web\Controller
         History::deleteAll(['counterId'=>$counterId]);
         $command = Yii::$app->db->createCommand("update Counters set dispOrder = dispOrder - 1 where dispOrder > {$counter->dispOrder}")->execute();
         $counter->delete();
+    }
+
+    /**
+     * Ajax history fast forward. This action marks all dates of a counter from the most recent
+     * entry until specified date.
+     */
+    public function actionFastForward($counterId, $date) {
+        Yii::trace('counter id: ' + $counterId + ' date: ' + $date);
+        
+        if(Yii::$app->user->isGuest)
+            throw new ForbiddenHttpException('You are not allowed to modify this counter.');
+        
+        try {
+            $date = new DateTime($date);
+        }catch(Exception $ex) {
+            throw new BadRequestHttpException('Date is invalid');
+        }
+
+        if(!$counter = Counter::findOne($counterId))
+            throw new BadRequestHttpException('Counter not found.');
+        if($counter->user->userId != Yii::$app->user->identity->userId)
+            throw new ForbiddenHttpException('You are not allowed to modify this counter.');
+        $counter->fastForward($date);
     }
 
     /**

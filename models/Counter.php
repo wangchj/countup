@@ -4,8 +4,9 @@ namespace app\models;
 
 use \DateTime;
 use \DateTimeZone;
+use \DateInterval;
 use \Exception;
-
+use Carbon\Carbon;
 use Yii;
 
 /**
@@ -203,6 +204,105 @@ class Counter extends \yii\db\ActiveRecord
         }
 
         return ['startDate'=>$maxStartDate, 'endDate'=>$maxEndDate, 'count'=>$max];
+    }
+
+    /**
+     * @param $toDate DateTime mark this counter until this date.
+     */
+    public function fastForward($toDate) {
+        if($this->type == 'daily')
+            $this->fastForwardDaily($toDate);
+        else if($this->type == 'weekly')
+            $this->fastFowardWeekly($toDate);
+    }
+
+    /**
+     * @param $toDate DateTime mark this counter until this date.
+     * @throws Exception if counter has no entry.
+     */
+    private function fastForwardDaily($toDate) {
+        if(!$last = $this->getLastHistoryEntry())
+            throw new Exception("Counter has no start entry");
+
+        $toDate->setTime(0, 0, 0);
+        $lastDate = new DateTime($last->date);
+        $lastDate->setTime(0, 0, 0);
+
+        if($toDate <= $lastDate)
+            return;
+
+        $tran = Yii::$app->db->beginTransaction();
+        try {
+            for($int = new DateInterval("P{$this->every}D"), $lastDate->add($int); $lastDate <= $toDate; $lastDate->add($int)) {
+                $history = new History();
+                $history->counterId = $this->counterId;
+                $history->date = $lastDate->format(History::$dateFormat);
+                $history->miss = false;
+                $history->save();
+            }
+            $tran->commit();
+        }
+        catch(Exception $e) {
+            $tran->rollBack();
+        }
+    }
+
+    /**
+     * @param $toDate DateTime mark this counter until this date.
+     * @throws Exception if counter has no entry.
+     */
+    private function fastFowardWeekly($toDate) {
+        if(!$tail = $this->getLastHistoryEntry())
+            throw new Exception("Counter has no start entry");
+
+        $toDate->setTime(0, 0, 0);
+        $tail = (new Carbon($tail->date))->setTime(0, 0, 0);
+
+        if($toDate <= $tail)
+            return;
+
+        $on = explode(',', $this->on);
+        $map = ['sun', 'mon', 'tue', 'wed', 'thu', 'fri', 'sat'];
+
+        $tran = Yii::$app->db->beginTransaction();
+        try {
+            while(true) {
+                //Increment tail: if tail is Saturday (the last day), increment to
+                //Sunday (first day) of next period.
+                if($tail->isSaturday())
+                    $tail->addWeek($this->every)->previous(Carbon::SUNDAY);
+                else
+                    $tail->addDay();
+
+                //Checks if we should stop
+                if($tail > $toDate)
+                    break;
+
+                if(in_array($map[$tail->dayOfWeek], $on)) {
+                    $history = new History();
+                    $history->counterId = $this->counterId;
+                    $history->date = $tail->format(History::$dateFormat);
+                    $history->miss = false;
+                    $history->save();
+                }
+            }
+
+            $tran->commit();
+        }
+        catch(Exception $e) {
+            $tran->rollBack();
+        }
+    }
+
+    /**
+     * Gets the last history entry for this counter.
+     * If no entry is found, null is returned.
+     */
+    private function getLastHistoryEntry() {
+        $t = History::tableName();
+        $q = "select * from $t where counterId={$this->counterId} " .
+            "and date=(select max(date) from $t where counterId={$this->counterId})";
+        return History::findBySql($q)->one();
     }
 
     /**

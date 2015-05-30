@@ -19,7 +19,8 @@ function initFigureEvents() {
             var markStr = '<li class="date-menu-item" onclick="markClicked(' + 1 + ',' + counterId + ',' + '\'' + date + '\'' + ')"><span class="glyphicon glyphicon-ok"></span> Mark Done</li>';
             var missStr = '<li class="date-menu-item" onclick="markClicked(' + 2 + ',' + counterId + ',' + '\'' + date + '\'' + ')"><span class="glyphicon glyphicon-remove"></span> Mark Miss</li>';
             var clearStr = '<li class="date-menu-item" onclick="markClicked(' + 0 + ',' + counterId + ',' + '\'' + date + '\'' + ')"><span class="glyphicon glyphicon-unchecked"></span> Clear</li>';
-            var res = '<ul class="date-menu">' + markStr + missStr + clearStr + '</ul>';
+            var ffStr = '<li class="date-menu-item" onclick="fastForwardClicked(' + counterId + ',' + '\'' + date + '\'' + ')"><span class="glyphicon glyphicon-fast-forward"></span> Fast Forward</li>';
+            var res = '<ul class="date-menu">' + markStr + missStr + clearStr + '<hr style="margin:5px">' + ffStr + '</ul>';
             return res;
         },
         html:      true,
@@ -106,6 +107,25 @@ function getCellState(counterId, date) {
         default:
             return markError;
     }
+}
+
+/**
+ * Mark all date from the most recent entry to today.
+ */
+function fastForwardClicked(counterId, date) {
+    $.ajax({
+        type:'GET',
+        url: fastForwardUrl,
+        data: {'counterId': counterId, 'date': date},
+        error: function(jqXHR, textStatus, errorThrown) {
+            console.log('fast-forward error: ' + textStatus + ':' + errorThrown);
+        },
+        success: function(data, textStatus, jqXHR) {
+            console.log('fast-forward success');
+
+            //TODO: ajax update calendar
+        }
+    });
 }
 
 function initWindowResizing() {
