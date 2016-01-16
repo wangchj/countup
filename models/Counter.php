@@ -161,6 +161,29 @@ class Counter extends \yii\db\ActiveRecord
     }
 
     /**
+     * Resets the count of this counter to 0.
+     *
+     * If the counter is not active, this method has no effect.
+     *
+     * @param $resetDate string A date string in a format in http://php.net/manual/en/datetime.formats.php
+     */
+    public function reset($resetDate) {
+        if(!$this->isActive())
+            return;
+
+        $resetDate = new \DateTime($resetDate);
+
+        $history = History::findOne(['counterId'=>$this->counterId, 'endDate'=>null]);
+        $history->endDate = $resetDate->format('Y-m-d');
+        $history->save();
+
+        $history = new History();
+        $history->counterId = $this->counterId;
+        $history->startDate = $resetDate->format('Y-m-d');
+        $history->save();
+    }
+
+    /**
      * Gets the next counter display order number of an user.
      * If userId is invalid or error occurred, 1 is returned.
      */
