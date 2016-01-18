@@ -44,20 +44,36 @@ class CounterTest extends TestCase
         $this->assertEquals($expectedEnd->toDateString(), $actual['endDate']->format('Y-m-d'));
     }
 
+    /**
+     * Test a normal case where the reset date is today; in other words, $startDate < $resetDate = $today.
+     * Note: Sqlite and Yii2 both uses UTC as default date time zone.
+     */
     function testResetToday() {
-        $startDate = Carbon::now()->subDays(5)->toDateString();
-        $resetDate = Carbon::now()->toDateString();
-        
-        //Test precondition
-        $this->tester->seeInDatabase('History', ['counterId'=>1, 'startDate'=>$startDate, 'endDate'=>null]);
+        $counter = Counter::findOne(1);
 
-        Counter::findOne(1)->reset($resetDate);
+        $startDate = Carbon::now()->subDays(5);
+        $resetDate = Carbon::now($counter->getTimeZone());
+        
+        codecept_debug("Start Date: {$startDate->toAtomString()} {$startDate->getTimeZone()->getName()}");
+        codecept_debug("Reset Date: {$resetDate->toAtomString()} {$resetDate->getTimeZone()->getName()}");
+
+        //Test precondition
+        $this->tester->seeInDatabase('History', ['counterId'=>1, 'startDate'=>$startDate->toDateString(),
+            'endDate'=>null]);
+
+        Counter::findOne(1)->reset($resetDate->toDateString());
 
         //Test the results after reset
-        $this->tester->seeInDatabase('History', ['counterId'=>1, 'startDate'=>$startDate, 'endDate'=>$resetDate]);
-        $this->tester->seeInDatabase('History', ['counterId'=>1, 'startDate'=>$resetDate, 'endDate'=>null]);
+        $this->tester->seeInDatabase('History', ['counterId'=>1, 'startDate'=>$startDate->toDateString(),
+            'endDate'=>$resetDate->toDateString()]);
+        $this->tester->seeInDatabase('History', ['counterId'=>1, 'startDate'=>$resetDate->toDateString(),
+            'endDate'=>null]);
     }
 
+    /**
+     * Test a normal case where the reset date is legal but is before (less than) today.
+     * In other words, $startDate < $resetDate < $today.
+     */
     function testResetPast() {
         $startDate = Carbon::now()->subDays(3)->toDateString();
         $resetDate = Carbon::now()->subDays(1)->toDateString();
@@ -70,5 +86,42 @@ class CounterTest extends TestCase
         //Test the results after reset
         $this->tester->seeInDatabase('History', ['counterId'=>2, 'startDate'=>$startDate, 'endDate'=>$resetDate]);
         $this->tester->seeInDatabase('History', ['counterId'=>2, 'startDate'=>$resetDate, 'endDate'=>null]);
+    }
+
+    /**
+     * Tests an illegal case where the reset date is before the start date.
+     *
+     * @expectedException InvalidArgumentException
+     */
+    function testResetDateBeforeStartDate() {
+        Counter::findOne(1)->reset(Carbon::now()->subDays(6)->toDateString());
+    }
+
+    /**
+     * Tests an illegal case where the reset date after today.
+     *
+     * @expectedException InvalidArgumentException
+     */
+    function testResetDateGreaterThanToday() {
+        Counter::findOne(1)->reset(Carbon::now()->addDays(1)->toDateString());
+    }
+
+    /**
+     * Tests a degenerate case where the reset date is the same as the start date. No exception is expected; however,
+     * no record should be inserted into History and there should be no change to the database.
+     */
+    function testResetDateSameAsStartDate() {
+        $startDate = Carbon::now()->subDays(5);
+        
+        //Test precondition
+        $this->tester->seeInDatabase('History', ['counterId'=>1, 'startDate'=>$startDate->toDateString(),
+            'endDate'=>null]);
+
+        Counter::findOne(1)->reset($startDate->toDateString());
+
+        $this->tester->seeInDatabase('History', ['counterId'=>1, 'startDate'=>$startDate->toDateString(),
+            'endDate'=>null]);
+        $this->tester->dontSeeInDatabase('History', ['counterId'=>1, 'startDate'=>$startDate->toDateString(),
+            'endDate'=>$startDate->toDateString()]);        
     }
 }

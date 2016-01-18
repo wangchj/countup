@@ -6,6 +6,7 @@ use \DateTime;
 use \DateTimeZone;
 use \DateInterval;
 use \Exception;
+use \InvalidArgumentException;
 use Carbon\Carbon;
 use Yii;
 
@@ -107,7 +108,7 @@ class Counter extends \yii\db\ActiveRecord
      */
     public function getCurrentStartDate() {
         $running = $this->getHistory()->where(['endDate'=>null])->one();
-        return $running ? new DateTime($running->startDate, $this->getTimeZone()) : null;
+        return $running ? (new DateTime($running->startDate, $this->getTimeZone()))->setTime(0, 0, 0) : null;
     }
 
     /**
@@ -166,17 +167,34 @@ class Counter extends \yii\db\ActiveRecord
      * If the counter is not active, this method has no effect.
      *
      * @param $resetDate string A date string in a format in http://php.net/manual/en/datetime.formats.php
+     *
+     * @throws InvalidArgumentException if $resetDate is before the current start date of te counter; or if $resetDate
+     * is in the future (greater than today).
      */
     public function reset($resetDate) {
         if(!$this->isActive())
             return;
 
-        $resetDate = new \DateTime($resetDate);
+        //Check that the $reset date is not before the start date
+        $startDate = $this->getCurrentStartDate();
+        $resetDate = (new DateTime($resetDate, $this->getTimeZone()))->setTime(0, 0, 0);
+        if($resetDate < $startDate)
+            throw new InvalidArgumentException('Reset date cannot precede the current start date');
 
+        //Check that the $reset date is not in the future
+        $today = (new DateTime('now', $this->getTimeZone()))->setTime(0, 0, 0);
+        if($resetDate > $today)
+            throw new InvalidArgumentException('Reset date cannot be in the future');
+
+        if($resetDate == $startDate)
+            return;
+        
+        //Insert previous count into History
         $history = History::findOne(['counterId'=>$this->counterId, 'endDate'=>null]);
         $history->endDate = $resetDate->format('Y-m-d');
         $history->save();
 
+        //Create a new count in History
         $history = new History();
         $history->counterId = $this->counterId;
         $history->startDate = $resetDate->format('Y-m-d');
