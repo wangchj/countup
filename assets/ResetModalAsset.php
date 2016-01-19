@@ -3,11 +3,11 @@ namespace app\assets;
 
 use yii\web\AssetBundle;
 
-class MarkDateModalAsset extends AssetBundle
+class ResetModalAsset extends AssetBundle
 {
     public $sourcePath = '@app/views/layouts';
     public $css = [];
-    public $js = ['mark-date-modal.js'];
+    public $js = ['ResetModal.js'];
     public $depends = [
         'app\assets\DatejsAsset',
         'app\assets\JqueryUiAsset'

@@ -60,37 +60,13 @@ class UserController extends Controller
             $viewee->getCounters()->orderBy('dispOrder')->all() :
             $viewee->getCounters()->where(['public'=>true])->orderBy('dispOrder')->all();
 
-        $data = $this->makeCalendarData($counters, $viewer, $viewee);
-        //$this->layout = '@app/views/layouts/blank';
         return $this->render('index', [
             'viewer'=>$viewer,
             'viewee'=>$viewee,
             'counters'=>$counters,
             'follows'=>$viewee->getRandomFollows(6),
             'followers'=>$viewee->getRandomFollowers(6),
-            'data'=>$data
         ]);
-    }
-
-    /**
-     * Get history date from $startDate to $endDate
-     */
-    private function makeCalendarData($counters, $viewer, $viewee) {
-        $res = [];
-        foreach($counters as $counter) {
-            $now = new DateTime('now', $counter->getTimeZone());
-            $start = (new DateTime())->setTimestamp(strtotime('first day of last month', $now->getTimestamp()))->format('Y-m-d');
-            $end = (new DateTime())->setTimestamp(strtotime('last day of this month', $now->getTimestamp()))->format('Y-m-d');
-            $data = [];
-
-            $history = $counter->getHistory()->where("date >= '$start' and date <= '$end'")->all();
-
-            foreach($history as $h)
-                $data[$h->date] = $h->miss ? 1 : 0; //0: a mark, 1: a miss
-
-            $res["{$counter->counterId}"] = $data;
-        }
-        return $res;
     }
 
     public function actionSignupForm() {

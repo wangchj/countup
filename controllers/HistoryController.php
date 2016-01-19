@@ -138,20 +138,6 @@ class HistoryController extends Controller
     }
 
     /**
-     * Inserts a record into History table.
-     * @param $counter Counter model class instance.
-     * @param $endDate PHP DateTime instance.
-     */
-    public static function insertHistory($counter, $endDate)
-    {
-        $history = new History();
-        $history->counterId = $counter->counterId;
-        $history->startDate = $counter->startDate;
-        $history->endDate   = $endDate->format('Y-m-d');
-        $history->save();
-    }
-
-    /**
      * Finds the History model based on its primary key value.
      * If the model is not found, a 404 HTTP exception will be thrown.
      * @param string $startDate

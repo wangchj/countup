@@ -152,11 +152,28 @@ class Counter extends \yii\db\ActiveRecord
             ) group by counterId having max(count);"
         )->queryOne();
         
-        $timezone = $this->getTimeZone();
+        //Warning: the following code is hack to fix time zone issue. Should find a more
+        //formal way to fix this.
+        
+        $tz = $this->getTimeZone();
 
-        $res['count'] = (int)$res['count'];
-        $res['startDate'] = new DateTime($res['startDate'], $timezone);
-        $res['endDate'] = new DateTime($res['endDate'], $timezone);
+        $today = (new DateTime('now', $tz))->setTime(0, 0, 0);
+        $startDate = new DateTime($res['startDate'], $tz);
+        $endDate = new DateTime($res['endDate'], $tz);
+
+        Yii::info($today);
+        Yii::info($res);
+
+        // if($endDate > $today) {
+        //     $endDate = $today;
+        //     Yii::info('zzzzzzzzzzzzzzzzzzzzzzzz');
+        // }
+
+        $res['count'] = $endDate > $today ? (int)$res['count'] - 1 : (int)$res['count'];
+        $res['startDate'] = $startDate;
+        $res['endDate'] = $endDate > $today ? $today : $endDate;
+
+        //End hack!!!!
         
         return $res;
     }
@@ -193,6 +210,9 @@ class Counter extends \yii\db\ActiveRecord
         $history = History::findOne(['counterId'=>$this->counterId, 'endDate'=>null]);
         $history->endDate = $resetDate->format('Y-m-d');
         $history->save();
+        Yii::info($history->errors);
+        //Yii::info($history->endDate);
+        Yii::info($history);
 
         //Create a new count in History
         $history = new History();

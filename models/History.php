@@ -34,9 +34,9 @@ class History extends \yii\db\ActiveRecord
             [['counterId', 'startDate'], 'required'],
             [['startDate'], 'string'],
             [['counterId'], 'integer'],
-            [['counterId', 'startDate'], 'unique',
-                'targetAttribute' => ['counterId', 'startDate'],
-                'message' => 'The combination of Counter ID, Date has already been taken.']
+            //[['counterId', 'startDate'], 'unique',
+            //    'targetAttribute' => ['counterId', 'startDate'],
+            //    'message' => 'The combination of Counter ID, Start Date has already been taken.']
         ];
     }
 

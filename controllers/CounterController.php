@@ -5,6 +5,7 @@ namespace app\controllers;
 use \DateTime;
 use \DateTimeZone;
 use \Exception;
+use \InvalidArgumentException;
 use Yii;
 use yii\web\HttpException;
 use yii\web\ForbiddenHttpException;
@@ -123,10 +124,6 @@ class CounterController extends \yii\web\Controller
             'label'=>$counter->label,
             'summary'=>$counter->summary,
             'timeZone'=>$counter->getTimeZone(),
-            'startDate'=>(new DateTime($counter->startDate, $counter->getTimeZone()))->format('m/j/Y'),
-            'type'=>$counter->type,
-            'every'=>$counter->every,
-            'on'=>$counter->on,
             'active'=>$counter->isActive(),
             'public'=>$counter->public
         ];
@@ -216,87 +213,43 @@ class CounterController extends \yii\web\Controller
     }
 
     /**
-     * Sets start date of the count to today's date.
-     * @param $id counter id.
+     * Resets the count of the counter with the id $counterId to 0.
+     * This action should only used by Ajax call and returns a json response.
+     *
+     * If the counter is not active, this action has no effect.
+     *
+     * @param $counterId integer The database id of the counter to reset.
+     * @param $resetDate string  A date string in a format in
+     *        http://php.net/manual/en/datetime.formats.php
+     *
+     * @return 
+     *
      * @throws ForbiddenHttpException current user is not the owner of the counter.
+     * @throws NotFoundHttpException if the counter cannot be found
+     * @throws B if $resetDate is before the current start date of te counter.
      */
-    public function actionReset($id)
+    public function actionReset($counterId, $resetDate)
     {
-        $model = $this->findModel($id);
+        $counter = $this->findModel($counterId);
         $user = User::findOne(Yii::$app->user->id);
+        
         //Make sure the current user is owners
-        if(Yii::$app->user->id === $model->userId)
-        {
-            $now = new \DateTime('now', new \DateTimeZone($user->timeZone));
-
-            //Record history
-            HistoryController::insertHistory($model, $now);
-
-            //Update start date
-            $model->startDate = $now->format('Y-m-d');
-            $model->save();
-            return $this->redirect(['index', 'username'=>$user->userName]);
-        }
-
-        throw new ForbiddenHttpException();
-    }
-
-    /**
-     * Ajax call to set a date.
-     */
-    public function actionMark($action, $counterId, $date) {
-        $counter = Counter::findOne($counterId);
-        if(!$counter)
-            throw new NotFoundHttpException('Counter not found');
-
-        //Check counter owner
-        if(Yii::$app->user->identity->userId != $counter->userId)
+        if(Yii::$app->user->id !== $counter->userId)
             throw new ForbiddenHttpException();
 
-        //$date = new DateTime($date, $counter->getTimeZone());
-
         try{
-            $date = new DateTime($date, $counter->getTimeZone());
+            $counter->reset($resetDate);
         }
-        catch(Exception $ex) {
-            throw new BadRequestHttpException('Date format is invalid');
+        catch(InvalidArgumentException $ex){
+            throw new BadRequestHttpException($ex->getMessage());
         }
 
-        $date = $date->format(History::$dateFormat);
+        $count = ['count'=>$counter->getDays(), 'startDate'=>$counter->getCurrentStartDate()];
+        $best  = $counter->getBest();
 
-        $history = History::findOne(['counterId'=>$counterId, 'date'=>$date]);
+        Yii::$app->response->format = yii\web\Response::FORMAT_JSON;
 
-        if(!$history) { //This date is not marked
-            if($action == $this->markNone)
-                return;
-            $history = new History();
-            $history->counterId = $counterId;
-            $history->date = $date;
-            $history->miss = ($action == $this->markMiss ? true : false);
-            $history->save();
-        }
-        else if($history->miss) { //This date is marked as miss
-            if($action == $this->markMiss)
-                return;
-            else if($action == $this->markDone) {
-                $history->miss = false;
-                $history->save();
-            }
-            else if($action == $this->markNone) {
-                $history->delete();
-            }
-        }
-        else { //This date is marked as done
-            if($action == $this->markDone)
-                return;
-            else if($action == $this->markMiss) {
-                $history->miss = true;
-                $history->save();
-            }
-            else if($action == $this->markNone) {
-                $history->delete();
-            }
-        }
+        return ['count'=>$count, 'best'=>$best];
     }
 
     /**
@@ -319,29 +272,6 @@ class CounterController extends \yii\web\Controller
         History::deleteAll(['counterId'=>$counterId]);
         $command = Yii::$app->db->createCommand("update Counters set dispOrder = dispOrder - 1 where dispOrder > {$counter->dispOrder}")->execute();
         $counter->delete();
-    }
-
-    /**
-     * Ajax history fast forward. This action marks all dates of a counter from the most recent
-     * entry until specified date.
-     */
-    public function actionFastForward($counterId, $date) {
-        Yii::trace('counter id: ' + $counterId + ' date: ' + $date);
-        
-        if(Yii::$app->user->isGuest)
-            throw new ForbiddenHttpException('You are not allowed to modify this counter.');
-        
-        try {
-            $date = new DateTime($date);
-        }catch(Exception $ex) {
-            throw new BadRequestHttpException('Date is invalid');
-        }
-
-        if(!$counter = Counter::findOne($counterId))
-            throw new BadRequestHttpException('Counter not found.');
-        if($counter->user->userId != Yii::$app->user->identity->userId)
-            throw new ForbiddenHttpException('You are not allowed to modify this counter.');
-        $counter->fastForward($date);
     }
 
     /**

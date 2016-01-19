@@ -7,16 +7,16 @@ function initCounterMenu() {
     $('.counter-menu-toggle').popover({
         content: function() {
             var counterId = $(this).attr('counterId');
-            var markStr = '<li class="counter-menu-item" onclick="markDateModal(' + counterId + ')">' +
-                '<span class="glyphicon glyphicon-th-large"></span> Mark a Date</li>'; 
+            var resetStr = '<li class="counter-menu-item" onclick="resetModal(' + counterId + ')">' +
+                '<span class="glyphicon glyphicon glyphicon-repeat"></span> Reset Count</li>'; 
             var setStr = '<li class="counter-menu-item" onclick="counterSettingClicked(' + counterId + ')">' +
-                '<span class="glyphicon glyphicon-cog"></span> Counter Settings</li>';
+                '<span class="glyphicon glyphicon-cog"></span> Settings</li>';
             var remStr =
                 '<li class="counter-menu-item" onclick="counterRemoveClicked(' + counterId + ')">' +
-                    '<span class="glyphicon glyphicon-fire"></span> Remove Counter' +
+                    '<span class="glyphicon glyphicon-fire"></span> Delete' +
                 '</li>';
 
-            var res = '<ul class="counter-menu">' + markStr + setStr + '<hr style="margin:5px">' + remStr + '</ul>';
+            var res = '<ul class="counter-menu">' + resetStr + setStr + '<hr style="margin:5px">' + remStr + '</ul>';
 
             return res;
         },
@@ -26,16 +26,6 @@ function initCounterMenu() {
         trigger:   'focus'
     });
 }
-
-var markError = -1;
-var markNone = 0;
-var markDone = 1;
-var markMiss = 2;
-
-var colorDone = '#d6e685';
-var colorNone  = '#e3e3e3';
-//var colorStart = '#bee685';
-var colorMiss = '#e6c785';
 
 var counterModalId = '#add-counter-modal';
 
@@ -71,10 +61,10 @@ function counterRemoveClicked(counterId) {
     $('#remove-confirm-modal').attr('counterId', counterId);
 }
 
-function markDateModal(counterId){
-    MarkDateModal.clearError();
-    MarkDateModal.setCounterId(counterId);
-    MarkDateModal.show();
+function resetModal(counterId){
+    ResetModal.clearError();
+    ResetModal.setCounterId(counterId);
+    ResetModal.show();
 }
 
 function initRemoveModalBtnEvents() {

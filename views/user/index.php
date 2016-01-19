@@ -6,11 +6,9 @@ use app\lib\DateTime;
 
 class Asset extends AssetBundle {
     public $sourcePath = '@app/views/user';
-    public $js = ['cal.js', 'index.js', 'counter-sortable.js'];
-    public $css = ['cal.css'];
+    public $js = ['index.js', 'counter-sortable.js'];
     public $depends = [
-        'app\assets\MarkDateModalAsset',
-        'app\assets\SnapsvgAsset',
+        'app\assets\ResetModalAsset',
         'yii\web\JqueryAsset',
         'app\assets\SortableAsset',
     ];
@@ -116,7 +114,9 @@ $this->params['viewee'] = $viewee;
                                 <?=$counter->label?>
                                 <div class="pull-right">
                                         <!-- a class="counter-menu-toggle" href="#" counterId="<?=$counter->counterId?>" -->
-                                        <button class="counter-menu-toggle" counterId="<?=$counter->counterId?>"><span class="glyphicon glyphicon-option-horizontal"></span></button>
+                                        <button class="counter-menu-toggle" counterId="<?=$counter->counterId?>">
+                                            <span class="glyphicon glyphicon-option-horizontal"></span>
+                                        </button>
                                         <!-- /a -->
                                 </div>
                             </div>
@@ -126,14 +126,21 @@ $this->params['viewee'] = $viewee;
                             <div class="col-xs-6">
                                 <div style="font-size:12px; font-weight:normal; color:#999; margin-bottom:5px">Current Count</div>
                                 <div style="margin-bottom:8px"><span class="current-count"><?=$counter->getDays()?></span> Days</div>
-                                <div style="font-size:12px; font-weight:normal; color:#ccc">
-                                     <?= $counter->isActive() && $counter->getCurrentStartDate() ? 'since ' . $counter->getCurrentStartDate()->format('M j, Y') : 'not running'?>
+                                <div class="since" style="font-size:12px; font-weight:normal; color:#ccc">
+                                    <?= $counter->isActive() && $counter->getCurrentStartDate() ?
+                                        'since ' . $counter->getCurrentStartDate()->format('M j, Y') :
+                                        'not running'
+                                    ?>
                                 </div>
                             </div>
                             <div class="col-xs-6">
                                 <div style="font-size:12px; font-weight:normal; color:#999; margin-bottom:5px">Best</div>
-                                <div style="margin-bottom:8px"><?php $best = $counter->getBest(); ?> <?=$best['count']?> Days</div>
-                                <div style="font-size:12px; font-weight:normal; color:#ccc">
+                                <div style="margin-bottom:8px">
+                                    <span class="best-count">
+                                        <?php $best = $counter->getBest(); ?> <?=$best['count']?>
+                                    </span> Days
+                                </div>
+                                <div class="best-range" style="font-size:12px; font-weight:normal; color:#ccc">
                                     <?php if($best['startDate'] && $best['endDate']):?>
                                         <?= $best['startDate']->format('M j, Y') ?> - <?= $best['endDate']->format('M j, Y') ?>
                                     <?php else:?>
@@ -142,24 +149,6 @@ $this->params['viewee'] = $viewee;
                                 </div>
                             </div>
                         </div>
-                        <hr>
-                        <div class="row">
-                            <div class="col-xs-12">
-                                <div class="row">
-                                    <div class="col-xs-6" style="font-size:12px; font-weight:normal; color:#999; margin-bottom:5px;padding-left:50px">
-                                        <?= (new DateTime())->setTimestamp(strtotime('first day of last month'))->format('F');?>
-                                    </div>
-                                    <div class="col-xs-6" style="font-size:12px; font-weight:normal; color:#999; margin-bottom:5px;padding-right:50px">
-                                        <?= (new DateTime())->format('F');?>
-                                    </div>
-                                </div> <!-- row -->
-                                <div class="row">
-                                    <div class="col-xs-12 cimg">
-                                        <svg id="<?=$counter->counterId?>"></svg>
-                                    </div>
-                                </div> <!-- row -->
-                            </div>
-                        </div> <!-- row -->
                     </div>
                 </div>
             <?php endforeach;?>
@@ -210,8 +199,7 @@ $this->params['viewee'] = $viewee;
 </div>
 
 <script>
-var data = <?=json_encode($data)?>;
-var markUrl = '<?=Url::to(['counter/mark'])?>';
+var resetUrl = '<?=Url::to(['counter/reset'])?>';
 var getDaysUrl = '<?=Url::to(['counter/get-days'])?>';
 var counterRemoveUrl = '<?=Url::to(['counter/ajax-remove'])?>';
 var counterAddUrl = '<?=Url::to(['counter/add'])?>';
@@ -220,7 +208,6 @@ var counterUpdateUrl = '<?=Url::to(['counter/update'])?>';
 var updateOrderUrl = '<?=Url::to(['counter/update-display-order'])?>';
 var followUrl = '<?=Url::to(['user/follow'])?>';
 var unfollowUrl = '<?=Url::to(['user/unfollow'])?>';
-var fastForwardUrl = '<?=Url::to(['counter/fast-forward'])?>';
 
 var app = {
     user: {
@@ -231,7 +218,7 @@ var app = {
 
 <?=$this->render('@app/views/layouts/CounterFormModal.php');?>
 
-<?=$this->render('@app/views/layouts/MarkDateModal.php');?>
+<?=$this->render('@app/views/layouts/ResetModal.php');?>
 
 <div id="remove-confirm-modal" class="modal fade">
     <div class="modal-dialog">
