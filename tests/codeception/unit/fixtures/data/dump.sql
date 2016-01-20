@@ -198,6 +198,16 @@ INSERT INTO Counters VALUES(
     /*dispOrder*/ 1
 );
 
+INSERT INTO Counters VALUES(
+    /*counterId*/ 3,
+    /*userId*/    1,
+    /*label*/     'One Month',
+    /*summary*/   '',
+    /*timeZone*/  'America/Chicago',
+    /*public*/    1,
+    /*dispOrder*/ 2
+);
+
 
 /*
 History Date Range Test cases
@@ -278,6 +288,11 @@ insert into History values(
     null
 );
 
+insert into History values (
+    3,
+    date('now', '-1 months'),
+    null
+);
 
 insert into Follows values(1, 2);
 insert into Follows values(1, 3);

@@ -124,4 +124,65 @@ class CounterTest extends TestCase
         $this->tester->dontSeeInDatabase('History', ['counterId'=>1, 'startDate'=>$startDate->toDateString(),
             'endDate'=>$startDate->toDateString()]);        
     }
+
+    /**
+     * Test a normal case where the stop date is today; in other words, $startDate < $stopDate = $today.
+     */
+    function testStopToday() {
+        $counter = Counter::findOne(1);
+
+        $startDate = Carbon::now()->subDays(5);
+        $stopDate = Carbon::now($counter->getTimeZone());
+        
+        //Test precondition
+        $this->tester->seeInDatabase('History', ['counterId'=>1, 'startDate'=>$startDate->toDateString(),
+            'endDate'=>null]);
+
+        Counter::findOne(1)->stop($stopDate->toDateString());
+
+        //Test the results after reset
+        $this->tester->seeInDatabase('History', ['counterId'=>1, 'startDate'=>$startDate->toDateString(),
+            'endDate'=>$stopDate->toDateString()]);
+        $this->tester->dontSeeInDatabase('History', ['counterId'=>1, 'endDate'=>null]);
+
+        //Test best count
+        $this->assertEquals(8, $counter->getBest()['count']);
+    }
+
+
+    /**
+     * Test a normal case where the stop date is legal but is before (less than) today.
+     * In other words, $startDate < $resetDate < $today.
+     */
+    function testStopPast() {
+        $startDate = Carbon::now()->subDays(3)->toDateString();
+        $stopDate = Carbon::now()->subDays(1)->toDateString();
+        
+        //Test precondition
+        $this->tester->seeInDatabase('History', ['counterId'=>2, 'startDate'=>$startDate, 'endDate'=>null]);
+
+        Counter::findOne(2)->stop($stopDate);
+
+        //Test the results after reset
+        $this->tester->seeInDatabase('History', ['counterId'=>2, 'startDate'=>$startDate, 'endDate'=>$stopDate]);
+        $this->tester->dontSeeInDatabase('History', ['counterId'=>2, 'endDate'=>null]);
+    }
+
+    /**
+     * Tests an illegal case where the stop date is before the start date.
+     *
+     * @expectedException InvalidArgumentException
+     */
+    function testStopDateBeforeStartDate() {
+        Counter::findOne(1)->stop(Carbon::now()->subDays(6)->toDateString());
+    }
+
+    /**
+     * Tests an illegal case where the stop date after today.
+     *
+     * @expectedException InvalidArgumentException
+     */
+    function testStopDateGreaterThanToday() {
+        Counter::findOne(1)->stop(Carbon::now()->addDays(1)->toDateString());
+    }
 }

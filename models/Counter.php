@@ -210,15 +210,57 @@ class Counter extends \yii\db\ActiveRecord
         $history = History::findOne(['counterId'=>$this->counterId, 'endDate'=>null]);
         $history->endDate = $resetDate->format('Y-m-d');
         $history->save();
-        Yii::info($history->errors);
-        //Yii::info($history->endDate);
-        Yii::info($history);
 
         //Create a new count in History
         $history = new History();
         $history->counterId = $this->counterId;
         $history->startDate = $resetDate->format('Y-m-d');
         $history->save();
+    }
+
+    /**
+     * Stops the count of this counter and make this counter inactive.
+     *
+     * Essentially, this method sets the end date of the current count in the history. This method is also very similar
+     * to the reset method, except that this method does not create a new count (with a new start date) in the History
+     * table.
+     *
+     * If the stop date is the same as the start date of the current count, the History of the current count is deleted.
+     *
+     * If the counter is not active, this method has no effect.
+     *
+     * @param $resetDate string A date string in a format in http://php.net/manual/en/datetime.formats.php
+     *
+     * @throws InvalidArgumentException if $resetDate is before the current start date of te counter; or if $resetDate
+     * is in the future (greater than today).
+     */
+    public function stop($stopDate) {
+        if(!$this->isActive())
+            return;
+
+        //Check that the $reset date is not before the start date
+        $startDate = $this->getCurrentStartDate();
+        $stopDate = (new DateTime($stopDate, $this->getTimeZone()))->setTime(0, 0, 0);
+        if($stopDate < $startDate)
+            throw new InvalidArgumentException('Reset date cannot precede the current start date');
+
+        //Check that the $reset date is not in the future
+        $today = (new DateTime('now', $this->getTimeZone()))->setTime(0, 0, 0);
+        if($stopDate > $today)
+            throw new InvalidArgumentException('Reset date cannot be in the future');
+        
+        //Get the History record of the current count.
+        $history = History::findOne(['counterId'=>$this->counterId, 'endDate'=>null]);
+
+        if($stopDate == $startDate) {
+            //If the stop date is the same as the start date, delete the current count.
+            $history->delete();
+        }
+        else {
+            //Else set the end date of the current count
+            $history->endDate = $stopDate->format('Y-m-d');
+            $history->save();
+        }
     }
 
     /**
