@@ -139,8 +139,8 @@ class Counter extends \yii\db\ActiveRecord
     /**
      * Get the longest span in days.
      *
-     * @return array an array with the format
-     * ['startDate'=>DateTime, 'endDate'=>DateTime, 'count'=>integer]
+     * @return array an array with the format ['startDate'=>DateTime, 'endDate'=>DateTime, 'count'=>integer] or
+     *         false if best is undefined, which means this counter has no entry in the History table.
      */
     public function getBest() {
         $res = Yii::$app->db->createCommand(
@@ -151,7 +151,11 @@ class Counter extends \yii\db\ActiveRecord
                 where counterId={$this->counterId} and endDate is null
             ) group by counterId having max(count);"
         )->queryOne();
-        
+
+        //The $res would be false, if this counter does not have an entry in the History table.
+        if(!$res)
+            return false;
+
         //Warning: the following code is hack to fix time zone issue. Should find a more
         //formal way to fix this.
         
@@ -164,10 +168,6 @@ class Counter extends \yii\db\ActiveRecord
         Yii::info($today);
         Yii::info($res);
 
-        // if($endDate > $today) {
-        //     $endDate = $today;
-        //     Yii::info('zzzzzzzzzzzzzzzzzzzzzzzz');
-        // }
 
         $res['count'] = $endDate > $today ? (int)$res['count'] - 1 : (int)$res['count'];
         $res['startDate'] = $startDate;
@@ -242,12 +242,12 @@ class Counter extends \yii\db\ActiveRecord
         $startDate = $this->getCurrentStartDate();
         $stopDate = (new DateTime($stopDate, $this->getTimeZone()))->setTime(0, 0, 0);
         if($stopDate < $startDate)
-            throw new InvalidArgumentException('Reset date cannot precede the current start date');
+            throw new InvalidArgumentException('Stop date cannot precede the current start date');
 
         //Check that the $reset date is not in the future
         $today = (new DateTime('now', $this->getTimeZone()))->setTime(0, 0, 0);
         if($stopDate > $today)
-            throw new InvalidArgumentException('Reset date cannot be in the future');
+            throw new InvalidArgumentException('Stop date cannot be in the future');
         
         //Get the History record of the current count.
         $history = History::findOne(['counterId'=>$this->counterId, 'endDate'=>null]);

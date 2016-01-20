@@ -9,6 +9,7 @@ class Asset extends AssetBundle {
     public $js = ['index.js', 'counter-sortable.js'];
     public $depends = [
         'app\assets\ResetModalAsset',
+        'app\assets\StopModalAsset',
         'yii\web\JqueryAsset',
         'app\assets\SortableAsset',
     ];
@@ -137,11 +138,11 @@ $this->params['viewee'] = $viewee;
                                 <div style="font-size:12px; font-weight:normal; color:#999; margin-bottom:5px">Best</div>
                                 <div style="margin-bottom:8px">
                                     <span class="best-count">
-                                        <?php $best = $counter->getBest(); ?> <?=$best['count']?>
+                                        <?php $best = $counter->getBest(); ?> <?=$best ? $best['count'] : 0?>
                                     </span> Days
                                 </div>
                                 <div class="best-range" style="font-size:12px; font-weight:normal; color:#ccc">
-                                    <?php if($best['startDate'] && $best['endDate']):?>
+                                    <?php if($best && $best['startDate'] && $best['endDate']):?>
                                         <?= $best['startDate']->format('M j, Y') ?> - <?= $best['endDate']->format('M j, Y') ?>
                                     <?php else:?>
                                         &nbsp; 
@@ -200,6 +201,7 @@ $this->params['viewee'] = $viewee;
 
 <script>
 var resetUrl = '<?=Url::to(['counter/reset'])?>';
+var stopUrl = '<?=Url::to(['counter/stop'])?>';
 var getDaysUrl = '<?=Url::to(['counter/get-days'])?>';
 var counterRemoveUrl = '<?=Url::to(['counter/ajax-remove'])?>';
 var counterAddUrl = '<?=Url::to(['counter/add'])?>';
@@ -219,6 +221,8 @@ var app = {
 <?=$this->render('@app/views/layouts/CounterFormModal.php');?>
 
 <?=$this->render('@app/views/layouts/ResetModal.php');?>
+
+<?=$this->render('@app/views/layouts/StopModal.php');?>
 
 <div id="remove-confirm-modal" class="modal fade">
     <div class="modal-dialog">

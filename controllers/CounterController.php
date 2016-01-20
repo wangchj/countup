@@ -36,8 +36,7 @@ class CounterController extends \yii\web\Controller
                     ['allow'=>true, 'actions'=>['index','view'], 'roles'=>['?','@']],
 					['allow'=>true, 
                         'actions'=>[
-                            'add','update','reset','deactivate', 'mark',
-                            'get-days', 'ajax-remove', 'data', 'update-display-order', 'fast-forward'
+                            'add','update','reset','stop', 'get-days', 'ajax-remove', 'data', 'update-display-order'
                         ],
                         'roles'=>['@']],
 				]
@@ -222,16 +221,20 @@ class CounterController extends \yii\web\Controller
      * @param $resetDate string  A date string in a format in
      *        http://php.net/manual/en/datetime.formats.php
      *
-     * @return 
+     * @return An array with the summary information of the counter. This information is used to update the user
+     *         interface using JavaScript. The array has the following format:
+     *         [
+     *             'count' => ['count' => integer, 'startDate' => DateTime],
+     *             'best' => ['count' => integer, 'startDate' => DateTime, 'endDate' => DateTime]
+     *         ]
      *
      * @throws ForbiddenHttpException current user is not the owner of the counter.
      * @throws NotFoundHttpException if the counter cannot be found
-     * @throws B if $resetDate is before the current start date of te counter.
+     * @throws BadRequestHttpException if $resetDate is before the current start date of the counter or after today.
      */
     public function actionReset($counterId, $resetDate)
     {
         $counter = $this->findModel($counterId);
-        $user = User::findOne(Yii::$app->user->id);
         
         //Make sure the current user is owners
         if(Yii::$app->user->id !== $counter->userId)
@@ -275,27 +278,44 @@ class CounterController extends \yii\web\Controller
     }
 
     /**
-     * Sets active field of the count to false.
-     * @param $id counter id.
+     * Stops the count of the counter specified by $counterId. This action is intended to be called by Ajax from the
+     * client side.
+     *
+     * @param $counterId integer The database id of the counter.
+     * @param $stopDate  string  A date string in a format in http://php.net/manual/en/datetime.formats.php
+     *
+     * @return An array with the summary information of the counter. This information is used to update the user
+     *         interface using JavaScript. The array has the following format:
+     *         [
+     *             'count' => ['count' => integer, 'startDate' => DateTime],
+     *             'best' => ['count' => integer, 'startDate' => DateTime, 'endDate' => DateTime]
+     *         ]
+     *
      * @throws ForbiddenHttpException current user is not the owner of the counter.
+     * @throws NotFoundHttpException if the counter cannot be found
+     * @throws BadRequestHttpException if $stopDate is before the current start date of the counter or after today.
      */
-    public function actionDeactivate($id)
+    public function actionStop($counterId, $stopDate)
     {
-        $model = $this->findModel($id);
-        $user = User::findOne(Yii::$app->user->id);
+        $counter = $this->findModel($counterId);
+        
         //Make sure the current user is owners
-        if(Yii::$app->user->id === $model->userId)
-        {
-            //Record history
-            $now = new \DateTime('now', new \DateTimeZone($user->timeZone));
-            HistoryController::insertHistory($model, $now);
+        if(Yii::$app->user->id !== $counter->userId)
+            throw new ForbiddenHttpException();
 
-            $model->active = false;
-            $model->save();
-            return $this->redirect(['index', 'username'=>$user->userName]);
+        try{
+            $counter->stop($stopDate);
+        }
+        catch(InvalidArgumentException $ex){
+            throw new BadRequestHttpException($ex->getMessage());
         }
 
-        throw new ForbiddenHttpException();
+        $count = ['count'=>$counter->getDays(), 'startDate'=>$counter->getCurrentStartDate()];
+        $best  = $counter->getBest();
+
+        Yii::$app->response->format = yii\web\Response::FORMAT_JSON;
+
+        return ['count'=>$count, 'best'=>$best];
     }
 
     /**

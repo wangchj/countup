@@ -208,6 +208,15 @@ INSERT INTO Counters VALUES(
     /*dispOrder*/ 2
 );
 
+INSERT INTO Counters VALUES(
+    /*counterId*/ 4,
+    /*userId*/    1,
+    /*label*/     'No History',
+    /*summary*/   'This counter has no entry in the History table.',
+    /*timeZone*/  'America/Chicago',
+    /*public*/    1,
+    /*dispOrder*/ 3
+);
 
 /*
 History Date Range Test cases

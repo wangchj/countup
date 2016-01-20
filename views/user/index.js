@@ -8,7 +8,9 @@ function initCounterMenu() {
         content: function() {
             var counterId = $(this).attr('counterId');
             var resetStr = '<li class="counter-menu-item" onclick="resetModal(' + counterId + ')">' +
-                '<span class="glyphicon glyphicon glyphicon-repeat"></span> Reset Count</li>'; 
+                '<span class="glyphicon glyphicon glyphicon-repeat"></span> Reset Count</li>';
+            var stopStr = '<li class="counter-menu-item" onclick="stopModal(' + counterId + ')">' +
+                '<span class="glyphicon glyphicon glyphicon-pause"></span> Stop Count</li>'; 
             var setStr = '<li class="counter-menu-item" onclick="counterSettingClicked(' + counterId + ')">' +
                 '<span class="glyphicon glyphicon-cog"></span> Settings</li>';
             var remStr =
@@ -16,7 +18,7 @@ function initCounterMenu() {
                     '<span class="glyphicon glyphicon-fire"></span> Delete' +
                 '</li>';
 
-            var res = '<ul class="counter-menu">' + resetStr + setStr + '<hr style="margin:5px">' + remStr + '</ul>';
+            var res = '<ul class="counter-menu">' + resetStr + stopStr + setStr + '<hr style="margin:5px">' + remStr + '</ul>';
 
             return res;
         },
@@ -65,6 +67,12 @@ function resetModal(counterId){
     ResetModal.clearError();
     ResetModal.setCounterId(counterId);
     ResetModal.show();
+}
+
+function stopModal(counterId){
+    StopModal.clearError();
+    StopModal.setCounterId(counterId);
+    StopModal.show();
 }
 
 function initRemoveModalBtnEvents() {
