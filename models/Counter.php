@@ -42,7 +42,7 @@ class Counter extends \yii\db\ActiveRecord
         return [
             [['userId', 'label', 'dispOrder'], 'required'],
             [['userId', 'dispOrder'], 'integer'],
-            [['public', 'active'], 'boolean'],
+            [['public'], 'boolean'],
             [['summary', 'timeZone'], 'string'],
             [['label'], 'string', 'max' => 30]
         ];

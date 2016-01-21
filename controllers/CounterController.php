@@ -63,33 +63,29 @@ class CounterController extends \yii\web\Controller
         if(!$counter->label = trim($counter->label))
            throw new BadRequestHttpException('Please fill in a label.');
 
+        //Summary
+        $counter->summary = trim($counter->summary);
+
+        //Time zone
         try{
             $timezone = new DateTimeZone($counter->timeZone);
         }
         catch(Exception $ex) {
             throw new BadRequestHttpException("Time zone {$counter->timeZone} is invalid.");
         }
-        
-        if($counter->startDate && $date = new DateTime($counter->startDate, $timezone))
-           $counter->startDate = $date->format('Y-m-d');
-        else
+
+        //Start date use for the first entry of History for this counter
+        if(!$startDate = new DateTime(Yii::$app->request->post('Counter')['startDate'], $timezone))
            throw new BadRequestHttpException('Format for start date cannot be understood.');
 
+        //Owner user id
         $counter->userId = Yii::$app->user->id;
 
-        if($counter->type == 'weekly') {
-            foreach($_POST['day'] as $day=>$val) {
-                if($val) {
-                    if($counter->on)
-                        $counter->on .= ',';
-                    $counter->on .= $day;
-                }
-            }
-        }
-
+        //whether or not this counter is public
         if(!$counter->public)
             $counter->public = false;
 
+        //The display order of this counter
         $counter->dispOrder = Counter::getNextOrderNum($counter->userId);
 
         //If no error, save counter
@@ -101,11 +97,11 @@ class CounterController extends \yii\web\Controller
             throw new BadRequestHttpException('Oh no, something is wrong. Your error has been logged.');
         }
 
-        $firstEntry = new History();
-        $firstEntry->counterId = $counter->counterId;
-        $firstEntry->date = $counter->startDate;
-        $firstEntry->miss = false;
-        $firstEntry->save();
+        //First history entry of this counter
+        $history = new History();
+        $history->counterId = $counter->counterId;
+        $history->startDate = $startDate->format('Y-m-d');
+        $history->save();
     }
 
     /**
@@ -266,6 +262,11 @@ class CounterController extends \yii\web\Controller
 
     /**
      * Entry point for ajax remove of a counter.
+     *
+     * @param $counterId integer The id of the counter to be deleted.
+     *
+     * @throws NotFoundHttpException if $counterId does not exist in the database.
+     * @throws ForbiddenHttpException if the current user is not the owner of the counter.
      */
     public function actionAjaxRemove($counterId) {
         if(!$counter = Counter::findone($counterId))
@@ -273,7 +274,9 @@ class CounterController extends \yii\web\Controller
         if(Yii::$app->user->isGuest || Yii::$app->user->identity->userId != $counter->userId)
             throw new ForbiddenHttpException();
         History::deleteAll(['counterId'=>$counterId]);
-        $command = Yii::$app->db->createCommand("update Counters set dispOrder = dispOrder - 1 where dispOrder > {$counter->dispOrder}")->execute();
+        $command = Yii::$app->db->createCommand(
+            "update Counters set dispOrder = dispOrder - 1 where dispOrder > {$counter->dispOrder} and
+            userId = {$counter->userId}")->execute();
         $counter->delete();
     }
 
