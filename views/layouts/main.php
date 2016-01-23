@@ -67,18 +67,9 @@ NavAsset::register($this);
                     <li><a id="add-counter" href="#">Add Counter</a></li>
                     <li><a href="<?=Url::to(['settings/index'])?>">Settings</a></li>
                     <li><a href="<?=Url::to(['site/logout'])?>" data-method="post">Logout</a></li>
-                    <li>
-                        <?php if(Yii::$app->user->identity->picture): ?>
-                            <img src="<?=Yii::$app->user->identity->getPicture()?>"
-                                title="Logged in as <?=Yii::$app->user->identity->forename?>"
-                                style="width:40px; margin-top:6px"
-                                class="img-circle">
-                        <?php else: ?>
-                            <img src="<?=Yii::$app->user->identity->getPicture()?>"
-                                title="Logged in as <?=Yii::$app->user->identity->forename?>"
-                                style="width:40px; margin-top:6px; border-width:2px; border-color:#eee"
-                                class="img-circle img-thumbnail">
-                        <?php endif;?>
+                    <li><img src="<?=Yii::$app->user->identity->getPicture()?>"
+                        title="Logged in as <?=Yii::$app->user->identity->forename?>"
+                        style="width:40px; margin-top:6px" class="img-circle">
                     </li>
                 </ul>
             </div>
@@ -97,11 +88,8 @@ NavAsset::register($this);
             <div class="row">
                 <div class="col-xs-12" style="text-align:center">
                     <h1>
-                        <?php if($viewer->picture): ?>
-                            <img src="<?=$viewee->getPicture()?>" style="width:50px; margin-top:6px" class="img-circle">
-                        <?php else: ?>
-                            <img src="<?=$viewee->getPicture()?>" style="width:50px; margin-top:6px; border-width:3px; border-color:#eee" class="img-circle img-thumbnail">
-                        <?php endif;?>
+                            <img src="<?=$viewee->getPicture()?>" style="width:50px;" class="img-circle">
+
                         <?="$viewee->forename $viewee->surname"?>
                         <?php if($viewer->userId != $viewee->userId):?>
                             <?php if($viewer->isFollowerOf($viewee->userId)):?>

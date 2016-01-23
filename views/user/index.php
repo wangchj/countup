@@ -166,7 +166,7 @@ $this->params['viewee'] = $viewee;
                 <?php foreach($follows as $follow): ?>
                     <div class="col-sm-6 friend" style="text-align:center">
                         <a href="<?=Url::to(['user/index', 'token'=>$follow->getIdentifier()])?>">
-                            <img src="<?=$follow->getPicture()?>" style="width:50px;" class="img-circle img-thumbnail">
+                            <img src="<?=$follow->getPicture()?>" style="width:50px;" class="img-circle">
                             <div>
                                 <?="{$follow->forename} {$follow->surname}"?>
                             </div>
@@ -186,7 +186,7 @@ $this->params['viewee'] = $viewee;
                 <?php foreach($followers as $follower): ?>
                     <div class="col-sm-6 friend" style="text-align:center">
                         <a href="<?=Url::to(['user/index', 'token'=>$follower->getIdentifier()])?>">
-                            <img src="<?=$follower->getPicture()?>" style="width:50px;" class="img-circle img-thumbnail">
+                            <img src="<?=$follower->getPicture()?>" style="width:50px;" class="img-circle">
                             <div>
                                 <?="{$follower->forename} {$follower->surname}"?>
                             </div>

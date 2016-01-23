@@ -78,7 +78,9 @@ class User extends \yii\db\ActiveRecord implements \yii\web\IdentityInterface
         if($this->picture)
             return Url::isRelative($this->picture) ? Yii::getAlias("@web/pictures/{$this->picture}") : $this->picture;
         else
-            return 'http://www.k2g2.org/lib/plugins/avatar/stitchy/stitchy.php?seed=' . md5($this->email) . '&size=50&.png';
+            return $this->gender == 'female' ?
+                Yii::getAlias('@web/images/no-user-girl.jpg') :
+                Yii::getAlias('@web/images/no-user.jpg');
     }
 
     /**
